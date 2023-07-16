@@ -48,7 +48,7 @@ const (
 	HelperTrieProcessConfirmations = 256
 
 	// CheckpointFrequency is the block frequency for creating checkpoint
-	CheckpointFrequency = 32768
+	CheckpointFrequency = 32707
 
 	// CheckpointProcessConfirmations is the number before a checkpoint is generated
 	CheckpointProcessConfirmations = 256

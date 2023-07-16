@@ -53,29 +53,28 @@ var CheckpointOracles = map[common.Hash]*CheckpointOracleConfig{
 func newUint64(val uint64) *uint64 { return &val }
 
 var (
-	MainnetTerminalTotalDifficulty, _ = new(big.Int).SetString("58_750_000_000_000_000_000_000", 0)
-
 	// MainnetChainConfig is the chain parameters to run a node on the main network.
+	// All checkpoints should be a prime number the prevent the possibility of a collision with a malicious checkpoint.
 	MainnetChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(1),
-		HomesteadBlock:                big.NewInt(1_150_000),
-		DAOForkBlock:                  big.NewInt(1_920_000),
+		ChainID:                       big.NewInt(8009),
+		HomesteadBlock:                big.NewInt(503),
+		DAOForkBlock:                  big.NewInt(509),
 		DAOForkSupport:                true,
-		EIP150Block:                   big.NewInt(2_463_000),
-		EIP155Block:                   big.NewInt(2_675_000),
-		EIP158Block:                   big.NewInt(2_675_000),
-		ByzantiumBlock:                big.NewInt(4_370_000),
-		ConstantinopleBlock:           big.NewInt(7_280_000),
-		PetersburgBlock:               big.NewInt(7_280_000),
-		IstanbulBlock:                 big.NewInt(9_069_000),
-		MuirGlacierBlock:              big.NewInt(9_200_000),
-		BerlinBlock:                   big.NewInt(12_244_000),
-		LondonBlock:                   big.NewInt(12_965_000),
-		ArrowGlacierBlock:             big.NewInt(13_773_000),
-		GrayGlacierBlock:              big.NewInt(15_050_000),
-		TerminalTotalDifficulty:       MainnetTerminalTotalDifficulty, // 58_750_000_000_000_000_000_000
-		TerminalTotalDifficultyPassed: true,
-		ShanghaiTime:                  newUint64(1681338455),
+		EIP150Block:                   big.NewInt(521),
+		EIP155Block:                   big.NewInt(557),
+		EIP158Block:                   big.NewInt(587),
+		ByzantiumBlock:                big.NewInt(5449), // Byzantium switch block (used to enable smart contracts) - 5449 blocks should be enough for gaslimit
+		ConstantinopleBlock:           big.NewInt(5503),
+		PetersburgBlock:               big.NewInt(5507),
+		IstanbulBlock:                 big.NewInt(5519),
+		MuirGlacierBlock:              big.NewInt(5521),
+		BerlinBlock:                   big.NewInt(5527),
+		LondonBlock:                   big.NewInt(15_787_969), // Roughly 4 years after Berlin
+		ArrowGlacierBlock:             big.NewInt(27_200_177), // Roughly 2 years after London
+		GrayGlacierBlock:              big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
+		TerminalTotalDifficulty:       nil,                    // nil disables the terminal total difficulty check
+		TerminalTotalDifficultyPassed: false,                  // false disables the consensus check for terminal total difficulty
+		ShanghaiTime:                  nil,                    // nil disables the shanghai time check
 		Ethash:                        new(EthashConfig),
 	}
 
@@ -341,7 +340,7 @@ var (
 
 // NetworkNames are user friendly names to use in the chain spec banner.
 var NetworkNames = map[string]string{
-	MainnetChainConfig.ChainID.String(): "mainnet",
+	MainnetChainConfig.ChainID.String(): "Retheum Mainnet",
 	RinkebyChainConfig.ChainID.String(): "rinkeby",
 	GoerliChainConfig.ChainID.String():  "goerli",
 	SepoliaChainConfig.ChainID.String(): "sepolia",

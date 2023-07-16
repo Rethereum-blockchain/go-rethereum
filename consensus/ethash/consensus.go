@@ -20,6 +20,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"lukechampine.com/blake3"
 	"math/big"
 	"runtime"
 	"time"
@@ -34,31 +35,32 @@ import (
 	"github.com/ethereum/go-ethereum/params"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/ethereum/go-ethereum/trie"
-	"golang.org/x/crypto/sha3"
 )
 
 // Ethash proof-of-work protocol constants.
 var (
-	FrontierBlockReward           = big.NewInt(5e+18) // Block reward in wei for successfully mining a block
-	ByzantiumBlockReward          = big.NewInt(3e+18) // Block reward in wei for successfully mining a block upward from Byzantium
-	ConstantinopleBlockReward     = big.NewInt(2e+18) // Block reward in wei for successfully mining a block upward from Constantinople
-	maxUncles                     = 2                 // Maximum number of uncles allowed in a single block
-	allowedFutureBlockTimeSeconds = int64(15)         // Max seconds from current time allowed for blocks, before they're considered future blocks
+	FrontierBlockReward     = big.NewInt(4_000_000_000_000_000_000) // Block reward in wei for successfully mining a block ~Launch
+	LondonBlockReward       = big.NewInt(3_000_000_000_000_000_000) // Block reward in wei for successfully mining a block upward from London - ~4 Years
+	ArrowGlacierBlockReward = big.NewInt(2_000_000_000_000_000_000) // Block reward in wei for successfully mining a block upward from London - ~6 Years
+	GrayGlacierBlockReward  = big.NewInt(1_000_000_000_000_000_000) // Block reward in wei for successfully mining a block upward from London - ~9 Years
+
+	UncleBlockReward              = big.NewInt(100_000_000_000_000_000) // block reward for every uncle block
+	maxUncles                     = 2                                   // Maximum number of uncles allowed in a single block
+	allowedFutureBlockTimeSeconds = int64(7)                            // Max seconds from current time allowed for blocks, before they're considered future blocks
 
 	// calcDifficultyEip5133 is the difficulty adjustment algorithm as specified by EIP 5133.
-	// It offsets the bomb a total of 11.4M blocks.
 	// Specification EIP-5133: https://eips.ethereum.org/EIPS/eip-5133
-	calcDifficultyEip5133 = makeDifficultyCalculator(big.NewInt(11_400_000))
+	calcDifficultyEip5133 = makeDifficultyCalculator(big.NewInt(110_400_000))
 
 	// calcDifficultyEip4345 is the difficulty adjustment algorithm as specified by EIP 4345.
 	// It offsets the bomb a total of 10.7M blocks.
 	// Specification EIP-4345: https://eips.ethereum.org/EIPS/eip-4345
-	calcDifficultyEip4345 = makeDifficultyCalculator(big.NewInt(10_700_000))
+	calcDifficultyEip4345 = makeDifficultyCalculator(big.NewInt(100_700_000))
 
 	// calcDifficultyEip3554 is the difficulty adjustment algorithm as specified by EIP 3554.
 	// It offsets the bomb a total of 9.7M blocks.
 	// Specification EIP-3554: https://eips.ethereum.org/EIPS/eip-3554
-	calcDifficultyEip3554 = makeDifficultyCalculator(big.NewInt(9700000))
+	calcDifficultyEip3554 = makeDifficultyCalculator(big.NewInt(9_700_000))
 
 	// calcDifficultyEip2384 is the difficulty adjustment algorithm as specified by EIP 2384.
 	// It offsets the bomb 4M blocks from Constantinople, so in total 9M blocks.
@@ -432,6 +434,7 @@ func makeDifficultyCalculator(bombDelay *big.Int) func(time uint64, parent *type
 		}
 		return x
 	}
+
 }
 
 // calcDifficultyHomestead is the difficulty adjustment algorithm. It returns
@@ -601,7 +604,7 @@ func (ethash *Ethash) Prepare(chain consensus.ChainHeaderReader, header *types.H
 // Finalize implements consensus.Engine, accumulating the block and uncle rewards.
 func (ethash *Ethash) Finalize(chain consensus.ChainHeaderReader, header *types.Header, state *state.StateDB, txs []*types.Transaction, uncles []*types.Header, withdrawals []*types.Withdrawal) {
 	// Accumulate any block and uncle rewards
-	accumulateRewards(chain.Config(), state, header, uncles)
+	accumulateRewards(chain.Config(), state, header, uncles, txs)
 }
 
 // FinalizeAndAssemble implements consensus.Engine, accumulating the block and
@@ -622,7 +625,7 @@ func (ethash *Ethash) FinalizeAndAssemble(chain consensus.ChainHeaderReader, hea
 
 // SealHash returns the hash of a block prior to it being sealed.
 func (ethash *Ethash) SealHash(header *types.Header) (hash common.Hash) {
-	hasher := sha3.NewLegacyKeccak256()
+	hasher := blake3.New(32, nil)
 
 	enc := []interface{}{
 		header.ParentHash,
@@ -659,27 +662,47 @@ var (
 // AccumulateRewards credits the coinbase of the given block with the mining
 // reward. The total reward consists of the static block reward and rewards for
 // included uncles. The coinbase of each uncle block is also rewarded.
-func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header) {
-	// Select the correct block reward based on chain progression
+func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header, txs []*types.Transaction) {
+	// Select the correct block minerReward based on chain progression
 	blockReward := FrontierBlockReward
-	if config.IsByzantium(header.Number) {
-		blockReward = ByzantiumBlockReward
+	if config.IsLondon(header.Number) {
+		blockReward = LondonBlockReward
+	} else if config.IsArrowGlacier(header.Number) {
+		blockReward = ArrowGlacierBlockReward
+	} else if config.IsGrayGlacier(header.Number) {
+		blockReward = GrayGlacierBlockReward
 	}
-	if config.IsConstantinople(header.Number) {
-		blockReward = ConstantinopleBlockReward
-	}
-	// Accumulate the rewards for the miner and any included uncles
-	reward := new(big.Int).Set(blockReward)
-	r := new(big.Int)
-	for _, uncle := range uncles {
-		r.Add(uncle.Number, big8)
-		r.Sub(r, header.Number)
-		r.Mul(r, blockReward)
-		r.Div(r, big8)
-		state.AddBalance(uncle.Coinbase, r)
 
-		r.Div(blockReward, big32)
-		reward.Add(reward, r)
+	minerReward := new(big.Int).Set(blockReward)
+	uncleReward := new(big.Int).Set(UncleBlockReward)
+	uncleCount := new(big.Int).SetUint64(uint64(len(uncles)))
+	blockFeeReward := new(big.Int)
+
+	// Collect the fee for all transactions.
+	for _, tx := range txs {
+		gas := new(big.Int).SetUint64(tx.Gas())
+		gasPrice := tx.GasPrice()
+		blockFeeReward.Add(blockFeeReward, new(big.Int).Mul(gas, gasPrice))
 	}
-	state.AddBalance(header.Coinbase, reward)
+
+	if len(uncles) == 0 { // If no uncles, the miner gets the entire block fee.
+		minerReward.Add(minerReward, blockFeeReward)
+	} else if config.IsLondon(header.Number) { // After london block, miners and uncles are rewarded the block fee divided between them.
+		blockFeeReward.Div(blockFeeReward, uncleCount)
+		uncleReward.Add(uncleReward, blockFeeReward)
+		minerReward.Add(minerReward, blockFeeReward)
+	} else if config.IsBerlin(header.Number) { // During Berlin block, each miner and uncles are rewarded the block fee.
+		uncleReward.Add(uncleReward, blockFeeReward)
+		minerReward.Add(minerReward, blockFeeReward)
+	} else if config.IsHomestead(header.Number) { // Until Berlin block, Miners and Uncles are rewarded for the amount of uncles generated.
+		uncleReward.Add(uncleReward, blockFeeReward)
+		uncleReward.Mul(uncleReward, uncleCount)
+		minerReward.Add(minerReward, uncleReward)
+	}
+
+	for _, uncle := range uncles {
+		state.AddBalance(uncle.Coinbase, uncleReward)
+	}
+
+	state.AddBalance(header.Coinbase, minerReward)
 }
