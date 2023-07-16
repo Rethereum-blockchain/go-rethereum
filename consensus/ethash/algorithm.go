@@ -18,6 +18,7 @@ package ethash
 
 import (
 	"encoding/binary"
+	"golang.org/x/crypto/sha3"
 	"hash"
 	"lukechampine.com/blake3"
 	"math/big"
@@ -90,8 +91,8 @@ type hasher func(dest []byte, data []byte)
 // makeHasher creates a repetitive hasher, allowing the same hash data structures to
 // be reused between hash runs instead of requiring new ones to be created. The returned
 // function is not thread safe!
-func makeHasher(h hash.Hash, xof bool) hasher {
-	if xof {
+func makeHasher(h hash.Hash) hasher {
+	if reflect.TypeOf(h).String() == "*blake3.Hasher" {
 		type readerHash interface {
 			hash.Hash
 			XOF() *blake3.OutputReader
@@ -131,9 +132,9 @@ func seedHash(block uint64) []byte {
 	if block < epochLength {
 		return seed
 	}
-	blake3 := makeHasher(blake3.New(32, nil), true)
+	hasherCB := makeHasher(blake3.New(32, nil))
 	for i := 0; i < int(block/epochLength); i++ {
-		blake3(seed, seed)
+		hasherCB(seed, seed)
 	}
 	return seed
 }
@@ -187,12 +188,13 @@ func generateCache(dest []uint32, epoch uint64, seed []byte) {
 		}
 	}()
 	// Create a hasher to reuse between invocations
-	blake3 := makeHasher(blake3.New(32, nil), true)
+	hasherCB := makeHasher(sha3.NewLegacyKeccak512())
+	//hasherCB := makeHasher(hasherCB.New(64, nil))
 
 	// Sequentially produce the initial dataset
-	blake3(cache, seed)
+	hasherCB(cache, seed)
 	for offset := uint64(hashBytes); offset < size; offset += hashBytes {
-		blake3(cache[offset:], cache[offset-hashBytes:offset])
+		hasherCB(cache[offset:], cache[offset-hashBytes:offset])
 		progress.Add(1)
 	}
 	// Use a low-round version of randmemohash
@@ -206,7 +208,7 @@ func generateCache(dest []uint32, epoch uint64, seed []byte) {
 				xorOff = (binary.LittleEndian.Uint32(cache[dstOff:]) % uint32(rows)) * hashBytes
 			)
 			bitutil.XORBytes(temp, cache[srcOff:srcOff+hashBytes], cache[xorOff:xorOff+hashBytes])
-			blake3(cache[dstOff:], temp)
+			hasherCB(cache[dstOff:], temp)
 
 			progress.Add(1)
 		}
@@ -313,8 +315,8 @@ func generateDataset(dest []uint32, epoch uint64, cache []uint32) {
 			defer pend.Done()
 
 			// Create a hasher to reuse between invocations
-			//keccak512 := makeHasher(sha3.NewLegacyKeccak512())
-			blake3 := makeHasher(blake3.New(32, nil), true)
+			//hasherCB := makeHasher(sha3.NewLegacyKeccak512())
+			hasherCB := makeHasher(blake3.New(64, nil))
 
 			// Calculate the data segment this thread should generate
 			batch := (size + hashBytes*uint64(threads) - 1) / (hashBytes * uint64(threads))
@@ -326,7 +328,7 @@ func generateDataset(dest []uint32, epoch uint64, cache []uint32) {
 			// Calculate the dataset segment
 			percent := size / hashBytes / 100
 			for index := first; index < limit; index++ {
-				item := generateDatasetItem(cache, uint32(index), blake3)
+				item := generateDatasetItem(cache, uint32(index), hasherCB)
 				if swapped {
 					swap(item)
 				}
@@ -391,10 +393,10 @@ func hashimoto(hash []byte, nonce uint64, size uint64, lookup func(index uint32)
 // in-memory cache) in order to produce our final value for a particular header
 // hash and nonce.
 func hashimotoLight(size uint64, cache []uint32, hash []byte, nonce uint64) ([]byte, []byte) {
-	blake3 := makeHasher(blake3.New(32, nil), true)
+	hasherCB := makeHasher(sha3.NewLegacyKeccak512())
 
 	lookup := func(index uint32) []uint32 {
-		rawData := generateDatasetItem(cache, index, blake3)
+		rawData := generateDatasetItem(cache, index, hasherCB)
 
 		data := make([]uint32, len(rawData)/4)
 		for i := 0; i < len(data); i++ {
