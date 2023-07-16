@@ -1,6 +1,6 @@
-## Go Ethereum
+## Go Rethereum
 
-Official Golang execution layer implementation of the Ethereum protocol.
+Official Golang execution layer implementation of the Ethereum protocol for use on the Retherum network.
 
 [![API Reference](
 https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f676f6c616e672f6764646f3f7374617475732e737667
@@ -10,7 +10,13 @@ https://camo.githubusercontent.com/915b7be44ada53c290eb157634330494ebe3e30a/6874
 [![Discord](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/nthXNEv)
 
 Automated builds are available for stable releases and the unstable master branch. Binary
-archives are published at https://geth.ethereum.org/downloads/.
+archives are published at: TBC.
+
+This is a modified version of the Ethereum Go client, which is a fork of the official 1.11.6 release. 
+This was the final release to support Proof-of-Work.
+
+The Proof-of-work consensus algorithm has been modified to use blake3 as the hashing algorithm. Other than changes to the PoW algorithm, the network is full compatible with the Ethereum protocol.
+
 
 ## Building the source
 
