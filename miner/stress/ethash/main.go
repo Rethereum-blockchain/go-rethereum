@@ -19,10 +19,12 @@ package main
 
 import (
 	"crypto/ecdsa"
+	"fmt"
 	"math/big"
 	"math/rand"
 	"os"
 	"os/signal"
+	"runtime"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -47,6 +49,9 @@ func main() {
 	log.Root().SetHandler(log.LvlFilterHandler(log.LvlInfo, log.StreamHandler(os.Stderr, log.TerminalFormat(true))))
 	fdlimit.Raise(2048)
 
+	threads := runtime.NumCPU() / 2
+	fmt.Println("Starting:", threads, " simulated miners")
+
 	// Generate a batch of accounts to seal and fund with
 	faucets := make([]*ecdsa.PrivateKey, 128)
 	for i := 0; i < len(faucets); i++ {
@@ -67,7 +72,7 @@ func main() {
 		nodes  []*eth.Ethereum
 		enodes []*enode.Node
 	)
-	for i := 0; i < 4; i++ {
+	for i := 0; i < threads; i++ {
 		// Start the node and wait until it's up
 		stack, ethBackend, err := makeMiner(genesis)
 		if err != nil {

@@ -450,7 +450,7 @@ func makeGenesis(faucets []*ecdsa.PrivateKey) *core.Genesis {
 
 	genesis.BaseFee = big.NewInt(params.InitialBaseFee)
 	genesis.Config = params.AllEthashProtocolChanges
-	genesis.Config.TerminalTotalDifficulty = transitionDifficulty
+	//genesis.Config.TerminalTotalDifficulty = transitionDifficulty
 
 	genesis.Alloc = core.GenesisAlloc{}
 	for _, faucet := range faucets {

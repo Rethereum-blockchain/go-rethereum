@@ -27,7 +27,7 @@ import (
 
 // Genesis hashes to enforce below configs on.
 var (
-	MainnetGenesisHash = common.HexToHash("0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3")
+	MainnetGenesisHash = common.HexToHash("0x7dd7b410bbd44d405d108eb743bb7ee0f04a5ce16439cd0e27fff68d2b1c627c")
 	SepoliaGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
 	RinkebyGenesisHash = common.HexToHash("0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177")
 	GoerliGenesisHash  = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
@@ -56,14 +56,14 @@ var (
 	// MainnetChainConfig is the chain parameters to run a node on the main network.
 	// All checkpoints should be a prime number the prevent the possibility of a collision with a malicious checkpoint.
 	MainnetChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(8009),
-		HomesteadBlock:                big.NewInt(503),
-		DAOForkBlock:                  big.NewInt(509),
-		DAOForkSupport:                true,
-		EIP150Block:                   big.NewInt(521),
-		EIP155Block:                   big.NewInt(557),
-		EIP158Block:                   big.NewInt(587),
-		ByzantiumBlock:                big.NewInt(5449), // Byzantium switch block (used to enable smart contracts) - 5449 blocks should be enough for gaslimit
+		ChainID:                       big.NewInt(622277),
+		HomesteadBlock:                big.NewInt(0),
+		DAOForkBlock:                  big.NewInt(0),
+		DAOForkSupport:                false,
+		EIP150Block:                   big.NewInt(0),
+		EIP155Block:                   big.NewInt(0),
+		EIP158Block:                   big.NewInt(0),
+		ByzantiumBlock:                big.NewInt(1001), // Byzantium switch block (used to enable smart contracts) - 5449 blocks should be enough for gaslimit
 		ConstantinopleBlock:           big.NewInt(5503),
 		PetersburgBlock:               big.NewInt(5507),
 		IstanbulBlock:                 big.NewInt(5519),
@@ -74,7 +74,6 @@ var (
 		GrayGlacierBlock:              big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		TerminalTotalDifficulty:       nil,                    // nil disables the terminal total difficulty check
 		TerminalTotalDifficultyPassed: false,                  // false disables the consensus check for terminal total difficulty
-		ShanghaiTime:                  nil,                    // nil disables the shanghai time check
 		Ethash:                        new(EthashConfig),
 	}
 
@@ -101,7 +100,7 @@ var (
 
 	// SepoliaChainConfig contains the chain parameters to run a node on the Sepolia test network.
 	SepoliaChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(11155111),
+		ChainID:                       big.NewInt(8010),
 		HomesteadBlock:                big.NewInt(0),
 		DAOForkBlock:                  nil,
 		DAOForkSupport:                true,
@@ -115,10 +114,8 @@ var (
 		MuirGlacierBlock:              big.NewInt(0),
 		BerlinBlock:                   big.NewInt(0),
 		LondonBlock:                   big.NewInt(0),
-		TerminalTotalDifficulty:       big.NewInt(17_000_000_000_000_000),
-		TerminalTotalDifficultyPassed: true,
-		MergeNetsplitBlock:            big.NewInt(1735371),
-		ShanghaiTime:                  newUint64(1677557088),
+		TerminalTotalDifficulty:       nil,
+		TerminalTotalDifficultyPassed: false,
 		Ethash:                        new(EthashConfig),
 	}
 

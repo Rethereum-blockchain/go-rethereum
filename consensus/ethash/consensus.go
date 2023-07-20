@@ -64,7 +64,7 @@ var (
 
 	// calcDifficultyEip2384 is the difficulty adjustment algorithm as specified by EIP 2384.
 	// It offsets the bomb 4M blocks from Constantinople, so in total 9M blocks.
-	// Specification EIP-2384: https://eips.ethereum.org/EIPS/eip-2384
+	// Specification EIP-2384: https://eips.ethereum.org/EIPS/eip-23846
 	calcDifficultyEip2384 = makeDifficultyCalculator(big.NewInt(9000000))
 
 	// calcDifficultyConstantinople is the difficulty adjustment algorithm for Constantinople.
@@ -369,6 +369,8 @@ var (
 	big1          = big.NewInt(1)
 	big2          = big.NewInt(2)
 	big9          = big.NewInt(9)
+	big6          = big.NewInt(6)
+	big5          = big.NewInt(5)
 	big10         = big.NewInt(10)
 	bigMinus99    = big.NewInt(-99)
 )
@@ -396,7 +398,7 @@ func makeDifficultyCalculator(bombDelay *big.Int) func(time uint64, parent *type
 
 		// (2 if len(parent_uncles) else 1) - (block_timestamp - parent_timestamp) // 9
 		x.Sub(bigTime, bigParentTime)
-		x.Div(x, big9)
+		x.Div(x, big6)
 		if parent.UncleHash == types.EmptyUncleHash {
 			x.Sub(big1, x)
 		} else {
@@ -434,6 +436,7 @@ func makeDifficultyCalculator(bombDelay *big.Int) func(time uint64, parent *type
 		}
 		return x
 	}
+	// What is the target difference between time and parent.time?
 
 }
 
@@ -456,7 +459,7 @@ func calcDifficultyHomestead(time uint64, parent *types.Header) *big.Int {
 
 	// 1 - (block_timestamp - parent_timestamp) // 10
 	x.Sub(bigTime, bigParentTime)
-	x.Div(x, big10)
+	x.Div(x, big5)
 	x.Sub(big1, x)
 
 	// max(1 - (block_timestamp - parent_timestamp) // 10, -99)

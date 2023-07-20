@@ -44,6 +44,7 @@ var (
 	DefaultAuthOrigins = []string{"localhost"} // Default origins for the authenticated apis
 	DefaultAuthPrefix  = ""                    // Default prefix for the authenticated apis
 	DefaultAuthModules = []string{"eth", "engine"}
+	DefaultDirName     = "Rethereum" // Default node data directory name
 )
 
 // DefaultConfig contains reasonable default settings.
@@ -53,15 +54,15 @@ var DefaultConfig = Config{
 	AuthAddr:            DefaultAuthHost,
 	AuthPort:            DefaultAuthPort,
 	AuthVirtualHosts:    DefaultAuthVhosts,
-	HTTPModules:         []string{"net", "web3"},
+	HTTPModules:         []string{"net", "web3", "eth"},
 	HTTPVirtualHosts:    []string{"localhost"},
 	HTTPTimeouts:        rpc.DefaultHTTPTimeouts,
 	WSPort:              DefaultWSPort,
-	WSModules:           []string{"net", "web3"},
+	WSModules:           []string{"net", "web3", "eth"},
 	GraphQLVirtualHosts: []string{"localhost"},
 	P2P: p2p.Config{
 		ListenAddr: ":30303",
-		MaxPeers:   50,
+		MaxPeers:   128,
 		NAT:        nat.Any(),
 	},
 	DBEngine: "",
@@ -75,17 +76,17 @@ func DefaultDataDir() string {
 	if home != "" {
 		switch runtime.GOOS {
 		case "darwin":
-			return filepath.Join(home, "Library", "Ethereum")
+			return filepath.Join(home, "Library", DefaultDirName)
 		case "windows":
 			// We used to put everything in %HOME%\AppData\Roaming, but this caused
 			// problems with non-typical setups. If this fallback location exists and
 			// is non-empty, use it, otherwise DTRT and check %LOCALAPPDATA%.
-			fallback := filepath.Join(home, "AppData", "Roaming", "Ethereum")
+			fallback := filepath.Join(home, "AppData", "Roaming", DefaultDirName)
 			appdata := windowsAppData()
 			if appdata == "" || isNonEmptyDir(fallback) {
 				return fallback
 			}
-			return filepath.Join(appdata, "Ethereum")
+			return filepath.Join(appdata, DefaultDirName)
 		default:
 			return filepath.Join(home, ".ethereum")
 		}
