@@ -139,7 +139,7 @@ func seedHash(block uint64) []byte {
 		return seed
 	}
 
-	hasherCB := makeHasher(blake3.New(32, nil))
+	hasherCB := makeHasher(sha3.NewLegacyKeccak256())
 	for i := 0; i < int(block/epochLength); i++ {
 		hasherCB(seed, seed)
 	}
@@ -321,7 +321,7 @@ func generateDataset(dest []uint32, epoch uint64, cache []uint32) {
 			defer pend.Done()
 
 			// Create a hasher to reuse between invocations
-			hasherCB := makeHasher(blake3.New(64, nil))
+			hasherCB := makeHasher(sha3.NewLegacyKeccak512())
 
 			// Calculate the data segment this thread should generate
 			batch := (size + hashBytes*uint64(threads) - 1) / (hashBytes * uint64(threads))

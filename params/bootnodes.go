@@ -24,6 +24,7 @@ var MainnetBootnodes = []string{
 	// Ethereum Foundation Go Bootnodes
 	"enode://35ec2a3590c79c2f46850a4da2e295c4630b15cccfd82f22f7a0bc7e0cac0b56edd56f0487dae7c058c20615e2bedee43e31011cb42c5003946b962317c15a2f@77.100.75.201:30303",  // D
 	"enode://8821fe76c4bd5b760b8244d410d13fcb0ccf6f9ce6c5e384ae89fde87c649de63f1a75c4d217795e93816670d7b3c48db723a9474c229a405de7ea62e2669260@108.142.210.51:30303", // M
+	"enode://42d91f228cb80dec41ce2fbe0619b8917e36a92f6e7d4c40e29d700038cc45e16c85e4376e6c7c3e3fd31994457ae41cb5a022c046b916704eee6dbcedc648ad@4.154.72.198:30303",   // U
 }
 
 // SepoliaBootnodes are the enode URLs of the P2P bootstrap nodes running on the
