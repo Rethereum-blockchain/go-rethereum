@@ -135,6 +135,9 @@ var (
 		Name:  "stdio-ui-test",
 		Usage: "Mechanism to test interface between Clef and UI. Requires 'stdio-ui'.",
 	}
+	/////////////////////////////
+	// Commands
+	/////////////////////////////
 	initCommand = &cli.Command{
 		Action:    initializeSecrets,
 		Name:      "init",
@@ -286,7 +289,8 @@ func init() {
 		acceptFlag,
 	}
 	app.Action = signer
-	app.Commands = []*cli.Command{initCommand,
+	app.Commands = []*cli.Command{
+		initCommand,
 		attestCommand,
 		setCredentialCommand,
 		delCredentialCommand,
