@@ -312,12 +312,6 @@ func (ethash *Ethash) verifyHeader(chain consensus.ChainHeaderReader, header, pa
 	if diff := new(big.Int).Sub(header.Number, parent.Number); diff.Cmp(big.NewInt(1)) != 0 {
 		return consensus.ErrInvalidNumber
 	}
-	if chain.Config().IsShanghai(header.Time) {
-		return fmt.Errorf("ethash does not support shanghai fork")
-	}
-	if chain.Config().IsCancun(header.Time) {
-		return fmt.Errorf("ethash does not support cancun fork")
-	}
 	// Verify the engine specific seal securing the block
 	if seal {
 		if err := ethash.verifySeal(chain, header, false); err != nil {
@@ -667,18 +661,22 @@ var (
 // included uncles. The coinbase of each uncle block is also rewarded.
 func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header, txs []*types.Transaction) {
 	// Select the correct block minerReward based on chain progression
-	blockReward := FrontierBlockReward
-	if config.IsLondon(header.Number) {
-		blockReward = LondonBlockReward
-	} else if config.IsArrowGlacier(header.Number) {
-		blockReward = ArrowGlacierBlockReward
-	} else if config.IsGrayGlacier(header.Number) {
+	blockReward := new(big.Int)
+	switch true {
+	case config.IsGrayGlacier(header.Number):
 		blockReward = GrayGlacierBlockReward
+	case config.IsArrowGlacier(header.Number):
+		blockReward = ArrowGlacierBlockReward
+	case config.IsLondon(header.Number):
+		blockReward = LondonBlockReward
+	default:
+		blockReward = FrontierBlockReward
 	}
 
 	minerReward := new(big.Int).Set(blockReward)
 	uncleReward := new(big.Int).Set(UncleBlockReward)
-	uncleCount := new(big.Int).SetUint64(uint64(len(uncles)))
+	uncleCount := uint64(len(uncles))
+	bigUncleCount := new(big.Int).SetUint64(uncleCount)
 	blockFeeReward := new(big.Int)
 
 	// Collect the fee for all transactions.
@@ -688,19 +686,15 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 		blockFeeReward.Add(blockFeeReward, new(big.Int).Mul(gas, gasPrice))
 	}
 
-	if len(uncles) == 0 { // If no uncles, the miner gets the entire block fee.
+	if uncleCount == 0 { // If no uncles, the miner gets the entire block fee.
 		minerReward.Add(minerReward, blockFeeReward)
-	} else if config.IsLondon(header.Number) { // After london block, miners and uncles are rewarded the block fee divided between them.
-		blockFeeReward.Div(blockFeeReward, uncleCount)
-		uncleReward.Add(uncleReward, blockFeeReward)
+	} else {
+		uncleAcculatedFee := new(big.Int).Div(blockFeeReward, big8)
+		blockFeeReward.Sub(blockFeeReward, uncleAcculatedFee)
+		uncleAcculatedFee.Div(uncleAcculatedFee, bigUncleCount)
+
+		uncleReward.Add(uncleReward, uncleAcculatedFee)
 		minerReward.Add(minerReward, blockFeeReward)
-	} else if config.IsBerlin(header.Number) { // During Berlin block, each miner and uncles are rewarded the block fee.
-		uncleReward.Add(uncleReward, blockFeeReward)
-		minerReward.Add(minerReward, blockFeeReward)
-	} else if config.IsHomestead(header.Number) { // Until Berlin block, Miners and Uncles are rewarded for the amount of uncles generated.
-		uncleReward.Add(uncleReward, blockFeeReward)
-		uncleReward.Mul(uncleReward, uncleCount)
-		minerReward.Add(minerReward, uncleReward)
 	}
 
 	for _, uncle := range uncles {
