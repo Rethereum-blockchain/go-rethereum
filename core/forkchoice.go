@@ -84,12 +84,19 @@ func (f *ForkChoice) ReorgNeeded(current *types.Header, extern *types.Header) (b
 	}
 	// Accept the new header as the chain head if the transition
 	// is already triggered. We assume all the headers after the
-	// transition come from the trusted consensus layer.
+	// transition come frmo the trusted consensus layer.
 	if ttd := f.chain.Config().TerminalTotalDifficulty; ttd != nil && ttd.Cmp(externTd) <= 0 {
 		return true, nil
 	}
 
-	// If the total difficulty is higher than our known, add it to the canonical chain
+	// Reject the new header if it's the same as the current head.
+	// Refer to https://eprint.iacr.org/2022/1020 for more info.
+	// This is to prevent the uncle maker attack.
+	if current.Number.Cmp(extern.Number) == 0 {
+		return false, nil
+	}
+
+	// If the total difficulty is higher than our known, add it to the canoncial chain
 	if diff := externTd.Cmp(localTD); diff > 0 {
 		return true, nil
 	} else if diff < 0 {
