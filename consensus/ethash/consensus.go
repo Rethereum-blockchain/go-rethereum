@@ -668,12 +668,12 @@ var (
 func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header *types.Header, uncles []*types.Header, txs []*types.Transaction) {
 	// Select the correct block minerReward based on chain progression
 	blockReward := FrontierBlockReward
-	if config.IsLondon(header.Number) {
-		blockReward = LondonBlockReward
+	if config.IsGrayGlacier(header.Number) {
+		blockReward = GrayGlacierBlockReward
 	} else if config.IsArrowGlacier(header.Number) {
 		blockReward = ArrowGlacierBlockReward
-	} else if config.IsGrayGlacier(header.Number) {
-		blockReward = GrayGlacierBlockReward
+	} else if config.IsLondon(header.Number) {
+		blockReward = LondonBlockReward
 	}
 
 	minerReward := new(big.Int).Set(blockReward)
