@@ -25,8 +25,6 @@ const (
 	GenesisGasLimit      uint64 = 4712388            // Gas limit of the Genesis block.
 
 	MaximumExtraDataSize  uint64 = 32    // Maximum size extra data may be after Genesis.
-	ExpByteGas            uint64 = 10    // Times ceil(log256(exponent)) for the EXP instruction.
-	SloadGas              uint64 = 50    // Multiplied by the number of 32-byte words that are copied (round up) for any *COPY operation and added.
 	CallValueTransferGas  uint64 = 9000  // Paid for CALL when the value transfer is non-zero.
 	CallNewAccountGas     uint64 = 25000 // Paid for CALL when the destination address didn't exist prior.
 	TxGas                 uint64 = 21000 // Per transaction not creating a contract. NOTE: Not payable on data of calls between transactions.
@@ -67,10 +65,10 @@ const (
 	// In EIP-2929: SstoreResetGas was changed to '5000 - COLD_SLOAD_COST'.
 	// In EIP-3529: SSTORE_CLEARS_SCHEDULE is defined as SSTORE_RESET_GAS + ACCESS_LIST_STORAGE_KEY_COST
 	// Which becomes: 5000 - 2100 + 1900 = 4800
+
 	SstoreClearsScheduleRefundEIP3529 uint64 = SstoreResetGasEIP2200 - ColdSloadCostEIP2929 + TxAccessListStorageKeyGas
 
-	JumpdestGas   uint64 = 1     // Once per JUMPDEST operation.
-	EpochDuration uint64 = 30000 // Duration between proof-of-work epochs.
+	JumpdestGas uint64 = 1 // Once per JUMPDEST operation.
 
 	CreateDataGas         uint64 = 200   //
 	CallCreateDepth       uint64 = 1024  // Maximum depth of call/create stack.
@@ -120,9 +118,9 @@ const (
 	// Introduced in Tangerine Whistle (Eip 150)
 	CreateBySelfdestructGas uint64 = 25000
 
-	DefaultBaseFeeChangeDenominator = 8          // Bounds the amount the base fee can change between blocks.
-	DefaultElasticityMultiplier     = 2          // Bounds the maximum gas limit an EIP-1559 block may have.
-	InitialBaseFee                  = 1000000000 // Initial base fee for EIP-1559 blocks.
+	DefaultBaseFeeChangeDenominator = 8        // Bounds the amount the base fee can change between blocks.
+	DefaultElasticityMultiplier     = 2        // Bounds the maximum gas limit an EIP-1559 block may have.
+	InitialBaseFee                  = 1 * GWei // Initial base fee for EIP-1559 blocks.
 
 	MaxCodeSize     = 24576           // Maximum bytecode to permit for a contract
 	MaxInitCodeSize = 2 * MaxCodeSize // Maximum initcode to permit in a creation transaction and create instructions
