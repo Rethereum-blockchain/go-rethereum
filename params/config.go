@@ -79,23 +79,19 @@ var (
 
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
 	MainnetTrustedCheckpoint = &TrustedCheckpoint{
-		SectionIndex: 5,
-		SectionHead:  common.HexToHash("0xe4c0a3a5ee267054b0fcca56fe899410dc46f7703f1a7dbaf13d78a6393016e7"),
-		CHTRoot:      common.HexToHash("0x9e76a0b33e69b1573c1b83021c7943410cb537e2d74cf54482d6a90325be6ccc"),
-		BloomRoot:    common.HexToHash("0xea3741435f2819da48cb1ac2359f8c01ef4aee56e465407af3b7d167e47f31b4"),
+		BloomRoot:    common.HexToHash("0x76d432f033536c0356f7449bd4dc5109198c5b54ca1a36e1ac8417c39ce5847c"),
+		CHTRoot:      common.HexToHash("0xd30fc66dc5da5e58ece4e4d8bc3ecfa6a087be1237b3c66f736989d73fb4f0c8"),
+		SectionHead:  common.HexToHash("0x1cfe3de6f176409fa5bc7915e4dcfbb04c745beeb5d4d7bddd9256610f0f7f94"),
+		SectionIndex: 9,
 	}
 
 	// MainnetCheckpointOracle contains a set of configs for the main network oracle.
 	MainnetCheckpointOracle = &CheckpointOracleConfig{
-		Address: common.HexToAddress("0x9a9070028361F7AAbeB3f2F2Dc07F82C4a98A02a"),
+		Address: common.HexToAddress("0xA9E2513d8AfC3d82397c5198d244EF5F75D7D30b"),
 		Signers: []common.Address{
-			common.HexToAddress("0x1b2C260efc720BE89101890E4Db589b44E950527"), // Peter
-			common.HexToAddress("0x78d1aD571A1A09D60D9BBf25894b44e4C8859595"), // Martin
-			common.HexToAddress("0x286834935f4A8Cfb4FF4C77D5770C2775aE2b0E7"), // Zsolt
-			common.HexToAddress("0xb86e2B0Ab5A4B1373e40c51A7C712c70Ba2f9f8E"), // Gary
-			common.HexToAddress("0x0DF8fa387C602AE62559cC4aFa4972A7045d6707"), // Guillaume
+			common.HexToAddress("0x26ef08C12b37b8C14f7bCe8A492474A0902Dd2E0"), // tagKnife
 		},
-		Threshold: 2,
+		Threshold: 1,
 	}
 
 	// SepoliaChainConfig contains the chain parameters to run a node on the Sepolia test network.
@@ -337,7 +333,7 @@ var (
 
 // NetworkNames are user friendly names to use in the chain spec banner.
 var NetworkNames = map[string]string{
-	MainnetChainConfig.ChainID.String(): "Retheum Mainnet",
+	MainnetChainConfig.ChainID.String(): "Rethereum Mainnet",
 	RinkebyChainConfig.ChainID.String(): "rinkeby",
 	GoerliChainConfig.ChainID.String():  "goerli",
 	SepoliaChainConfig.ChainID.String(): "sepolia",
