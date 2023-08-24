@@ -75,6 +75,9 @@ var (
 		TerminalTotalDifficulty:       nil,                    // nil disables the terminal total difficulty check
 		TerminalTotalDifficultyPassed: false,                  // false disables the consensus check for terminal total difficulty
 		Ethash:                        new(EthashConfig),
+		RethereumForks: &RethereumForks{
+			Veldin: big.NewInt(500_009),
+		},
 	}
 
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
@@ -416,6 +419,8 @@ type ChainConfig struct {
 	GrayGlacierBlock    *big.Int `json:"grayGlacierBlock,omitempty"`    // Eip-5133 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	MergeNetsplitBlock  *big.Int `json:"mergeNetsplitBlock,omitempty"`  // Virtual fork after The Merge to use as a network splitter
 
+	RethereumForks *RethereumForks `json:"rethereumForks,omitempty"` // Rethereum fork schedule
+
 	// Fork scheduling was switched from blocks to timestamps here
 
 	ShanghaiTime *uint64 `json:"shanghaiTime,omitempty"` // Shanghai switch time (nil = no fork, 0 = already on shanghai)
@@ -434,6 +439,10 @@ type ChainConfig struct {
 	// Various consensus engines
 	Ethash *EthashConfig `json:"ethash,omitempty"`
 	Clique *CliqueConfig `json:"clique,omitempty"`
+}
+
+type RethereumForks struct {
+	Veldin *big.Int `json:"gpuDiffLock,omitempty"` // Veldin fork for onchain fix of GPU difficulty lock and block fee calculation
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.
@@ -614,6 +623,11 @@ func (c *ChainConfig) IsArrowGlacier(num *big.Int) bool {
 // IsGrayGlacier returns whether num is either equal to the Gray Glacier (EIP-5133) fork block or greater.
 func (c *ChainConfig) IsGrayGlacier(num *big.Int) bool {
 	return isBlockForked(c.GrayGlacierBlock, num)
+}
+
+// IsVeldin
+func (c *ChainConfig) IsVeldin(num *big.Int) bool {
+	return isBlockForked(c.RethereumForks.Veldin, num)
 }
 
 // IsTerminalPoWBlock returns whether the given block is the last block of PoW stage.
