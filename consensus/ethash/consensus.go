@@ -664,6 +664,10 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 
 	for _, uncle := range uncles {
 		state.AddBalance(uncle.Coinbase, uncleReward)
+		
+		if config.IsVeldin(header.Number) {
+			state.AddBalance(header.Coinbase, uncleReward)
+		}
 	}
 
 	state.AddBalance(header.Coinbase, minerReward)
