@@ -84,7 +84,7 @@ func (f *ForkChoice) ReorgNeeded(current *types.Header, extern *types.Header) (b
 	}
 	// Accept the new header as the chain head if the transition
 	// is already triggered. We assume all the headers after the
-	// transition come frmo the trusted consensus layer.
+	// transition come from the trusted consensus layer.
 	if ttd := f.chain.Config().TerminalTotalDifficulty; ttd != nil && ttd.Cmp(externTd) <= 0 {
 		return true, nil
 	}
