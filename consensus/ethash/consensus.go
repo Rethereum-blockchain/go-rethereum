@@ -47,20 +47,6 @@ var (
 	maxUncles                     = 2                                   // Maximum number of uncles allowed in a single block
 	allowedFutureBlockTimeSeconds = int64(7)                            // Max seconds from current time allowed for blocks, before they're considered future blocks
 
-	// calcDifficultyEip5133 is the difficulty adjustment algorithm as specified by EIP 5133.
-	// Specification EIP-5133: https://eips.ethereum.org/EIPS/eip-5133
-	calcDifficultyEip5133 = makeDifficultyCalculator()
-
-	// calcDifficultyEip4345 is the difficulty adjustment algorithm as specified by EIP 4345.
-	// It offsets the bomb a total of 10.7M blocks.
-	// Specification EIP-4345: https://eips.ethereum.org/EIPS/eip-4345
-	calcDifficultyEip4345 = makeDifficultyCalculator()
-
-	// calcDifficultyEip3554 is the difficulty adjustment algorithm as specified by EIP 3554.
-	// It offsets the bomb a total of 9.7M blocks.
-	// Specification EIP-3554: https://eips.ethereum.org/EIPS/eip-3554
-	calcDifficultyEip3554 = makeDifficultyCalculator()
-
 	// calcDifficultyEip2384 is the difficulty adjustment algorithm as specified by EIP 2384.
 	// It offsets the bomb 4M blocks from Constantinople, so in total 9M blocks.
 	// Specification EIP-2384: https://eips.ethereum.org/EIPS/eip-23846
@@ -343,12 +329,6 @@ func (ethash *Ethash) CalcDifficulty(chain consensus.ChainHeaderReader, time uin
 func CalcDifficulty(config *params.ChainConfig, time uint64, parent *types.Header) *big.Int {
 	next := new(big.Int).Add(parent.Number, big1)
 	switch {
-	case config.IsGrayGlacier(next):
-		return calcDifficultyEip5133(time, parent)
-	case config.IsArrowGlacier(next):
-		return calcDifficultyEip4345(time, parent)
-	case config.IsLondon(next):
-		return calcDifficultyEip3554(time, parent)
 	case config.IsMuirGlacier(next):
 		return calcDifficultyEip2384(time, parent)
 	case config.IsConstantinople(next):
@@ -364,14 +344,11 @@ func CalcDifficulty(config *params.ChainConfig, time uint64, parent *types.Heade
 
 // Some weird constants to avoid constant memory allocs for them.
 var (
-	expDiffPeriod = big.NewInt(100000)
-	big1          = big.NewInt(1)
-	big2          = big.NewInt(2)
-	big9          = big.NewInt(9)
-	big6          = big.NewInt(6)
-	big5          = big.NewInt(5)
-	big10         = big.NewInt(10)
-	bigMinus99    = big.NewInt(-99)
+	big1       = big.NewInt(1)
+	big2       = big.NewInt(2)
+	big6       = big.NewInt(6)
+	big5       = big.NewInt(5)
+	bigMinus99 = big.NewInt(-99)
 )
 
 // makeDifficultyCalculator creates a difficultyCalculator with the given bomb-delay.
