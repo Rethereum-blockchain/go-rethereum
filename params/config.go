@@ -69,33 +69,32 @@ var (
 		IstanbulBlock:                 big.NewInt(5519),
 		MuirGlacierBlock:              big.NewInt(5521),
 		BerlinBlock:                   big.NewInt(5527),
-		LondonBlock:                   big.NewInt(15_787_969), // Roughly 4 years after Berlin
-		ArrowGlacierBlock:             big.NewInt(27_200_177), // Roughly 2 years after London
+		LondonBlock:                   big.NewInt(13_524_557), // Roughly 3 years after Berlin
+		ArrowGlacierBlock:             big.NewInt(27_200_177), // Roughly 3 years after London
 		GrayGlacierBlock:              big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		TerminalTotalDifficulty:       nil,                    // nil disables the terminal total difficulty check
 		TerminalTotalDifficultyPassed: false,                  // false disables the consensus check for terminal total difficulty
 		Ethash:                        new(EthashConfig),
+		RethereumForks: &RethereumForks{
+			Veldin: big.NewInt(500_009),
+		},
 	}
 
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
 	MainnetTrustedCheckpoint = &TrustedCheckpoint{
-		SectionIndex: 5,
-		SectionHead:  common.HexToHash("0xe4c0a3a5ee267054b0fcca56fe899410dc46f7703f1a7dbaf13d78a6393016e7"),
-		CHTRoot:      common.HexToHash("0x9e76a0b33e69b1573c1b83021c7943410cb537e2d74cf54482d6a90325be6ccc"),
-		BloomRoot:    common.HexToHash("0xea3741435f2819da48cb1ac2359f8c01ef4aee56e465407af3b7d167e47f31b4"),
+		BloomRoot:    common.HexToHash("0x76d432f033536c0356f7449bd4dc5109198c5b54ca1a36e1ac8417c39ce5847c"),
+		CHTRoot:      common.HexToHash("0xd30fc66dc5da5e58ece4e4d8bc3ecfa6a087be1237b3c66f736989d73fb4f0c8"),
+		SectionHead:  common.HexToHash("0x1cfe3de6f176409fa5bc7915e4dcfbb04c745beeb5d4d7bddd9256610f0f7f94"),
+		SectionIndex: 9,
 	}
 
 	// MainnetCheckpointOracle contains a set of configs for the main network oracle.
 	MainnetCheckpointOracle = &CheckpointOracleConfig{
-		Address: common.HexToAddress("0x9a9070028361F7AAbeB3f2F2Dc07F82C4a98A02a"),
+		Address: common.HexToAddress("0x3da2b20732aA2268655ABdb21875F66413C213aE"),
 		Signers: []common.Address{
-			common.HexToAddress("0x1b2C260efc720BE89101890E4Db589b44E950527"), // Peter
-			common.HexToAddress("0x78d1aD571A1A09D60D9BBf25894b44e4C8859595"), // Martin
-			common.HexToAddress("0x286834935f4A8Cfb4FF4C77D5770C2775aE2b0E7"), // Zsolt
-			common.HexToAddress("0xb86e2B0Ab5A4B1373e40c51A7C712c70Ba2f9f8E"), // Gary
-			common.HexToAddress("0x0DF8fa387C602AE62559cC4aFa4972A7045d6707"), // Guillaume
+			common.HexToAddress("0x26ef08C12b37b8C14f7bCe8A492474A0902Dd2E0"), // tagKnife
 		},
-		Threshold: 2,
+		Threshold: 1,
 	}
 
 	// SepoliaChainConfig contains the chain parameters to run a node on the Sepolia test network.
@@ -337,7 +336,7 @@ var (
 
 // NetworkNames are user friendly names to use in the chain spec banner.
 var NetworkNames = map[string]string{
-	MainnetChainConfig.ChainID.String(): "Retheum Mainnet",
+	MainnetChainConfig.ChainID.String(): "Rethereum Mainnet",
 	RinkebyChainConfig.ChainID.String(): "rinkeby",
 	GoerliChainConfig.ChainID.String():  "goerli",
 	SepoliaChainConfig.ChainID.String(): "sepolia",
@@ -420,6 +419,8 @@ type ChainConfig struct {
 	GrayGlacierBlock    *big.Int `json:"grayGlacierBlock,omitempty"`    // Eip-5133 (bomb delay) switch block (nil = no fork, 0 = already activated)
 	MergeNetsplitBlock  *big.Int `json:"mergeNetsplitBlock,omitempty"`  // Virtual fork after The Merge to use as a network splitter
 
+	RethereumForks *RethereumForks `json:"rethereumForks,omitempty"` // Rethereum fork schedule
+
 	// Fork scheduling was switched from blocks to timestamps here
 
 	ShanghaiTime *uint64 `json:"shanghaiTime,omitempty"` // Shanghai switch time (nil = no fork, 0 = already on shanghai)
@@ -438,6 +439,10 @@ type ChainConfig struct {
 	// Various consensus engines
 	Ethash *EthashConfig `json:"ethash,omitempty"`
 	Clique *CliqueConfig `json:"clique,omitempty"`
+}
+
+type RethereumForks struct {
+	Veldin *big.Int `json:"veldin,omitempty"` // Veldin fork for onchain fix of GPU difficulty lock and block fee calculation
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.
@@ -521,8 +526,7 @@ func (c *ChainConfig) Description() string {
 
 	// Add a special section for the merge as it's non-obvious
 	if c.TerminalTotalDifficulty == nil {
-		banner += "The Merge is not yet available for this network!\n"
-		banner += " - Hard-fork specification: https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/paris.md\n"
+		banner += "The Merge is not available on rethereum!\n"
 	} else {
 		banner += "Merge configured:\n"
 		banner += " - Hard-fork specification:    https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/paris.md\n"
@@ -534,8 +538,6 @@ func (c *ChainConfig) Description() string {
 	}
 	banner += "\n"
 
-	// Create a list of forks post-merge
-	banner += "Post-Merge hard forks (timestamp based):\n"
 	if c.ShanghaiTime != nil {
 		banner += fmt.Sprintf(" - Shanghai:                    @%-10v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/shanghai.md)\n", *c.ShanghaiTime)
 	}
@@ -618,6 +620,11 @@ func (c *ChainConfig) IsArrowGlacier(num *big.Int) bool {
 // IsGrayGlacier returns whether num is either equal to the Gray Glacier (EIP-5133) fork block or greater.
 func (c *ChainConfig) IsGrayGlacier(num *big.Int) bool {
 	return isBlockForked(c.GrayGlacierBlock, num)
+}
+
+// IsVeldin
+func (c *ChainConfig) IsVeldin(num *big.Int) bool {
+	return isBlockForked(c.RethereumForks.Veldin, num)
 }
 
 // IsTerminalPoWBlock returns whether the given block is the last block of PoW stage.

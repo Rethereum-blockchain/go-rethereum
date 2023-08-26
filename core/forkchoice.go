@@ -89,7 +89,14 @@ func (f *ForkChoice) ReorgNeeded(current *types.Header, extern *types.Header) (b
 		return true, nil
 	}
 
-	// If the total difficulty is higher than our known, add it to the canonical chain
+	// Reject the new header if it's the same as the current head.
+	// Refer to https://eprint.iacr.org/2022/1020 for more info.
+	// This is to prevent the uncle maker attack.
+	if current.Number.Cmp(extern.Number) == 0 {
+		return false, nil
+	}
+
+	// If the total difficulty is higher than our known, add it to the canoncial chain
 	if diff := externTd.Cmp(localTD); diff > 0 {
 		return true, nil
 	} else if diff < 0 {
