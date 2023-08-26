@@ -657,6 +657,7 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 		uncleReward.Add(uncleReward, blockFeeReward)
 		minerReward.Add(minerReward, blockFeeReward)
 	} else if config.IsLondon(header.Number) { // After london block, miners and uncles are rewarded the block fee divided between them.
+		uncleCount.Add(uncleCount, big1) // Add 1 to uncleCount to account for the miner in the division.
 		blockFeeReward.Div(blockFeeReward, uncleCount)
 		uncleReward.Add(uncleReward, blockFeeReward)
 		minerReward.Add(minerReward, blockFeeReward)
@@ -664,9 +665,9 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 
 	for _, uncle := range uncles {
 		state.AddBalance(uncle.Coinbase, uncleReward)
-		
+
 		if config.IsVeldin(header.Number) {
-			state.AddBalance(header.Coinbase, uncleReward)
+			minerReward.Add(minerReward, uncleReward)
 		}
 	}
 
