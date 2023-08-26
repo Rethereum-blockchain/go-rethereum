@@ -69,8 +69,8 @@ var (
 		IstanbulBlock:                 big.NewInt(5519),
 		MuirGlacierBlock:              big.NewInt(5521),
 		BerlinBlock:                   big.NewInt(5527),
-		LondonBlock:                   big.NewInt(15_787_969), // Roughly 4 years after Berlin
-		ArrowGlacierBlock:             big.NewInt(27_200_177), // Roughly 2 years after London
+		LondonBlock:                   big.NewInt(13_524_557), // Roughly 3 years after Berlin
+		ArrowGlacierBlock:             big.NewInt(27_200_177), // Roughly 3 years after London
 		GrayGlacierBlock:              big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		TerminalTotalDifficulty:       nil,                    // nil disables the terminal total difficulty check
 		TerminalTotalDifficultyPassed: false,                  // false disables the consensus check for terminal total difficulty
@@ -442,7 +442,7 @@ type ChainConfig struct {
 }
 
 type RethereumForks struct {
-	Veldin *big.Int `json:"gpuDiffLock,omitempty"` // Veldin fork for onchain fix of GPU difficulty lock and block fee calculation
+	Veldin *big.Int `json:"veldin,omitempty"` // Veldin fork for onchain fix of GPU difficulty lock and block fee calculation
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.
@@ -526,8 +526,7 @@ func (c *ChainConfig) Description() string {
 
 	// Add a special section for the merge as it's non-obvious
 	if c.TerminalTotalDifficulty == nil {
-		banner += "The Merge is not yet available for this network!\n"
-		banner += " - Hard-fork specification: https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/paris.md\n"
+		banner += "The Merge is not available on rethereum!\n"
 	} else {
 		banner += "Merge configured:\n"
 		banner += " - Hard-fork specification:    https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/paris.md\n"
@@ -539,8 +538,6 @@ func (c *ChainConfig) Description() string {
 	}
 	banner += "\n"
 
-	// Create a list of forks post-merge
-	banner += "Post-Merge hard forks (timestamp based):\n"
 	if c.ShanghaiTime != nil {
 		banner += fmt.Sprintf(" - Shanghai:                    @%-10v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/shanghai.md)\n", *c.ShanghaiTime)
 	}
