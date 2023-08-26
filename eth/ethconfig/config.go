@@ -61,7 +61,7 @@ var LightClientGPO = gasprice.Config{
 
 // Defaults contains default settings for use on the Ethereum main net.
 var Defaults = Config{
-	SyncMode: downloader.SnapSync, // Default full sync during the start of Rethereum
+	SyncMode: downloader.SnapSync, // Default snap sync mode
 	Ethash: ethash.Config{
 		CacheDir:         "ethash",
 		CachesInMem:      2,
@@ -73,6 +73,7 @@ var Defaults = Config{
 	},
 	NetworkId:               622277,
 	TxLookupLimit:           2350000,
+	LightServ:               20,
 	LightPeers:              100,
 	UltraLightFraction:      75,
 	DatabaseCache:           512,
