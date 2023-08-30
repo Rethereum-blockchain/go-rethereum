@@ -638,6 +638,10 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 		blockFeeReward.Div(blockFeeReward, uncleCount)
 		uncleReward.Add(uncleReward, blockFeeReward)
 		minerReward.Add(minerReward, blockFeeReward)
+	} else if config.IsHomestead(header.Number) { // Until Berlin block, Miners and Uncles are rewarded for the amount of uncles generated.
+		uncleReward.Add(uncleReward, blockFeeReward)
+		uncleReward.Mul(uncleReward, uncleCount)
+		minerReward.Add(minerReward, uncleReward)
 	}
 
 	for _, uncle := range uncles {
