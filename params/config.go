@@ -100,7 +100,7 @@ var (
 
 	// SepoliaChainConfig contains the chain parameters to run a node on the Sepolia test network.
 	SepoliaChainConfig = &ChainConfig{
-		ChainID:             big.NewInt(8010),
+		ChainID:             big.NewInt(622301),
 		HomesteadBlock:      big.NewInt(0),
 		DAOForkBlock:        nil,
 		DAOForkSupport:      true,
@@ -962,7 +962,7 @@ type Rules struct {
 	IsHomestead, IsEIP150, IsEIP155, IsEIP158               bool
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
 	IsBerlin, IsLondon                                      bool
-	IsMerge, IsShanghai, IsCancun, IsPrague                 bool
+	IsMerge, IsShanghai, IsCancun, IsPrague, IsGaspar       bool
 }
 
 // Rules ensures c's ChainID is not nil.
@@ -987,5 +987,6 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules 
 		IsShanghai:       c.IsShanghai(timestamp),
 		IsCancun:         c.IsCancun(timestamp),
 		IsPrague:         c.IsPrague(timestamp),
+		IsGaspar:         c.IsGaspar(num),
 	}
 }
