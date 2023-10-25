@@ -56,28 +56,29 @@ var (
 	// MainnetChainConfig is the chain parameters to run a node on the main network.
 	// All checkpoints should be a prime number the prevent the possibility of a collision with a malicious checkpoint.
 	MainnetChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(622277),
-		HomesteadBlock:                big.NewInt(0),
-		DAOForkBlock:                  big.NewInt(0),
-		DAOForkSupport:                false,
-		EIP150Block:                   big.NewInt(0),
-		EIP155Block:                   big.NewInt(0),
-		EIP158Block:                   big.NewInt(0),
-		ByzantiumBlock:                big.NewInt(1001), // Byzantium switch block (used to enable smart contracts) - 5449 blocks should be enough for gaslimit
-		ConstantinopleBlock:           big.NewInt(5503),
-		PetersburgBlock:               big.NewInt(5507),
-		IstanbulBlock:                 big.NewInt(5519),
-		MuirGlacierBlock:              big.NewInt(5521),
-		BerlinBlock:                   big.NewInt(5527),
-		LondonBlock:                   big.NewInt(13_524_557), // Roughly 3 years after Berlin
-		ArrowGlacierBlock:             big.NewInt(27_200_177), // Roughly 3 years after London
-		GrayGlacierBlock:              big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
-		TerminalTotalDifficulty:       nil,                    // nil disables the terminal total difficulty check
-		TerminalTotalDifficultyPassed: false,                  // false disables the consensus check for terminal total difficulty
-		Ethash:                        new(EthashConfig),
+		ChainID:             big.NewInt(622277),
+		HomesteadBlock:      big.NewInt(0),
+		DAOForkBlock:        big.NewInt(0),
+		DAOForkSupport:      false,
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(1001), // Byzantium switch block (used to enable smart contracts) - 5449 blocks should be enough for gaslimit
+		ConstantinopleBlock: big.NewInt(5503),
+		PetersburgBlock:     big.NewInt(5507),
+		IstanbulBlock:       big.NewInt(5519),
+		MuirGlacierBlock:    big.NewInt(5521),
+		BerlinBlock:         big.NewInt(5527),
+		LondonBlock:         big.NewInt(13_524_557), // Roughly 3 years after Berlin
+		ArrowGlacierBlock:   big.NewInt(27_200_177), // Roughly 3 years after London
+		GrayGlacierBlock:    big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		RethereumForks: &RethereumForks{
 			Veldin: big.NewInt(500_009),
+			Gaspar: big.NewInt(1_000_000),
 		},
+		TerminalTotalDifficulty:       nil,   // nil disables the terminal total difficulty check
+		TerminalTotalDifficultyPassed: false, // false disables the consensus check for terminal total difficulty
+		Ethash:                        new(EthashConfig),
 	}
 
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
@@ -99,20 +100,24 @@ var (
 
 	// SepoliaChainConfig contains the chain parameters to run a node on the Sepolia test network.
 	SepoliaChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(8010),
-		HomesteadBlock:                big.NewInt(0),
-		DAOForkBlock:                  nil,
-		DAOForkSupport:                true,
-		EIP150Block:                   big.NewInt(0),
-		EIP155Block:                   big.NewInt(0),
-		EIP158Block:                   big.NewInt(0),
-		ByzantiumBlock:                big.NewInt(0),
-		ConstantinopleBlock:           big.NewInt(0),
-		PetersburgBlock:               big.NewInt(0),
-		IstanbulBlock:                 big.NewInt(0),
-		MuirGlacierBlock:              big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),
-		LondonBlock:                   big.NewInt(0),
+		ChainID:             big.NewInt(8010),
+		HomesteadBlock:      big.NewInt(0),
+		DAOForkBlock:        nil,
+		DAOForkSupport:      true,
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
+		MuirGlacierBlock:    big.NewInt(0),
+		BerlinBlock:         big.NewInt(0),
+		LondonBlock:         big.NewInt(0),
+		RethereumForks: &RethereumForks{
+			Veldin: big.NewInt(0),
+			Gaspar: big.NewInt(0),
+		},
 		TerminalTotalDifficulty:       nil,
 		TerminalTotalDifficultyPassed: false,
 		Ethash:                        new(EthashConfig),
@@ -443,6 +448,7 @@ type ChainConfig struct {
 
 type RethereumForks struct {
 	Veldin *big.Int `json:"veldin,omitempty"` // Veldin fork for onchain fix of GPU difficulty lock and block fee calculation
+	Gaspar *big.Int `json:"gaspar,omitempty"` // Gaspar fork will enable Merge and Shangai EVM upgrades.
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.
@@ -625,6 +631,11 @@ func (c *ChainConfig) IsGrayGlacier(num *big.Int) bool {
 // IsVeldin
 func (c *ChainConfig) IsVeldin(num *big.Int) bool {
 	return isBlockForked(c.RethereumForks.Veldin, num)
+}
+
+// IsGaspar
+func (c *ChainConfig) IsGaspar(num *big.Int) bool {
+	return isBlockForked(c.RethereumForks.Gaspar, num)
 }
 
 // IsTerminalPoWBlock returns whether the given block is the last block of PoW stage.
