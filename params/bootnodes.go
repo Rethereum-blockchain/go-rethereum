@@ -30,11 +30,11 @@ var MainnetBootnodes = []string{
 	"enode://fe072785d5044f22b393df8a364dcc92d927b9f88aff14bff2484db20caa8350a07df3b9b1f0fb0b222304f426ab887ad9829bff6948aba84e3b5f1776b8dd52@195.201.122.219:30303",
 }
 
-// SepoliaBootnodes are the enode URLs of the P2P bootstrap nodes running on the
-// Sepolia test network.
-var SepoliaBootnodes = []string{
+// KrontosBootnodes are the enode URLs of the P2P bootstrap nodes running on the
+// Krontos test network.
+var KrontosBootnodes = []string{
 	// EF DevOps
-	"enode://4e5e92199ee224a01932a377160aa432f31d0b351f84ab413a8e0a42f4f36476f8fb1cbe914af0d9aef0d51665c214cf653c651c4bbd9d5550a934f241f1682b@138.197.51.181:30303", // sepolia-bootnode-1-nyc3
+	"enode://4e5e92199ee224a01932a377160aa432f31d0b351f84ab413a8e0a42f4f36476f8fb1cbe914af0d9aef0d51665c214cf653c651c4bbd9d5550a934f241f1682b@138.197.51.181:30303", // krontos-bootnode-1-nyc3
 }
 
 // RinkebyBootnodes are the enode URLs of the P2P bootstrap nodes running on the
@@ -70,8 +70,8 @@ func KnownDNSNetwork(genesis common.Hash, protocol string) string {
 		net = "rinkeby"
 	case GoerliGenesisHash:
 		net = "goerli"
-	case SepoliaGenesisHash:
-		net = "sepolia"
+	case KrontosGenesisHash:
+		net = "krontos"
 	default:
 		return ""
 	}

@@ -28,7 +28,7 @@ import (
 // Genesis hashes to enforce below configs on.
 var (
 	MainnetGenesisHash = common.HexToHash("0x0fb784d1481f0aa911d21d639641763ca09641413842b35f1d10eb5d208abdf8")
-	SepoliaGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
+	KrontosGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
 	RinkebyGenesisHash = common.HexToHash("0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177")
 	GoerliGenesisHash  = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
 )
@@ -37,7 +37,7 @@ var (
 // the chain it belongs to.
 var TrustedCheckpoints = map[common.Hash]*TrustedCheckpoint{
 	MainnetGenesisHash: MainnetTrustedCheckpoint,
-	SepoliaGenesisHash: SepoliaTrustedCheckpoint,
+	KrontosGenesisHash: KrontosTrustedCheckpoint,
 	RinkebyGenesisHash: RinkebyTrustedCheckpoint,
 	GoerliGenesisHash:  GoerliTrustedCheckpoint,
 }
@@ -74,7 +74,7 @@ var (
 		GrayGlacierBlock:    big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		RethereumForks: &RethereumForks{
 			Veldin: big.NewInt(500_009),
-			Gaspar: big.NewInt(1_000_000),
+			Gaspar: big.NewInt(10_000_000),
 		},
 		TerminalTotalDifficulty:       nil,   // nil disables the terminal total difficulty check
 		TerminalTotalDifficultyPassed: false, // false disables the consensus check for terminal total difficulty
@@ -98,8 +98,8 @@ var (
 		Threshold: 1,
 	}
 
-	// SepoliaChainConfig contains the chain parameters to run a node on the Sepolia test network.
-	SepoliaChainConfig = &ChainConfig{
+	// KrontosChainConfig contains the chain parameters to run a node on the Krontos test network.
+	KrontosChainConfig = &ChainConfig{
 		ChainID:             big.NewInt(622301),
 		HomesteadBlock:      big.NewInt(0),
 		DAOForkBlock:        nil,
@@ -120,11 +120,14 @@ var (
 		},
 		TerminalTotalDifficulty:       nil,
 		TerminalTotalDifficultyPassed: false,
-		Ethash:                        new(EthashConfig),
+		Clique: &CliqueConfig{
+			Period: 7,
+			Epoch:  32000,
+		},
 	}
 
-	// SepoliaTrustedCheckpoint contains the light client trusted checkpoint for the Sepolia test network.
-	SepoliaTrustedCheckpoint = &TrustedCheckpoint{
+	// KrontosTrustedCheckpoint contains the light client trusted checkpoint for the Krontos test network.
+	KrontosTrustedCheckpoint = &TrustedCheckpoint{
 		SectionIndex: 55,
 		SectionHead:  common.HexToHash("0xb70ea113ab4db9d6e015c5b55d486713f60c40bda666121914a71ce3aec53a75"),
 		CHTRoot:      common.HexToHash("0x206456d8847b66aaf427ed551f55e24cff90241bdb0a02583c761bf8164f78e4"),
@@ -344,7 +347,7 @@ var NetworkNames = map[string]string{
 	MainnetChainConfig.ChainID.String(): "Rethereum Mainnet",
 	RinkebyChainConfig.ChainID.String(): "rinkeby",
 	GoerliChainConfig.ChainID.String():  "goerli",
-	SepoliaChainConfig.ChainID.String(): "sepolia",
+	KrontosChainConfig.ChainID.String(): "krontos",
 }
 
 // TrustedCheckpoint represents a set of post-processed trie roots (CHT and
