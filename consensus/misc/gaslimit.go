@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 )
 
 // VerifyGaslimit verifies the header gas limit according increase/decrease

@@ -20,9 +20,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/beacon/merkle"
-	"github.com/Rethereum-blockchain/go-rethereum/beacon/params"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/beacon/merkle"
+	"github.com/rethereum-blockchain/go-rethereum/beacon/params"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // LightClientUpdate is a proof of the next sync committee root based on a header

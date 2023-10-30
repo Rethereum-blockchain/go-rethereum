@@ -20,7 +20,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 )
 
 var (

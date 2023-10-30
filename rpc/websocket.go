@@ -27,9 +27,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/gorilla/websocket"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 const (

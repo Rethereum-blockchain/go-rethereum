@@ -16,7 +16,7 @@
 
 package params
 
-import "github.com/Rethereum-blockchain/go-rethereum/common"
+import "github.com/rethereum-blockchain/go-rethereum/common"
 
 // MainnetBootnodes are the enode URLs of the P2P bootstrap nodes running on
 // the main Ethereum network.

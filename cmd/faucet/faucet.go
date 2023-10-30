@@ -39,25 +39,25 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/accounts"
-	"github.com/Rethereum-blockchain/go-rethereum/accounts/keystore"
-	"github.com/Rethereum-blockchain/go-rethereum/cmd/utils"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/downloader"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/ethconfig"
-	"github.com/Rethereum-blockchain/go-rethereum/ethclient"
-	"github.com/Rethereum-blockchain/go-rethereum/ethstats"
-	"github.com/Rethereum-blockchain/go-rethereum/internal/version"
-	"github.com/Rethereum-blockchain/go-rethereum/les"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
-	"github.com/Rethereum-blockchain/go-rethereum/node"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/nat"
-	"github.com/Rethereum-blockchain/go-rethereum/params"
 	"github.com/gorilla/websocket"
+	"github.com/rethereum-blockchain/go-rethereum/accounts"
+	"github.com/rethereum-blockchain/go-rethereum/accounts/keystore"
+	"github.com/rethereum-blockchain/go-rethereum/cmd/utils"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/eth/downloader"
+	"github.com/rethereum-blockchain/go-rethereum/eth/ethconfig"
+	"github.com/rethereum-blockchain/go-rethereum/ethclient"
+	"github.com/rethereum-blockchain/go-rethereum/ethstats"
+	"github.com/rethereum-blockchain/go-rethereum/internal/version"
+	"github.com/rethereum-blockchain/go-rethereum/les"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/node"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/nat"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 )
 
 var (
@@ -458,7 +458,7 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 			id = username
 		default:
 			//lint:ignore ST1005 This error is to be displayed in the browser
-			err = errors.New("Something funky happened, please open an issue at https://github.com/Rethereum-blockchain/go-rethereum/issues")
+			err = errors.New("Something funky happened, please open an issue at https://github.com/rethereum-blockchain/go-rethereum/issues")
 		}
 		if err != nil {
 			if err = sendError(wsconn, err); err != nil {

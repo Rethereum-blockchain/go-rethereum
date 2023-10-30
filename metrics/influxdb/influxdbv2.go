@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
-	"github.com/Rethereum-blockchain/go-rethereum/metrics"
 	influxdb2 "github.com/influxdata/influxdb-client-go/v2"
 	"github.com/influxdata/influxdb-client-go/v2/api"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/metrics"
 )
 
 type v2Reporter struct {

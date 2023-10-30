@@ -19,7 +19,7 @@ package vm
 import (
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 )
 
 type (

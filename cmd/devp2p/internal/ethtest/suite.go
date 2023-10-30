@@ -19,10 +19,10 @@ package ethtest
 import (
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/eth"
-	"github.com/Rethereum-blockchain/go-rethereum/internal/utesting"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/eth/protocols/eth"
+	"github.com/rethereum-blockchain/go-rethereum/internal/utesting"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 )
 
 // Suite represents a structure used to test a node's conformance

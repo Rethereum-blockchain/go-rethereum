@@ -28,11 +28,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/internal/testlog"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
-	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/websocket"
+	"github.com/rethereum-blockchain/go-rethereum/internal/testlog"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/rpc"
 	"github.com/stretchr/testify/assert"
 )
 

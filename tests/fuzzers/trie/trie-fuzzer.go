@@ -22,10 +22,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/trie"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/trienode"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/trie"
+	"github.com/rethereum-blockchain/go-rethereum/trie/trienode"
 )
 
 // randTest performs random trie operations.

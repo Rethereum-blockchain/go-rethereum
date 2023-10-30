@@ -25,10 +25,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
-	"github.com/Rethereum-blockchain/go-rethereum/console/prompt"
-	"github.com/Rethereum-blockchain/go-rethereum/internal/ethapi"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/rethereum-blockchain/go-rethereum/console/prompt"
+	"github.com/rethereum-blockchain/go-rethereum/internal/ethapi"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 type CommandlineUI struct {

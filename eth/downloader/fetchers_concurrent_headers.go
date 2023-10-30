@@ -19,9 +19,9 @@ package downloader
 import (
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/eth"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/eth/protocols/eth"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 // headerQueue implements typedQueue and is a type adapter between the generic

@@ -17,7 +17,7 @@
 package trie
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 )
 
 func nodeToBytes(n node) []byte {

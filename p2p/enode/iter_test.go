@@ -23,7 +23,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enr"
 )
 
 func TestReadNodes(t *testing.T) {

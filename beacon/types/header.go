@@ -21,9 +21,9 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 
-	"github.com/Rethereum-blockchain/go-rethereum/beacon/merkle"
-	"github.com/Rethereum-blockchain/go-rethereum/beacon/params"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/beacon/merkle"
+	"github.com/rethereum-blockchain/go-rethereum/beacon/params"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 //go:generate go run github.com/fjl/gencodec -type Header -field-override headerMarshaling -out gen_header_json.go

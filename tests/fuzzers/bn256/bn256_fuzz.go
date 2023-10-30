@@ -25,9 +25,9 @@ import (
 	"io"
 	"math/big"
 
-	cloudflare "github.com/Rethereum-blockchain/go-rethereum/crypto/bn256/cloudflare"
-	google "github.com/Rethereum-blockchain/go-rethereum/crypto/bn256/google"
 	"github.com/consensys/gnark-crypto/ecc/bn254"
+	cloudflare "github.com/rethereum-blockchain/go-rethereum/crypto/bn256/cloudflare"
+	google "github.com/rethereum-blockchain/go-rethereum/crypto/bn256/google"
 )
 
 func getG1Points(input io.Reader) (*cloudflare.G1, *google.G1, *bn254.G1Affine) {

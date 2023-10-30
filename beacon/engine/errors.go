@@ -17,8 +17,8 @@
 package engine
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/rpc"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/rpc"
 )
 
 // EngineAPIError is a standardized error message between consensus and execution

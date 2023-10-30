@@ -20,11 +20,11 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/crypto/kzg4844"
-	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/crypto/kzg4844"
+	"github.com/rethereum-blockchain/go-rethereum/event"
 )
 
 // Transaction is a helper struct to group together a canonical transaction with

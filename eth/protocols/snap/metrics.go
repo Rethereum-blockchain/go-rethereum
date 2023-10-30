@@ -17,7 +17,7 @@
 package snap
 
 import (
-	metrics "github.com/Rethereum-blockchain/go-rethereum/metrics"
+	metrics "github.com/rethereum-blockchain/go-rethereum/metrics"
 )
 
 var (

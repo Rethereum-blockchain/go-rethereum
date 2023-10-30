@@ -19,7 +19,7 @@ package types
 import (
 	"math/big"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // DynamicFeeTx represents an EIP-1559 transaction.

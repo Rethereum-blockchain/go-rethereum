@@ -20,8 +20,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 )
 
 const freezerVersion = 1 // The initial version tag of freezer table metadata

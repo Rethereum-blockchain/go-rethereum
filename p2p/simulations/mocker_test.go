@@ -27,7 +27,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 )
 
 func TestMocker(t *testing.T) {

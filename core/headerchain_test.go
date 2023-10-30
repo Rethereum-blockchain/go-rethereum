@@ -23,12 +23,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/consensus"
-	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
-	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/params"
-	"github.com/Rethereum-blockchain/go-rethereum/trie"
+	"github.com/rethereum-blockchain/go-rethereum/consensus"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/trie"
 )
 
 func verifyUnbrokenCanonchain(hc *HeaderChain) error {

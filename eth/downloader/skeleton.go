@@ -24,12 +24,12 @@ import (
 	"sort"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/eth"
-	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/eth/protocols/eth"
+	"github.com/rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 // scratchHeaders is the number of headers to store in a scratch space to allow

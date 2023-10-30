@@ -19,7 +19,7 @@ package event_test
 import (
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/rethereum-blockchain/go-rethereum/event"
 )
 
 func ExampleFeed_acknowledgedEvents() {

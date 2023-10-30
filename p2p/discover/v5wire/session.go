@@ -22,10 +22,10 @@ import (
 	"encoding/binary"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/lru"
-	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/common/lru"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 )
 
 const handshakeTimeout = time.Second

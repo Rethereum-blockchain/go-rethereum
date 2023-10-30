@@ -21,8 +21,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/internal/cmdtest"
 	"github.com/docker/docker/pkg/reexec"
+	"github.com/rethereum-blockchain/go-rethereum/internal/cmdtest"
 )
 
 type testEthkey struct {

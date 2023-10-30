@@ -17,7 +17,7 @@
 package blobpool
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 // Config are the configuration parameters of the blob transaction pool.

@@ -23,21 +23,21 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/accounts/abi"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/consensus"
-	"github.com/Rethereum-blockchain/go-rethereum/core"
-	"github.com/Rethereum-blockchain/go-rethereum/core/asm"
-	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
-	"github.com/Rethereum-blockchain/go-rethereum/core/state"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/tracers"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/tracers/logger"
-	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/accounts/abi"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/consensus"
+	"github.com/rethereum-blockchain/go-rethereum/core"
+	"github.com/rethereum-blockchain/go-rethereum/core/asm"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/core/state"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/rethereum-blockchain/go-rethereum/eth/tracers"
+	"github.com/rethereum-blockchain/go-rethereum/eth/tracers/logger"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 
 	// force-load js tracers to trigger registration
-	_ "github.com/Rethereum-blockchain/go-rethereum/eth/tracers/js"
+	_ "github.com/rethereum-blockchain/go-rethereum/eth/tracers/js"
 )
 
 func TestDefaults(t *testing.T) {
@@ -599,7 +599,7 @@ func TestEip2929Cases(t *testing.T) {
 
 // TestColdAccountAccessCost test that the cold account access cost is reported
 // correctly
-// see: https://github.com/Rethereum-blockchain/go-rethereum/issues/22649
+// see: https://github.com/rethereum-blockchain/go-rethereum/issues/22649
 func TestColdAccountAccessCost(t *testing.T) {
 	for i, tc := range []struct {
 		code []byte

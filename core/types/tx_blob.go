@@ -19,9 +19,9 @@ package types
 import (
 	"math/big"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/params"
 	"github.com/holiman/uint256"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 )
 
 // BlobTx represents an EIP-4844 transaction.

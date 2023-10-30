@@ -19,7 +19,7 @@ package utils
 import (
 	"sync"
 
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 	"golang.org/x/exp/slices"
 )
 

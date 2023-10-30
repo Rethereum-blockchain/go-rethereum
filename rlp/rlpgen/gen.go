@@ -23,7 +23,7 @@ import (
 	"go/types"
 	"sort"
 
-	"github.com/Rethereum-blockchain/go-rethereum/rlp/internal/rlpstruct"
+	"github.com/rethereum-blockchain/go-rethereum/rlp/internal/rlpstruct"
 )
 
 // buildContext keeps the data needed for make*Op.

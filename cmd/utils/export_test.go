@@ -23,8 +23,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 )
 
 // TestExport does basic sanity checks on the export/import functionality

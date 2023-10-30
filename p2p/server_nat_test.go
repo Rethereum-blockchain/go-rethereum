@@ -22,9 +22,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
-	"github.com/Rethereum-blockchain/go-rethereum/internal/testlog"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/internal/testlog"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 func TestServerPortMapping(t *testing.T) {

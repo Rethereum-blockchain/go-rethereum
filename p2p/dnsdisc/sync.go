@@ -21,8 +21,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 )
 
 // This is the number of consecutive leaf requests that may fail before

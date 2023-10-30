@@ -20,8 +20,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
-	"github.com/Rethereum-blockchain/go-rethereum/common/prque"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/common/prque"
 	"golang.org/x/exp/slices"
 )
 

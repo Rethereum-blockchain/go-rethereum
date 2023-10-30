@@ -23,7 +23,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/pipes"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/simulations/pipes"
 )
 
 func TestTCPPipe(t *testing.T) {

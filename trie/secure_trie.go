@@ -17,10 +17,10 @@
 package trie
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/trienode"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/trie/trienode"
 )
 
 // SecureTrie is the old name of StateTrie.

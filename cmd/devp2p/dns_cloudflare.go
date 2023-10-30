@@ -22,9 +22,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/dnsdisc"
 	"github.com/cloudflare/cloudflare-go"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/dnsdisc"
 	"github.com/urfave/cli/v2"
 )
 

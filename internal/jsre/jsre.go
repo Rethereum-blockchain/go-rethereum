@@ -27,8 +27,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
 	"github.com/dop251/goja"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // JSRE is a JS runtime environment embedding the goja interpreter.

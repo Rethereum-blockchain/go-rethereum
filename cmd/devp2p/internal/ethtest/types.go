@@ -22,10 +22,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/eth"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/rlpx"
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/eth/protocols/eth"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/rlpx"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 )
 
 type Message interface {

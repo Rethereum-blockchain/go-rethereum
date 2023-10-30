@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Rethereum-blockchain/go-rethereum/tests/fuzzers/difficulty"
+	"github.com/rethereum-blockchain/go-rethereum/tests/fuzzers/difficulty"
 )
 
 func main() {

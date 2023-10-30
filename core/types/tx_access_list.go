@@ -19,7 +19,7 @@ package types
 import (
 	"math/big"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 //go:generate go run github.com/fjl/gencodec -type AccessTuple -out gen_access_tuple.go

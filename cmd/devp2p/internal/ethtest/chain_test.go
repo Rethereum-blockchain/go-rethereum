@@ -21,9 +21,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/eth"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/eth/protocols/eth"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
 	"github.com/stretchr/testify/assert"
 )
 

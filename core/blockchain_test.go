@@ -26,20 +26,20 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/common/math"
-	"github.com/Rethereum-blockchain/go-rethereum/consensus"
-	"github.com/Rethereum-blockchain/go-rethereum/consensus/beacon"
-	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
-	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
-	"github.com/Rethereum-blockchain/go-rethereum/core/state"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/tracers/logger"
-	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
-	"github.com/Rethereum-blockchain/go-rethereum/params"
-	"github.com/Rethereum-blockchain/go-rethereum/trie"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/math"
+	"github.com/rethereum-blockchain/go-rethereum/consensus"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/beacon"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/core/state"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/eth/tracers/logger"
+	"github.com/rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/trie"
 )
 
 // So we can deterministically seed different blockchains
@@ -1616,7 +1616,7 @@ func TestEIP161AccountRemoval(t *testing.T) {
 // tests that under weird reorg conditions the blockchain and its internal header-
 // chain return the same latest block/header.
 //
-// https://github.com/Rethereum-blockchain/go-rethereum/pull/15941
+// https://github.com/rethereum-blockchain/go-rethereum/pull/15941
 func TestBlockchainHeaderchainReorgConsistency(t *testing.T) {
 	// Generate a canonical chain to act as the main dataset
 	engine := ethash.NewFaker()
@@ -1884,8 +1884,8 @@ func TestInsertReceiptChainRollback(t *testing.T) {
 // overtake the 'canon' chain until after it's passed canon by about 200 blocks.
 //
 // Details at:
-//   - https://github.com/Rethereum-blockchain/go-rethereum/issues/18977
-//   - https://github.com/Rethereum-blockchain/go-rethereum/pull/18988
+//   - https://github.com/rethereum-blockchain/go-rethereum/issues/18977
+//   - https://github.com/rethereum-blockchain/go-rethereum/pull/18988
 func TestLowDiffLongChain(t *testing.T) {
 	// Generate a canonical chain to act as the main dataset
 	engine := ethash.NewFaker()

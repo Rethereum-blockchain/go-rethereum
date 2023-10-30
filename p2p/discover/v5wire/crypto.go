@@ -25,9 +25,9 @@ import (
 	"fmt"
 	"hash"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/math"
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/common/math"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 	"golang.org/x/crypto/hkdf"
 )
 

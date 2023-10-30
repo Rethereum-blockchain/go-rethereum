@@ -21,8 +21,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/nodestate"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/nodestate"
 )
 
 var (

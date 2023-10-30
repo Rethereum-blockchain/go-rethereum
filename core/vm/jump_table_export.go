@@ -19,7 +19,7 @@ package vm
 import (
 	"errors"
 
-	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 )
 
 // LookupInstructionSet returns the instructionset for the fork configured by

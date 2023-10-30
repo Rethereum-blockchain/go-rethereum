@@ -20,7 +20,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 func bigFromHex(hex string) *big.Int {

@@ -25,12 +25,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
-	"github.com/Rethereum-blockchain/go-rethereum/node"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/adapters"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/node"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/simulations"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/simulations/adapters"
 )
 
 var adapterType = flag.String("adapter", "sim", `node adapter to use (one of "sim", "exec" or "docker")`)

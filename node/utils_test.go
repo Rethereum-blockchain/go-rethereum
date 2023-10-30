@@ -20,8 +20,8 @@
 package node
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/p2p"
-	"github.com/Rethereum-blockchain/go-rethereum/rpc"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/rpc"
 )
 
 // NoopLifecycle is a trivial implementation of the Service interface.

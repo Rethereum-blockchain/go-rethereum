@@ -20,10 +20,10 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/testutil"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/trienode"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/trie/testutil"
+	"github.com/rethereum-blockchain/go-rethereum/trie/trienode"
 )
 
 func emptyLayer() *diskLayer {
@@ -35,21 +35,21 @@ func emptyLayer() *diskLayer {
 
 // goos: darwin
 // goarch: arm64
-// pkg: github.com/Rethereum-blockchain/go-rethereum/trie
+// pkg: github.com/rethereum-blockchain/go-rethereum/trie
 // BenchmarkSearch128Layers
 // BenchmarkSearch128Layers-8   	  243826	      4755 ns/op
 func BenchmarkSearch128Layers(b *testing.B) { benchmarkSearch(b, 0, 128) }
 
 // goos: darwin
 // goarch: arm64
-// pkg: github.com/Rethereum-blockchain/go-rethereum/trie
+// pkg: github.com/rethereum-blockchain/go-rethereum/trie
 // BenchmarkSearch512Layers
 // BenchmarkSearch512Layers-8   	   49686	     24256 ns/op
 func BenchmarkSearch512Layers(b *testing.B) { benchmarkSearch(b, 0, 512) }
 
 // goos: darwin
 // goarch: arm64
-// pkg: github.com/Rethereum-blockchain/go-rethereum/trie
+// pkg: github.com/rethereum-blockchain/go-rethereum/trie
 // BenchmarkSearch1Layer
 // BenchmarkSearch1Layer-8   	14062725	        88.40 ns/op
 func BenchmarkSearch1Layer(b *testing.B) { benchmarkSearch(b, 127, 128) }
@@ -102,7 +102,7 @@ func benchmarkSearch(b *testing.B, depth int, total int) {
 
 // goos: darwin
 // goarch: arm64
-// pkg: github.com/Rethereum-blockchain/go-rethereum/trie
+// pkg: github.com/rethereum-blockchain/go-rethereum/trie
 // BenchmarkPersist
 // BenchmarkPersist-8   	      10	 111252975 ns/op
 func BenchmarkPersist(b *testing.B) {

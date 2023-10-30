@@ -19,7 +19,7 @@ package eth
 import (
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/tracker"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/tracker"
 )
 
 // requestTracker is a singleton tracker for eth/66 and newer request times.

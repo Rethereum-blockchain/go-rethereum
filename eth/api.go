@@ -17,8 +17,8 @@
 package eth
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/hexutil"
 )
 
 // EthereumAPI provides an API to access Ethereum full node-related information.

@@ -5,8 +5,8 @@ import (
 	"unicode"
 
 	// Force-load native and js packages, to trigger registration
-	_ "github.com/Rethereum-blockchain/go-rethereum/eth/tracers/js"
-	_ "github.com/Rethereum-blockchain/go-rethereum/eth/tracers/native"
+	_ "github.com/rethereum-blockchain/go-rethereum/eth/tracers/js"
+	_ "github.com/rethereum-blockchain/go-rethereum/eth/tracers/native"
 )
 
 // To generate a new callTracer test, copy paste the makeTest method below into

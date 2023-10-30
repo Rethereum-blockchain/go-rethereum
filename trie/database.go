@@ -19,12 +19,12 @@ package trie
 import (
 	"errors"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/triedb/hashdb"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/triedb/pathdb"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/trienode"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/triestate"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/rethereum-blockchain/go-rethereum/trie/triedb/hashdb"
+	"github.com/rethereum-blockchain/go-rethereum/trie/triedb/pathdb"
+	"github.com/rethereum-blockchain/go-rethereum/trie/trienode"
+	"github.com/rethereum-blockchain/go-rethereum/trie/triestate"
 )
 
 // Config defines all necessary options for database.

@@ -17,9 +17,9 @@
 package eth
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/core"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/snap"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/core"
+	"github.com/rethereum-blockchain/go-rethereum/eth/protocols/snap"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 )
 
 // snapHandler implements the snap.Backend interface to handle the various network

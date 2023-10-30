@@ -19,9 +19,9 @@ package simulations
 import (
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/node"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/adapters"
+	"github.com/rethereum-blockchain/go-rethereum/node"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/simulations/adapters"
 )
 
 func newTestNetwork(t *testing.T, nodeCount int) (*Network, []enode.ID) {

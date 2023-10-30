@@ -25,7 +25,7 @@ package blocktest
 import (
 	"hash"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 	"golang.org/x/crypto/sha3"
 )
 

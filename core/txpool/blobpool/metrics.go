@@ -16,7 +16,7 @@
 
 package blobpool
 
-import "github.com/Rethereum-blockchain/go-rethereum/metrics"
+import "github.com/rethereum-blockchain/go-rethereum/metrics"
 
 var (
 	// datacapGauge tracks the user's configured capacity for the blob pool. It

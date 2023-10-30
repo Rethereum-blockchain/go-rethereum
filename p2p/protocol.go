@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enr"
 )
 
 // Protocol represents a P2P subprotocol implementation.

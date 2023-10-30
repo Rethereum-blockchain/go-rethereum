@@ -24,7 +24,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 // measurementImpact is the impact a single measurement has on a peer's final

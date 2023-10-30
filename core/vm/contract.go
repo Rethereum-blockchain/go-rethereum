@@ -19,8 +19,8 @@ package vm
 import (
 	"math/big"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
 	"github.com/holiman/uint256"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // ContractRef is a reference to the contract's backing object

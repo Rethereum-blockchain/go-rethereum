@@ -22,10 +22,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/internal/utesting"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/discover/v5wire"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/netutil"
+	"github.com/rethereum-blockchain/go-rethereum/internal/utesting"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/discover/v5wire"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/netutil"
 )
 
 // Suite is the discv5 test suite.

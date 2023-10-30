@@ -40,7 +40,7 @@ import (
 	"io"
 	"sort"
 
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 )
 
 const SizeLimit = 300 // maximum encoded size of a node record in bytes

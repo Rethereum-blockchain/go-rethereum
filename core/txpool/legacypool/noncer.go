@@ -19,8 +19,8 @@ package legacypool
 import (
 	"sync"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core/state"
 )
 
 // noncer is a tiny virtual state database to manage the executable nonces of

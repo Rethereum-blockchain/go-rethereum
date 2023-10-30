@@ -27,8 +27,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
 	pcsc "github.com/gballet/go-libpcsclite"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
 	"golang.org/x/crypto/pbkdf2"
 	"golang.org/x/text/unicode/norm"
 )

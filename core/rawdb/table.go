@@ -17,7 +17,7 @@
 package rawdb
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/rethereum-blockchain/go-rethereum/ethdb"
 )
 
 // table is a wrapper around a database that prefixes each key access with a pre-

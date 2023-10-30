@@ -22,8 +22,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/Rethereum-blockchain/go-rethereum/accounts/abi"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/accounts/abi"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // decodedCallData is an internal type to represent a method call parsed according

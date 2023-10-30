@@ -21,7 +21,7 @@ import (
 	"math/big"
 	"sort"
 
-	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 )
 
 func u64(val uint64) *uint64 { return &val }

@@ -21,8 +21,8 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Rethereum-blockchain/go-rethereum/accounts/abi"
 	fuzz "github.com/google/gofuzz"
+	"github.com/rethereum-blockchain/go-rethereum/accounts/abi"
 )
 
 var (

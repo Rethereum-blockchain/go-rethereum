@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
-	"github.com/Rethereum-blockchain/go-rethereum/tests/fuzzers/vflux"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/tests/fuzzers/vflux"
 )
 
 func main() {

@@ -21,7 +21,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // Node is a wrapper which contains the encoded blob of the trie node and its

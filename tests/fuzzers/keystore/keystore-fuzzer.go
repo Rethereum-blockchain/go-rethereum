@@ -19,7 +19,7 @@ package keystore
 import (
 	"os"
 
-	"github.com/Rethereum-blockchain/go-rethereum/accounts/keystore"
+	"github.com/rethereum-blockchain/go-rethereum/accounts/keystore"
 )
 
 func Fuzz(input []byte) int {

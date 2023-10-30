@@ -19,9 +19,9 @@ package main
 import (
 	"os"
 
-	"github.com/Rethereum-blockchain/go-rethereum/cmd/devp2p/internal/v4test"
-	"github.com/Rethereum-blockchain/go-rethereum/internal/utesting"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/cmd/devp2p/internal/v4test"
+	"github.com/rethereum-blockchain/go-rethereum/internal/utesting"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 	"github.com/urfave/cli/v2"
 )
 

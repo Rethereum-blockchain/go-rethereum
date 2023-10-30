@@ -19,7 +19,7 @@ package p2p
 import (
 	"container/heap"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
 )
 
 // expHeap tracks strings and their expiry time.

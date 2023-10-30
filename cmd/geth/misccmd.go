@@ -22,8 +22,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Rethereum-blockchain/go-rethereum/internal/version"
-	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/internal/version"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 	"github.com/urfave/cli/v2"
 )
 

@@ -17,7 +17,7 @@
 package trie
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // tracer tracks the changes of trie nodes. During the trie operations,

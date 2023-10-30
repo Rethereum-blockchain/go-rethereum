@@ -21,10 +21,10 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/eth"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/snap"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/eth/protocols/eth"
+	"github.com/rethereum-blockchain/go-rethereum/eth/protocols/snap"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
 )
 
 var (

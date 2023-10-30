@@ -16,7 +16,7 @@
 
 package core
 
-import "github.com/Rethereum-blockchain/go-rethereum/common"
+import "github.com/rethereum-blockchain/go-rethereum/common"
 
 // BadHashes represent a set of manually tracked bad hashes (usually hard forks)
 var BadHashes = map[common.Hash]bool{

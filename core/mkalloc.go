@@ -32,8 +32,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Rethereum-blockchain/go-rethereum/core"
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/core"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 	"golang.org/x/exp/slices"
 )
 

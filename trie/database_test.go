@@ -17,10 +17,10 @@
 package trie
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
-	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/triedb/hashdb"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/triedb/pathdb"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/rethereum-blockchain/go-rethereum/trie/triedb/hashdb"
+	"github.com/rethereum-blockchain/go-rethereum/trie/triedb/pathdb"
 )
 
 // newTestDatabase initializes the trie database with specified scheme.

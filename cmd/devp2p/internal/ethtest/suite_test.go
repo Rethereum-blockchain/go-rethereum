@@ -21,11 +21,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/eth"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/ethconfig"
-	"github.com/Rethereum-blockchain/go-rethereum/internal/utesting"
-	"github.com/Rethereum-blockchain/go-rethereum/node"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/eth"
+	"github.com/rethereum-blockchain/go-rethereum/eth/ethconfig"
+	"github.com/rethereum-blockchain/go-rethereum/internal/utesting"
+	"github.com/rethereum-blockchain/go-rethereum/node"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
 )
 
 var (

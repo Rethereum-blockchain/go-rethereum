@@ -20,9 +20,9 @@ import (
 	"context"
 	"sync"
 
-	"github.com/Rethereum-blockchain/go-rethereum"
-	"github.com/Rethereum-blockchain/go-rethereum/event"
-	"github.com/Rethereum-blockchain/go-rethereum/rpc"
+	"github.com/rethereum-blockchain/go-rethereum"
+	"github.com/rethereum-blockchain/go-rethereum/event"
+	"github.com/rethereum-blockchain/go-rethereum/rpc"
 )
 
 // DownloaderAPI provides an API which gives information about the current synchronisation status.

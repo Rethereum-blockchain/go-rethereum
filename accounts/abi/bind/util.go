@@ -21,10 +21,10 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 // WaitMined waits for tx to be mined on the blockchain.

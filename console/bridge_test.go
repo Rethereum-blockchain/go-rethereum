@@ -19,8 +19,8 @@ package console
 import (
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/internal/jsre"
 	"github.com/dop251/goja"
+	"github.com/rethereum-blockchain/go-rethereum/internal/jsre"
 )
 
 // TestUndefinedAsParam ensures that personal functions can receive

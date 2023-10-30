@@ -30,13 +30,13 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Rethereum-blockchain/go-rethereum/event"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/adapters"
-	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
+	"github.com/rethereum-blockchain/go-rethereum/event"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/simulations/adapters"
+	"github.com/rethereum-blockchain/go-rethereum/rpc"
 )
 
 // DefaultClient is the default simulation API client which expects the API

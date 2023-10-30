@@ -19,7 +19,7 @@ package params
 import (
 	"math/big"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // DAOForkBlockExtra is the block header extra-data field to set for the DAO fork

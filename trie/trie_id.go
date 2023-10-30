@@ -16,7 +16,7 @@
 
 package trie
 
-import "github.com/Rethereum-blockchain/go-rethereum/common"
+import "github.com/rethereum-blockchain/go-rethereum/common"
 
 // ID is the identifier for uniquely identifying a trie.
 type ID struct {

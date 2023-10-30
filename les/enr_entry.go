@@ -17,10 +17,10 @@
 package les
 
 import (
-	"github.com/Rethereum-blockchain/go-rethereum/core/forkid"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/dnsdisc"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/core/forkid"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/dnsdisc"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 )
 
 // lesEntry is the "les" ENR entry. This is set for LES servers only.

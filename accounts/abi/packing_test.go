@@ -19,7 +19,7 @@ package abi
 import (
 	"math/big"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 type packUnpackTest struct {

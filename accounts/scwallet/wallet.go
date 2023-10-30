@@ -33,13 +33,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum"
-	"github.com/Rethereum-blockchain/go-rethereum/accounts"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
 	pcsc "github.com/gballet/go-libpcsclite"
+	"github.com/rethereum-blockchain/go-rethereum"
+	"github.com/rethereum-blockchain/go-rethereum/accounts"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 	"github.com/status-im/keycard-go/derivationpath"
 )
 

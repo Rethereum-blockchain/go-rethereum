@@ -19,7 +19,7 @@ package utils
 import (
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
 )
 
 func TestValueExpiration(t *testing.T) {

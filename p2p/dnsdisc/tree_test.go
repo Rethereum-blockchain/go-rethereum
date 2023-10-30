@@ -20,9 +20,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 )
 
 func TestParseRoot(t *testing.T) {

@@ -19,8 +19,8 @@ package memorydb
 import (
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
-	"github.com/Rethereum-blockchain/go-rethereum/ethdb/dbtest"
+	"github.com/rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/rethereum-blockchain/go-rethereum/ethdb/dbtest"
 )
 
 func TestMemoryDB(t *testing.T) {

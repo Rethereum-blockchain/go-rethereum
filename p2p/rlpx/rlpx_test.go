@@ -28,11 +28,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
-	"github.com/Rethereum-blockchain/go-rethereum/crypto/ecies"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/pipes"
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/crypto/ecies"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/simulations/pipes"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -22,8 +22,8 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
-	"github.com/Rethereum-blockchain/go-rethereum/metrics"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/metrics"
 )
 
 // Handler returns an HTTP handler which dump metrics in Prometheus format.

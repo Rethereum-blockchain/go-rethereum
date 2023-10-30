@@ -19,9 +19,9 @@ package core
 import (
 	"sync/atomic"
 
-	"github.com/Rethereum-blockchain/go-rethereum/core/state"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/rethereum-blockchain/go-rethereum/core/state"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/core/vm"
 )
 
 // Validator is an interface which defines the standard for block validation. It

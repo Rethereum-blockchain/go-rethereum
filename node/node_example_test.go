@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/rethereum-blockchain/go-rethereum/node"
 )
 
 // SampleLifecycle is a trivial network service that can be attached to a node for

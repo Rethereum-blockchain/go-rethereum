@@ -23,7 +23,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/rethereum-blockchain/go-rethereum/ethdb"
 	"golang.org/x/exp/slices"
 )
 

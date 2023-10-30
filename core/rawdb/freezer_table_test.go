@@ -27,8 +27,8 @@ import (
 	"testing"
 	"testing/quick"
 
-	"github.com/Rethereum-blockchain/go-rethereum/metrics"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/rethereum-blockchain/go-rethereum/metrics"
 	"github.com/stretchr/testify/require"
 )
 

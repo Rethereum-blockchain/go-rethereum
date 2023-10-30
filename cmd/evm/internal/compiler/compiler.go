@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/core/asm"
+	"github.com/rethereum-blockchain/go-rethereum/core/asm"
 )
 
 func Compile(fn string, src []byte, debug bool) (string, error) {

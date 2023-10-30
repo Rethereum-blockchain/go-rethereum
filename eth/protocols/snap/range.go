@@ -19,8 +19,8 @@ package snap
 import (
 	"math/big"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
 	"github.com/holiman/uint256"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // hashRange is a utility to handle ranges of hashes, Split up the

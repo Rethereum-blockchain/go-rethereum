@@ -5,13 +5,13 @@ package ethconfig
 import (
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core"
-	"github.com/Rethereum-blockchain/go-rethereum/core/txpool/blobpool"
-	"github.com/Rethereum-blockchain/go-rethereum/core/txpool/legacypool"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/downloader"
-	"github.com/Rethereum-blockchain/go-rethereum/eth/gasprice"
-	"github.com/Rethereum-blockchain/go-rethereum/miner"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core"
+	"github.com/rethereum-blockchain/go-rethereum/core/txpool/blobpool"
+	"github.com/rethereum-blockchain/go-rethereum/core/txpool/legacypool"
+	"github.com/rethereum-blockchain/go-rethereum/eth/downloader"
+	"github.com/rethereum-blockchain/go-rethereum/eth/gasprice"
+	"github.com/rethereum-blockchain/go-rethereum/miner"
 )
 
 // MarshalTOML marshals as TOML.

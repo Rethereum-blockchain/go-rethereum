@@ -20,7 +20,7 @@ package utils
 import (
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/console/prompt"
+	"github.com/rethereum-blockchain/go-rethereum/console/prompt"
 )
 
 // GetPassPhrase displays the given text(prompt) to the user and requests some textual

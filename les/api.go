@@ -21,9 +21,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
-	vfs "github.com/Rethereum-blockchain/go-rethereum/les/vflux/server"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
+	vfs "github.com/rethereum-blockchain/go-rethereum/les/vflux/server"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
 )
 
 var errUnknownBenchmarkType = errors.New("unknown benchmark type")

@@ -35,27 +35,27 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/accounts"
-	"github.com/Rethereum-blockchain/go-rethereum/accounts/keystore"
-	"github.com/Rethereum-blockchain/go-rethereum/cmd/utils"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
-	"github.com/Rethereum-blockchain/go-rethereum/internal/ethapi"
-	"github.com/Rethereum-blockchain/go-rethereum/internal/flags"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
-	"github.com/Rethereum-blockchain/go-rethereum/node"
-	"github.com/Rethereum-blockchain/go-rethereum/params"
-	"github.com/Rethereum-blockchain/go-rethereum/rlp"
-	"github.com/Rethereum-blockchain/go-rethereum/rpc"
-	"github.com/Rethereum-blockchain/go-rethereum/signer/core"
-	"github.com/Rethereum-blockchain/go-rethereum/signer/core/apitypes"
-	"github.com/Rethereum-blockchain/go-rethereum/signer/fourbyte"
-	"github.com/Rethereum-blockchain/go-rethereum/signer/rules"
-	"github.com/Rethereum-blockchain/go-rethereum/signer/storage"
 	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-isatty"
+	"github.com/rethereum-blockchain/go-rethereum/accounts"
+	"github.com/rethereum-blockchain/go-rethereum/accounts/keystore"
+	"github.com/rethereum-blockchain/go-rethereum/cmd/utils"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/internal/ethapi"
+	"github.com/rethereum-blockchain/go-rethereum/internal/flags"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/node"
+	"github.com/rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/rpc"
+	"github.com/rethereum-blockchain/go-rethereum/signer/core"
+	"github.com/rethereum-blockchain/go-rethereum/signer/core/apitypes"
+	"github.com/rethereum-blockchain/go-rethereum/signer/fourbyte"
+	"github.com/rethereum-blockchain/go-rethereum/signer/rules"
+	"github.com/rethereum-blockchain/go-rethereum/signer/storage"
 	"github.com/urfave/cli/v2"
 )
 
@@ -870,7 +870,7 @@ func checkFile(filename string) error {
 	}
 	// Check the unix permission bits
 	// However, on windows, we cannot use the unix perm-bits, see
-	// https://github.com/Rethereum-blockchain/go-rethereum/issues/20123
+	// https://github.com/rethereum-blockchain/go-rethereum/issues/20123
 	if runtime.GOOS != "windows" && info.Mode().Perm()&0377 != 0 {
 		return fmt.Errorf("file (%v) has insecure file permissions (%v)", filename, info.Mode().String())
 	}

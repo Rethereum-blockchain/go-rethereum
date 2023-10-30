@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/les/utils"
+	"github.com/rethereum-blockchain/go-rethereum/les/utils"
 )
 
 func TestTransition(t *testing.T) {

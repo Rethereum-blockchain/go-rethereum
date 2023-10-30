@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Rethereum-blockchain/go-rethereum/internal/flags"
+	"github.com/rethereum-blockchain/go-rethereum/internal/flags"
 	"github.com/urfave/cli/v2"
 )
 

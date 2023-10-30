@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Rethereum-blockchain/go-rethereum/cmd/evm/internal/compiler"
+	"github.com/rethereum-blockchain/go-rethereum/cmd/evm/internal/compiler"
 
 	"github.com/urfave/cli/v2"
 )

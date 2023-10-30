@@ -19,10 +19,10 @@ package catalyst
 import (
 	"sync"
 
-	"github.com/Rethereum-blockchain/go-rethereum/beacon/engine"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
-	"github.com/Rethereum-blockchain/go-rethereum/miner"
+	"github.com/rethereum-blockchain/go-rethereum/beacon/engine"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/miner"
 )
 
 // maxTrackedPayloads is the maximum number of prepared payloads the execution

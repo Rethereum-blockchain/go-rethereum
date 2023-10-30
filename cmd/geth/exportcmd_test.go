@@ -22,7 +22,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // TestExport does a basic test of "geth export", exporting the test-genesis.

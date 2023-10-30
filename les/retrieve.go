@@ -22,7 +22,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/light"
+	"github.com/rethereum-blockchain/go-rethereum/light"
 )
 
 var (

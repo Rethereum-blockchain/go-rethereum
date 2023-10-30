@@ -22,9 +22,9 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/pipes"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/simulations/pipes"
 )
 
 func TestProtocolHandshake(t *testing.T) {

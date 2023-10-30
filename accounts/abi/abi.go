@@ -23,8 +23,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
 )
 
 // The ABI holds information about a contract's context and available

@@ -21,7 +21,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 // Handler returns a log handler which logs to the unit test log of t.

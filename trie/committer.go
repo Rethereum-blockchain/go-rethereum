@@ -19,8 +19,8 @@ package trie
 import (
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/trie/trienode"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/trie/trienode"
 )
 
 // committer is the tool used for the trie Commit operation. The committer will

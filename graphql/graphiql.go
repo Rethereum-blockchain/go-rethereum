@@ -27,8 +27,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/Rethereum-blockchain/go-rethereum/graphql/internal/graphiql"
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/graphql/internal/graphiql"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 // GraphiQL is an in-browser IDE for exploring GraphiQL APIs.

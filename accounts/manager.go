@@ -21,8 +21,8 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/event"
 )
 
 // managerSubBufferSize determines how many incoming wallet events

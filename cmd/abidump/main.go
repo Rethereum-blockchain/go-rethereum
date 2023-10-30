@@ -23,8 +23,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Rethereum-blockchain/go-rethereum/signer/core/apitypes"
-	"github.com/Rethereum-blockchain/go-rethereum/signer/fourbyte"
+	"github.com/rethereum-blockchain/go-rethereum/signer/core/apitypes"
+	"github.com/rethereum-blockchain/go-rethereum/signer/fourbyte"
 )
 
 func init() {

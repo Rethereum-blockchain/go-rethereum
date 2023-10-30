@@ -26,8 +26,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/bitutil"
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/common/bitutil"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
 )
 
 // bloomIndexes represents the bit indexes inside the bloom filter that belong

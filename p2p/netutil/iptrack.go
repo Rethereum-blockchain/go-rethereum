@@ -19,7 +19,7 @@ package netutil
 import (
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
 )
 
 // IPTracker predicts the external endpoint, i.e. IP address and port, of the local host

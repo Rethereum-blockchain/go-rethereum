@@ -22,8 +22,8 @@ package keystore
 import (
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
 	"github.com/fsnotify/fsnotify"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 type watcher struct {

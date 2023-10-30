@@ -19,7 +19,7 @@ package core
 import (
 	"errors"
 
-	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
 )
 
 var (

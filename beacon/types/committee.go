@@ -22,10 +22,10 @@ import (
 	"fmt"
 	"math/bits"
 
-	"github.com/Rethereum-blockchain/go-rethereum/beacon/params"
-	"github.com/Rethereum-blockchain/go-rethereum/common"
-	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
 	bls "github.com/protolambda/bls12-381-util"
+	"github.com/rethereum-blockchain/go-rethereum/beacon/params"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/hexutil"
 )
 
 // SerializedSyncCommitteeSize is the size of the sync committee plus the

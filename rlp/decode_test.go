@@ -27,8 +27,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/math"
 	"github.com/holiman/uint256"
+	"github.com/rethereum-blockchain/go-rethereum/common/math"
 )
 
 func TestStreamKind(t *testing.T) {

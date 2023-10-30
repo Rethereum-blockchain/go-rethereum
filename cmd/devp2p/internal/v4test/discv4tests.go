@@ -24,9 +24,9 @@ import (
 	"net"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/crypto"
-	"github.com/Rethereum-blockchain/go-rethereum/internal/utesting"
-	"github.com/Rethereum-blockchain/go-rethereum/p2p/discover/v4wire"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/internal/utesting"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/discover/v4wire"
 )
 
 const (

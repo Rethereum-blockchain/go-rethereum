@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Rethereum-blockchain/go-rethereum/rpc"
+	"github.com/rethereum-blockchain/go-rethereum/rpc"
 	"github.com/stretchr/testify/assert"
 )
 

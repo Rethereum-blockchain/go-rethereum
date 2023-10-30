@@ -22,8 +22,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Rethereum-blockchain/go-rethereum/common/math"
-	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/rethereum-blockchain/go-rethereum/common/math"
+	"github.com/rethereum-blockchain/go-rethereum/core/vm"
 )
 
 // Compiler contains information about the parsed source

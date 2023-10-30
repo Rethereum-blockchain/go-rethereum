@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
 )
 
 var (

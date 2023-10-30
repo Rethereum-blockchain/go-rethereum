@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 // Enabled is checked by the constructor functions for all of the

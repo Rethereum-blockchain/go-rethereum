@@ -3,7 +3,7 @@ package influxdb
 import (
 	"fmt"
 
-	"github.com/Rethereum-blockchain/go-rethereum/metrics"
+	"github.com/rethereum-blockchain/go-rethereum/metrics"
 )
 
 func readMeter(namespace, name string, i interface{}) (string, map[string]interface{}) {
