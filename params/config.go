@@ -83,10 +83,10 @@ var (
 
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
 	MainnetTrustedCheckpoint = &TrustedCheckpoint{
-		BloomRoot:    common.HexToHash("0x76d432f033536c0356f7449bd4dc5109198c5b54ca1a36e1ac8417c39ce5847c"),
-		CHTRoot:      common.HexToHash("0xd30fc66dc5da5e58ece4e4d8bc3ecfa6a087be1237b3c66f736989d73fb4f0c8"),
-		SectionHead:  common.HexToHash("0x1cfe3de6f176409fa5bc7915e4dcfbb04c745beeb5d4d7bddd9256610f0f7f94"),
-		SectionIndex: 9,
+		BloomRoot:    common.HexToHash("0x02968707d84a001843f462968a6bc1c332aac1980331a167cf217fb00d1b3c71"),
+		CHTRoot:      common.HexToHash("0x547889b0237b5b49b71d63edf11f32e7f0fefed61a2e29367e74e116307fc656"),
+		SectionHead:  common.HexToHash("0x88395d1ce87715957e832624590cfe0987b8247f5f5d08181c9d729f0da30793"),
+		SectionIndex: 29,
 	}
 
 	// MainnetCheckpointOracle contains a set of configs for the main network oracle.
@@ -103,7 +103,7 @@ var (
 		ChainID:             big.NewInt(622301),
 		HomesteadBlock:      big.NewInt(0),
 		DAOForkBlock:        nil,
-		DAOForkSupport:      true,
+		DAOForkSupport:      false,
 		EIP150Block:         big.NewInt(0),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
@@ -114,16 +114,15 @@ var (
 		MuirGlacierBlock:    big.NewInt(0),
 		BerlinBlock:         big.NewInt(0),
 		LondonBlock:         big.NewInt(0),
+		ArrowGlacierBlock:   big.NewInt(0),
+		GrayGlacierBlock:    big.NewInt(0),
 		RethereumForks: &RethereumForks{
 			Veldin: big.NewInt(0),
 			Gaspar: big.NewInt(0),
 		},
 		TerminalTotalDifficulty:       nil,
 		TerminalTotalDifficultyPassed: false,
-		Clique: &CliqueConfig{
-			Period: 7,
-			Epoch:  32000,
-		},
+		Ethash:                        new(EthashConfig),
 	}
 
 	// KrontosTrustedCheckpoint contains the light client trusted checkpoint for the Krontos test network.
