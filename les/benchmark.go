@@ -25,17 +25,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/les/flowcontrol"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/les/flowcontrol"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/p2p"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 )
 
 // requestBenchmark is an interface for different randomized request generators

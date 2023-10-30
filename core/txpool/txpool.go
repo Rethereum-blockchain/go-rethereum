@@ -26,16 +26,16 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/prque"
-	"github.com/ethereum/go-ethereum/consensus/misc"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/prque"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/misc"
+	"github.com/rethereum-blockchain/go-rethereum/core"
+	"github.com/rethereum-blockchain/go-rethereum/core/state"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/event"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/metrics"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 )
 
 const (

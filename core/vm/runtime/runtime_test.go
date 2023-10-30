@@ -23,21 +23,21 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/asm"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/eth/tracers"
-	"github.com/ethereum/go-ethereum/eth/tracers/logger"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/accounts/abi"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/consensus"
+	"github.com/rethereum-blockchain/go-rethereum/core"
+	"github.com/rethereum-blockchain/go-rethereum/core/asm"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/core/state"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/rethereum-blockchain/go-rethereum/eth/tracers"
+	"github.com/rethereum-blockchain/go-rethereum/eth/tracers/logger"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 
 	// force-load js tracers to trigger registration
-	_ "github.com/ethereum/go-ethereum/eth/tracers/js"
+	_ "github.com/rethereum-blockchain/go-rethereum/eth/tracers/js"
 )
 
 func TestDefaults(t *testing.T) {
@@ -599,7 +599,7 @@ func TestEip2929Cases(t *testing.T) {
 
 // TestColdAccountAccessCost test that the cold account access cost is reported
 // correctly
-// see: https://github.com/ethereum/go-ethereum/issues/22649
+// see: https://github.com/rethereum-blockchain/go-rethereum/issues/22649
 func TestColdAccountAccessCost(t *testing.T) {
 	for i, tc := range []struct {
 		code []byte

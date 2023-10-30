@@ -21,11 +21,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/math"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/core/state"
+	"github.com/rethereum-blockchain/go-rethereum/params"
 )
 
 var loopInterruptTests = []string{

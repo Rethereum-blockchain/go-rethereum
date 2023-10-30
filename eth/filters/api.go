@@ -25,12 +25,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/internal/ethapi"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/rethereum-blockchain/go-rethereum"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/internal/ethapi"
+	"github.com/rethereum-blockchain/go-rethereum/rpc"
 )
 
 // filter is a helper struct that holds meta information over the filter type

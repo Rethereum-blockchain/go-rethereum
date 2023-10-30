@@ -22,14 +22,14 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/lru"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/lru"
+	"github.com/rethereum-blockchain/go-rethereum/core"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/event"
+	"github.com/rethereum-blockchain/go-rethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/params"
+	"github.com/rethereum-blockchain/go-rethereum/rpc"
 )
 
 const sampleNumber = 3 // Number of transactions sampled in a block

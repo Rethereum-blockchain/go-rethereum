@@ -16,7 +16,7 @@
 
 package trie
 
-import "github.com/ethereum/go-ethereum/common"
+import "github.com/rethereum-blockchain/go-rethereum/common"
 
 // tracer tracks the changes of trie nodes. During the trie operations,
 // some nodes can be deleted from the trie, while these deleted nodes

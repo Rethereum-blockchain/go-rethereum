@@ -19,9 +19,9 @@ package types
 import (
 	"io"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/rethereum-blockchain/go-rethereum/rlp"
 )
 
 //go:generate go run github.com/fjl/gencodec -type Log -field-override logMarshaling -out gen_log_json.go

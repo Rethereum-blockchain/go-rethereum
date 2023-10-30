@@ -22,11 +22,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/p2p/nodestate"
+	"github.com/rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/enr"
+	"github.com/rethereum-blockchain/go-rethereum/p2p/nodestate"
 )
 
 const defaultConnectedBias = time.Minute * 3

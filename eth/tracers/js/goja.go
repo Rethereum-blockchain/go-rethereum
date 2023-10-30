@@ -24,12 +24,12 @@ import (
 
 	"github.com/dop251/goja"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/eth/tracers"
-	jsassets "github.com/ethereum/go-ethereum/eth/tracers/js/internal/tracers"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/rethereum-blockchain/go-rethereum/crypto"
+	"github.com/rethereum-blockchain/go-rethereum/eth/tracers"
+	jsassets "github.com/rethereum-blockchain/go-rethereum/eth/tracers/js/internal/tracers"
 )
 
 var assetTracers = make(map[string]string)

@@ -21,9 +21,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/rethereum-blockchain/go-rethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/rethereum-blockchain/go-rethereum/log"
 )
 
 // Prove constructs a merkle proof for key. The result contains all encoded nodes

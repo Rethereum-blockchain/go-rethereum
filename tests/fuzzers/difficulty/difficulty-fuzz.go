@@ -23,8 +23,8 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/rethereum-blockchain/go-rethereum/core/types"
 )
 
 type fuzzer struct {

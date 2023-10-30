@@ -19,7 +19,7 @@ package trie
 import (
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/rethereum-blockchain/go-rethereum/common"
 )
 
 // Reader wraps the Node and NodeBlob method of a backing trie store.
