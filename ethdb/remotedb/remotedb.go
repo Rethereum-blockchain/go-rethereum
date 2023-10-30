@@ -22,9 +22,9 @@
 package remotedb
 
 import (
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 )
 
 // Database is a key-value lookup for a remote database via debug_dbGet.
@@ -98,11 +98,11 @@ func (db *Database) ModifyAncients(f func(ethdb.AncientWriteOp) error) (int64, e
 	panic("not supported")
 }
 
-func (db *Database) TruncateHead(n uint64) error {
+func (db *Database) TruncateHead(n uint64) (uint64, error) {
 	panic("not supported")
 }
 
-func (db *Database) TruncateTail(n uint64) error {
+func (db *Database) TruncateTail(n uint64) (uint64, error) {
 	panic("not supported")
 }
 

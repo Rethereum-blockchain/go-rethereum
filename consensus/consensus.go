@@ -20,11 +20,11 @@ package consensus
 import (
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 )
 
 // ChainHeaderReader defines a small collection of methods needed to access the local
@@ -66,15 +66,14 @@ type Engine interface {
 	Author(header *types.Header) (common.Address, error)
 
 	// VerifyHeader checks whether a header conforms to the consensus rules of a
-	// given engine. Verifying the seal may be done optionally here, or explicitly
-	// via the VerifySeal method.
-	VerifyHeader(chain ChainHeaderReader, header *types.Header, seal bool) error
+	// given engine.
+	VerifyHeader(chain ChainHeaderReader, header *types.Header) error
 
 	// VerifyHeaders is similar to VerifyHeader, but verifies a batch of headers
 	// concurrently. The method returns a quit channel to abort the operations and
 	// a results channel to retrieve the async verifications (the order is that of
 	// the input slice).
-	VerifyHeaders(chain ChainHeaderReader, headers []*types.Header, seals []bool) (chan<- struct{}, <-chan error)
+	VerifyHeaders(chain ChainHeaderReader, headers []*types.Header) (chan<- struct{}, <-chan error)
 
 	// VerifyUncles verifies that the given block's uncles conform to the consensus
 	// rules of a given engine.

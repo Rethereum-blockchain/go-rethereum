@@ -27,9 +27,9 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/bitutil"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/bitutil"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
 	"golang.org/x/crypto/sha3"
 	"lukechampine.com/blake3"
 )

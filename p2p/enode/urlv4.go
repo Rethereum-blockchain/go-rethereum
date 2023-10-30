@@ -26,9 +26,9 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p/enr"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
 )
 
 var (

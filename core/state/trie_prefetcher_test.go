@@ -21,12 +21,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
 )
 
 func filledStateDB() *StateDB {
-	state, _ := New(common.Hash{}, NewDatabase(rawdb.NewMemoryDatabase()), nil)
+	state, _ := New(types.EmptyRootHash, NewDatabase(rawdb.NewMemoryDatabase()), nil)
 
 	// Create an account and check if the retrieved balance is correct
 	addr := common.HexToAddress("0xaffeaffeaffeaffeaffeaffeaffeaffeaffeaffe")

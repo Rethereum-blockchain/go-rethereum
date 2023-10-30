@@ -20,23 +20,24 @@ package filters
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/lru"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/bloombits"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/lru"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/bloombits"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 )
 
 // Config represents the configuration of the filter system.
@@ -331,7 +332,7 @@ func (es *EventSystem) SubscribeLogs(crit ethereum.FilterQuery, logs chan []*typ
 	if from >= 0 && to == rpc.LatestBlockNumber {
 		return es.subscribeLogs(crit, logs), nil
 	}
-	return nil, fmt.Errorf("invalid from and to block combination: from > to")
+	return nil, errors.New("invalid from and to block combination: from > to")
 }
 
 // subscribeMinedPendingLogs creates a subscription that returned mined and
@@ -437,15 +438,6 @@ func (es *EventSystem) handlePendingLogs(filters filterIndex, ev []*types.Log) {
 	}
 	for _, f := range filters[PendingLogsSubscription] {
 		matchedLogs := filterLogs(ev, nil, f.logsCrit.ToBlock, f.logsCrit.Addresses, f.logsCrit.Topics)
-		if len(matchedLogs) > 0 {
-			f.logs <- matchedLogs
-		}
-	}
-}
-
-func (es *EventSystem) handleRemovedLogs(filters filterIndex, ev core.RemovedLogsEvent) {
-	for _, f := range filters[LogsSubscription] {
-		matchedLogs := filterLogs(ev.Logs, f.logsCrit.FromBlock, f.logsCrit.ToBlock, f.logsCrit.Addresses, f.logsCrit.Topics)
 		if len(matchedLogs) > 0 {
 			f.logs <- matchedLogs
 		}
@@ -572,7 +564,7 @@ func (es *EventSystem) eventLoop() {
 		case ev := <-es.logsCh:
 			es.handleLogs(index, ev)
 		case ev := <-es.rmLogsCh:
-			es.handleRemovedLogs(index, ev)
+			es.handleLogs(index, ev.Logs)
 		case ev := <-es.pendingLogsCh:
 			es.handlePendingLogs(index, ev)
 		case ev := <-es.chainCh:

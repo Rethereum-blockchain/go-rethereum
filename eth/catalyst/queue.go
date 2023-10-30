@@ -19,10 +19,10 @@ package catalyst
 import (
 	"sync"
 
-	"github.com/ethereum/go-ethereum/beacon/engine"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/miner"
+	"github.com/Rethereum-blockchain/go-rethereum/beacon/engine"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/miner"
 )
 
 // maxTrackedPayloads is the maximum number of prepared payloads the execution
@@ -73,7 +73,7 @@ func (q *payloadQueue) put(id engine.PayloadID, payload *miner.Payload) {
 }
 
 // get retrieves a previously stored payload item or nil if it does not exist.
-func (q *payloadQueue) get(id engine.PayloadID) *engine.ExecutionPayloadEnvelope {
+func (q *payloadQueue) get(id engine.PayloadID, full bool) *engine.ExecutionPayloadEnvelope {
 	q.lock.RLock()
 	defer q.lock.RUnlock()
 
@@ -82,7 +82,10 @@ func (q *payloadQueue) get(id engine.PayloadID) *engine.ExecutionPayloadEnvelope
 			return nil // no more items
 		}
 		if item.id == id {
-			return item.payload.Resolve()
+			if !full {
+				return item.payload.Resolve()
+			}
+			return item.payload.ResolveFull()
 		}
 	}
 	return nil

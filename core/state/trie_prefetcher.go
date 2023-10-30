@@ -19,9 +19,9 @@ package state
 import (
 	"sync"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/metrics"
 )
 
 var (
@@ -302,7 +302,7 @@ func (sf *subfetcher) loop() {
 		}
 		sf.trie = trie
 	} else {
-		trie, err := sf.db.OpenStorageTrie(sf.state, sf.owner, sf.root)
+		trie, err := sf.db.OpenStorageTrie(sf.state, sf.addr, sf.root)
 		if err != nil {
 			log.Warn("Trie prefetcher failed opening trie", "root", sf.root, "err", err)
 			return

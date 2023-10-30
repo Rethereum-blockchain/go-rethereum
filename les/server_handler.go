@@ -18,25 +18,24 @@ package les
 
 import (
 	"errors"
+	"fmt"
 	"sync"
-	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/forkid"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/txpool"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/les/flowcontrol"
-	"github.com/ethereum/go-ethereum/light"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/forkid"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/txpool"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/les/flowcontrol"
+	"github.com/Rethereum-blockchain/go-rethereum/light"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/metrics"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 )
 
 const (
@@ -164,8 +163,8 @@ func (h *serverHandler) handle(p *clientPeer) error {
 	}()
 
 	// Mark the peer as being served.
-	atomic.StoreUint32(&p.serving, 1)
-	defer atomic.StoreUint32(&p.serving, 0)
+	p.serving.Store(true)
+	defer p.serving.Store(false)
 
 	// Spawn a main loop to handle all incoming messages.
 	for {
@@ -359,20 +358,19 @@ func (h *serverHandler) AddTxsSync() bool {
 }
 
 // getAccount retrieves an account from the state based on root.
-func getAccount(triedb *trie.Database, root, hash common.Hash) (types.StateAccount, error) {
-	trie, err := trie.New(trie.StateTrieID(root), triedb)
+func getAccount(triedb *trie.Database, root common.Hash, addr common.Address) (types.StateAccount, error) {
+	trie, err := trie.NewStateTrie(trie.StateTrieID(root), triedb)
 	if err != nil {
 		return types.StateAccount{}, err
 	}
-	blob, err := trie.Get(hash[:])
+	acc, err := trie.GetAccount(addr)
 	if err != nil {
 		return types.StateAccount{}, err
 	}
-	var acc types.StateAccount
-	if err = rlp.DecodeBytes(blob, &acc); err != nil {
-		return types.StateAccount{}, err
+	if acc == nil {
+		return types.StateAccount{}, fmt.Errorf("account %#x is not present", addr)
 	}
-	return acc, nil
+	return *acc, nil
 }
 
 // GetHelperTrie returns the post-processed trie root for the given trie ID and section index

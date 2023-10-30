@@ -21,15 +21,15 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
 )
 
 var (
 	// ErrNoCode is returned by call and transact operations for which the requested
 	// recipient contract to operate on does not exist in the state db or does not
-	// have any code associated with it (i.e. suicided).
+	// have any code associated with it (i.e. self-destructed).
 	ErrNoCode = errors.New("no contract code at given address")
 
 	// ErrNoPendingState is raised when attempting to perform a pending state action

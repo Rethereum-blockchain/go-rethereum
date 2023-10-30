@@ -30,11 +30,11 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/simulations/adapters"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/adapters"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 	"github.com/gorilla/websocket"
 	"github.com/julienschmidt/httprouter"
 )

@@ -22,21 +22,22 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus"
-	"github.com/ethereum/go-ethereum/consensus/beacon"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/txpool"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/beacon"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/txpool"
+	"github.com/Rethereum-blockchain/go-rethereum/core/txpool/legacypool"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 var (
@@ -113,19 +114,22 @@ func newTestBackendWithGenerator(blocks int, shanghai bool, generator func(int, 
 	for _, block := range bs {
 		chain.StateCache().TrieDB().Commit(block.Root(), false)
 	}
-	txconfig := txpool.DefaultConfig
+	txconfig := legacypool.DefaultConfig
 	txconfig.Journal = "" // Don't litter the disk with test journals
+
+	pool := legacypool.New(txconfig, chain)
+	txpool, _ := txpool.New(new(big.Int).SetUint64(txconfig.PriceLimit), chain, []txpool.SubPool{pool})
 
 	return &testBackend{
 		db:     db,
 		chain:  chain,
-		txpool: txpool.NewTxPool(txconfig, params.TestChainConfig, chain),
+		txpool: txpool,
 	}
 }
 
 // close tears down the transaction pool and chain behind the mock backend.
 func (b *testBackend) close() {
-	b.txpool.Stop()
+	b.txpool.Close()
 	b.chain.Stop()
 }
 

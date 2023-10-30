@@ -20,16 +20,17 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus"
-	"github.com/ethereum/go-ethereum/consensus/misc"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/misc"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/misc/eip1559"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 )
 
 // BlockGen creates blocks for testing.
@@ -202,7 +203,7 @@ func (b *BlockGen) AddUncle(h *types.Header) {
 	// The gas limit and price should be derived from the parent
 	h.GasLimit = parent.GasLimit
 	if b.config.IsLondon(h.Number) {
-		h.BaseFee = misc.CalcBaseFee(b.config, parent)
+		h.BaseFee = eip1559.CalcBaseFee(b.config, parent)
 		if !b.config.IsLondon(parent.Number) {
 			parentGasLimit := parent.GasLimit * b.config.ElasticityMultiplier()
 			h.GasLimit = CalcGasLimit(parentGasLimit, parentGasLimit)
@@ -321,7 +322,7 @@ func GenerateChain(config *params.ChainConfig, parent *types.Block, engine conse
 			}
 
 			// Write state changes to db
-			root, err := statedb.Commit(config.IsEIP158(b.header.Number))
+			root, err := statedb.Commit(b.header.Number.Uint64(), config.IsEIP158(b.header.Number))
 			if err != nil {
 				panic(fmt.Sprintf("state write error: %v", err))
 			}
@@ -380,7 +381,7 @@ func makeHeader(chain consensus.ChainReader, parent *types.Block, state *state.S
 		Time:     time,
 	}
 	if chain.Config().IsLondon(header.Number) {
-		header.BaseFee = misc.CalcBaseFee(chain.Config(), parent.Header())
+		header.BaseFee = eip1559.CalcBaseFee(chain.Config(), parent.Header())
 		if !chain.Config().IsLondon(parent.Number()) {
 			parentGasLimit := parent.GasLimit() * chain.Config().ElasticityMultiplier()
 			header.GasLimit = CalcGasLimit(parentGasLimit, parentGasLimit)

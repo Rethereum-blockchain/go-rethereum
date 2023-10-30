@@ -26,19 +26,18 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/consensus"
-	"github.com/ethereum/go-ethereum/consensus/beacon"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/beacon"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 // A BlockTest checks handling of entire blocks.
@@ -101,7 +100,7 @@ type btHeaderMarshaling struct {
 	BaseFeePerGas *math.HexOrDecimal256
 }
 
-func (t *BlockTest) Run(snapshotter bool) error {
+func (t *BlockTest) Run(snapshotter bool, tracer vm.EVMLogger) error {
 	config, ok := Forks[t.json.Network]
 	if !ok {
 		return UnsupportedForkError{t.json.Network}
@@ -117,21 +116,17 @@ func (t *BlockTest) Run(snapshotter bool) error {
 	if gblock.Root() != t.json.Genesis.StateRoot {
 		return fmt.Errorf("genesis block state root does not match test: computed=%x, test=%x", gblock.Root().Bytes()[:6], t.json.Genesis.StateRoot[:6])
 	}
-	var engine consensus.Engine
-	if t.json.SealEngine == "NoProof" {
-		engine = ethash.NewFaker()
-	} else {
-		engine = ethash.NewShared()
-	}
 	// Wrap the original engine within the beacon-engine
-	engine = beacon.New(engine)
+	engine := beacon.New(ethash.NewFaker())
 
 	cache := &core.CacheConfig{TrieCleanLimit: 0}
 	if snapshotter {
 		cache.SnapshotLimit = 1
 		cache.SnapshotWait = true
 	}
-	chain, err := core.NewBlockChain(db, cache, gspec, nil, engine, vm.Config{}, nil, nil)
+	chain, err := core.NewBlockChain(db, cache, gspec, nil, engine, vm.Config{
+		Tracer: tracer,
+	}, nil, nil)
 	if err != nil {
 		return err
 	}

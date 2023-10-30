@@ -18,14 +18,14 @@ package logger
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 type dummyContractRef struct {
@@ -76,7 +76,7 @@ func TestStoreCapture(t *testing.T) {
 }
 
 // Tests that blank fields don't appear in logs when JSON marshalled, to reduce
-// logs bloat and confusion. See https://github.com/ethereum/go-ethereum/issues/24487
+// logs bloat and confusion. See https://github.com/Rethereum-blockchain/go-rethereum/issues/24487
 func TestStructLogMarshalingOmitEmpty(t *testing.T) {
 	tests := []struct {
 		name string
@@ -85,7 +85,7 @@ func TestStructLogMarshalingOmitEmpty(t *testing.T) {
 	}{
 		{"empty err and no fields", &StructLog{},
 			`{"pc":0,"op":0,"gas":"0x0","gasCost":"0x0","memSize":0,"stack":null,"depth":0,"refund":0,"opName":"STOP"}`},
-		{"with err", &StructLog{Err: fmt.Errorf("this failed")},
+		{"with err", &StructLog{Err: errors.New("this failed")},
 			`{"pc":0,"op":0,"gas":"0x0","gasCost":"0x0","memSize":0,"stack":null,"depth":0,"refund":0,"opName":"STOP","error":"this failed"}`},
 		{"with mem", &StructLog{Memory: make([]byte, 2), MemorySize: 2},
 			`{"pc":0,"op":0,"gas":"0x0","gasCost":"0x0","memory":"0x0000","memSize":2,"stack":null,"depth":0,"refund":0,"opName":"STOP"}`},

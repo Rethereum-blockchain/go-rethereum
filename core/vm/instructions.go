@@ -17,10 +17,10 @@
 package vm
 
 import (
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 	"github.com/holiman/uint256"
 )
 
@@ -408,7 +408,7 @@ func opExtCodeCopy(pc *uint64, interpreter *EVMInterpreter, scope *ScopeContext)
 // emptyCodeHash. If the precompile account is not transferred any amount on a private or
 // customized chain, the return value will be zero.
 //
-//  5. Caller tries to get the code hash for an account which is marked as suicided
+//  5. Caller tries to get the code hash for an account which is marked as self-destructed
 //     in the current transaction, the code hash of this account should be returned.
 //
 //  6. Caller tries to get the code hash for an account which is marked as deleted, this
@@ -821,7 +821,23 @@ func opSelfdestruct(pc *uint64, interpreter *EVMInterpreter, scope *ScopeContext
 	beneficiary := scope.Stack.pop()
 	balance := interpreter.evm.StateDB.GetBalance(scope.Contract.Address())
 	interpreter.evm.StateDB.AddBalance(beneficiary.Bytes20(), balance)
-	interpreter.evm.StateDB.Suicide(scope.Contract.Address())
+	interpreter.evm.StateDB.SelfDestruct(scope.Contract.Address())
+	if tracer := interpreter.evm.Config.Tracer; tracer != nil {
+		tracer.CaptureEnter(SELFDESTRUCT, scope.Contract.Address(), beneficiary.Bytes20(), []byte{}, 0, balance)
+		tracer.CaptureExit([]byte{}, 0, nil)
+	}
+	return nil, errStopToken
+}
+
+func opSelfdestruct6780(pc *uint64, interpreter *EVMInterpreter, scope *ScopeContext) ([]byte, error) {
+	if interpreter.readOnly {
+		return nil, ErrWriteProtection
+	}
+	beneficiary := scope.Stack.pop()
+	balance := interpreter.evm.StateDB.GetBalance(scope.Contract.Address())
+	interpreter.evm.StateDB.SubBalance(scope.Contract.Address(), balance)
+	interpreter.evm.StateDB.AddBalance(beneficiary.Bytes20(), balance)
+	interpreter.evm.StateDB.Selfdestruct6780(scope.Contract.Address())
 	if tracer := interpreter.evm.Config.Tracer; tracer != nil {
 		tracer.CaptureEnter(SELFDESTRUCT, scope.Contract.Address(), beneficiary.Bytes20(), []byte{}, 0, balance)
 		tracer.CaptureExit([]byte{}, 0, nil)

@@ -17,16 +17,17 @@
 package ethtest
 
 import (
+	"errors"
 	"fmt"
 	"math/big"
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/internal/utesting"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/utesting"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 // var faucetAddr = common.HexToAddress("0x71562b71999873DB5b286dF957af199Ec94617F7")
@@ -39,7 +40,7 @@ func (s *Suite) sendSuccessfulTxs(t *utesting.T) error {
 	}
 	for i, tx := range tests {
 		if tx == nil {
-			return fmt.Errorf("could not find tx to send")
+			return errors.New("could not find tx to send")
 		}
 		t.Logf("Testing tx propagation %d: sending tx %v %v %v\n", i, tx.Hash().String(), tx.GasPrice(), tx.Gas())
 		// get previous tx if exists for reference in case of old tx propagation
@@ -348,7 +349,7 @@ func generateTxs(s *Suite, numTxs int) (map[common.Hash]common.Hash, []*types.Tr
 
 	nextTx := getNextTxFromChain(s)
 	if nextTx == nil {
-		return nil, nil, fmt.Errorf("failed to get the next transaction")
+		return nil, nil, errors.New("failed to get the next transaction")
 	}
 	gas := nextTx.Gas()
 
@@ -357,7 +358,7 @@ func generateTxs(s *Suite, numTxs int) (map[common.Hash]common.Hash, []*types.Tr
 	for i := 0; i < numTxs; i++ {
 		tx := generateTx(s.chain.chainConfig, nonce, gas)
 		if tx == nil {
-			return nil, nil, fmt.Errorf("failed to get the next transaction")
+			return nil, nil, errors.New("failed to get the next transaction")
 		}
 		txHashMap[tx.Hash()] = tx.Hash()
 		txs[i] = tx

@@ -21,13 +21,13 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/internal/debug"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/debug"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 )
 
 // apis returns the collection of built-in RPC APIs.
@@ -176,6 +176,10 @@ func (api *adminAPI) StartHTTP(host *string, port *int, cors *string, apis *stri
 		CorsAllowedOrigins: api.node.config.HTTPCors,
 		Vhosts:             api.node.config.HTTPVirtualHosts,
 		Modules:            api.node.config.HTTPModules,
+		rpcEndpointConfig: rpcEndpointConfig{
+			batchItemLimit:         api.node.config.BatchRequestLimit,
+			batchResponseSizeLimit: api.node.config.BatchResponseMaxSize,
+		},
 	}
 	if cors != nil {
 		config.CorsAllowedOrigins = nil
@@ -250,6 +254,10 @@ func (api *adminAPI) StartWS(host *string, port *int, allowedOrigins *string, ap
 		Modules: api.node.config.WSModules,
 		Origins: api.node.config.WSOrigins,
 		// ExposeAll: api.node.config.WSExposeAll,
+		rpcEndpointConfig: rpcEndpointConfig{
+			batchItemLimit:         api.node.config.BatchRequestLimit,
+			batchResponseSizeLimit: api.node.config.BatchResponseMaxSize,
+		},
 	}
 	if apis != nil {
 		config.Modules = nil

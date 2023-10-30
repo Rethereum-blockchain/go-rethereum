@@ -20,21 +20,21 @@ import (
 	"crypto/ecdsa"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/txpool"
-	"github.com/ethereum/go-ethereum/eth/ethconfig"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/les/flowcontrol"
-	vfs "github.com/ethereum/go-ethereum/les/vflux/server"
-	"github.com/ethereum/go-ethereum/light"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/txpool"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/ethconfig"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/les/flowcontrol"
+	vfs "github.com/Rethereum-blockchain/go-rethereum/les/vflux/server"
+	"github.com/Rethereum-blockchain/go-rethereum/light"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 )
 
 var (
@@ -117,7 +117,6 @@ func NewLesServer(node *node.Node, e ethBackend, config *ethconfig.Config) (*Les
 	}
 	srv.handler = newServerHandler(srv, e.BlockChain(), e.ChainDb(), e.TxPool(), issync)
 	srv.costTracker, srv.minCapacity = newCostTracker(e.ChainDb(), config)
-	srv.oracle = srv.setupOracle(node, e.BlockChain().Genesis().Hash(), config)
 
 	// Initialize the bloom trie indexer.
 	e.BloomIndexer().AddChildIndexer(srv.bloomTrieIndexer)
@@ -142,12 +141,6 @@ func NewLesServer(node *node.Node, e ethBackend, config *ethconfig.Config) (*Les
 	srv.clientPool.Start()
 	srv.clientPool.SetDefaultFactors(defaultPosFactors, defaultNegFactors)
 	srv.vfluxServer.Register(srv.clientPool, "les", "Ethereum light client service")
-
-	checkpoint := srv.latestLocalCheckpoint()
-	if !checkpoint.Empty() {
-		log.Info("Loaded latest checkpoint", "section", checkpoint.SectionIndex, "head", checkpoint.SectionHead,
-			"chtroot", checkpoint.CHTRoot, "bloomroot", checkpoint.BloomRoot)
-	}
 	srv.chtIndexer.Start(e.BlockChain())
 
 	node.RegisterProtocols(srv.Protocols())
@@ -158,10 +151,6 @@ func NewLesServer(node *node.Node, e ethBackend, config *ethconfig.Config) (*Les
 
 func (s *LesServer) APIs() []rpc.API {
 	return []rpc.API{
-		{
-			Namespace: "les",
-			Service:   NewLightAPI(&s.lesCommons),
-		},
 		{
 			Namespace: "les",
 			Service:   NewLightServerAPI(s),

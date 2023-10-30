@@ -21,8 +21,8 @@ package secp256k1
 import (
 	"fmt"
 
+	"github.com/Rethereum-blockchain/go-rethereum/crypto/secp256k1"
 	"github.com/btcsuite/btcd/btcec/v2"
-	"github.com/ethereum/go-ethereum/crypto/secp256k1"
 	fuzz "github.com/google/gofuzz"
 )
 

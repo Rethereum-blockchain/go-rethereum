@@ -20,17 +20,17 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 // This test case is a repro of an annoying bug that took us forever to catch.
-// In Clique PoA networks (Rinkeby, Görli, etc), consecutive blocks might have
+// In Clique PoA networks (Görli, etc), consecutive blocks might have
 // the same state root (no block subsidy, empty block). If a node crashes, the
 // chain ends up losing the recent state and needs to regenerate it from blocks
 // already in the database. The bug was that processing the block *prior* to an

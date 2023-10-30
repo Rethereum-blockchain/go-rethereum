@@ -17,7 +17,6 @@
 package snapshot
 
 import (
-	"bytes"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -26,13 +25,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 )
 
 // trieKV represents a trie key-value pair
@@ -301,7 +300,7 @@ func generateTrieRoot(db ethdb.KeyValueWriter, scheme string, it Iterator, accou
 				fullData []byte
 			)
 			if leafCallback == nil {
-				fullData, err = FullAccountRLP(it.(AccountIterator).Account())
+				fullData, err = types.FullAccountRLP(it.(AccountIterator).Account())
 				if err != nil {
 					return stop(err)
 				}
@@ -313,7 +312,7 @@ func generateTrieRoot(db ethdb.KeyValueWriter, scheme string, it Iterator, accou
 					return stop(err)
 				}
 				// Fetch the next account and process it concurrently
-				account, err := FullAccount(it.(AccountIterator).Account())
+				account, err := types.FullAccount(it.(AccountIterator).Account())
 				if err != nil {
 					return stop(err)
 				}
@@ -323,7 +322,7 @@ func generateTrieRoot(db ethdb.KeyValueWriter, scheme string, it Iterator, accou
 						results <- err
 						return
 					}
-					if !bytes.Equal(account.Root, subroot.Bytes()) {
+					if account.Root != subroot {
 						results <- fmt.Errorf("invalid subroot(path %x), want %x, have %x", hash, account.Root, subroot)
 						return
 					}

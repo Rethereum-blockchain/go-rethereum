@@ -19,11 +19,12 @@ package tracers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
 )
 
 // Context contains some contextual infos for a transaction execution that is not
@@ -105,7 +106,7 @@ const (
 // It zero-pads the slice if it extends beyond memory bounds.
 func GetMemoryCopyPadded(m *vm.Memory, offset, size int64) ([]byte, error) {
 	if offset < 0 || size < 0 {
-		return nil, fmt.Errorf("offset or size must not be negative")
+		return nil, errors.New("offset or size must not be negative")
 	}
 	if int(offset+size) < m.Len() { // slice fully inside memory
 		return m.GetCopy(offset, size), nil

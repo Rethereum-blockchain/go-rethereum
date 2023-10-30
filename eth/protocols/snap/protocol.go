@@ -20,9 +20,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/state/snapshot"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 // Constants to match up protocol versions and messages
@@ -104,7 +104,7 @@ func (p *AccountRangePacket) Unpack() ([]common.Hash, [][]byte, error) {
 		accounts = make([][]byte, len(p.Accounts))
 	)
 	for i, acc := range p.Accounts {
-		val, err := snapshot.FullAccountRLP(acc.Body)
+		val, err := types.FullAccountRLP(acc.Body)
 		if err != nil {
 			return nil, nil, fmt.Errorf("invalid account %x: %v", acc.Body, err)
 		}

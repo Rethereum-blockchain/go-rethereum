@@ -19,9 +19,9 @@ package vm
 import (
 	"errors"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 func makeGasSStoreFunc(clearingRefund uint64) gasFunc {
@@ -235,7 +235,7 @@ func makeSelfdestructGasFn(refundsEnabled bool) gasFunc {
 		if evm.StateDB.Empty(address) && evm.StateDB.GetBalance(contract.Address()).Sign() != 0 {
 			gas += params.CreateBySelfdestructGas
 		}
-		if refundsEnabled && !evm.StateDB.HasSuicided(contract.Address()) {
+		if refundsEnabled && !evm.StateDB.HasSelfDestructed(contract.Address()) {
 			evm.StateDB.AddRefund(params.SelfdestructRefundGas)
 		}
 		return gas, nil

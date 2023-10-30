@@ -25,12 +25,12 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 	"github.com/holiman/uint256"
 )
 
@@ -418,6 +418,7 @@ type StructLogRes struct {
 	Depth         int                `json:"depth"`
 	Error         string             `json:"error,omitempty"`
 	Stack         *[]string          `json:"stack,omitempty"`
+	ReturnData    string             `json:"returnData,omitempty"`
 	Memory        *[]string          `json:"memory,omitempty"`
 	Storage       *map[string]string `json:"storage,omitempty"`
 	RefundCounter uint64             `json:"refund,omitempty"`
@@ -442,6 +443,9 @@ func formatLogs(logs []StructLog) []StructLogRes {
 				stack[i] = stackValue.Hex()
 			}
 			formatted[index].Stack = &stack
+		}
+		if trace.ReturnData != nil && len(trace.ReturnData) > 0 {
+			formatted[index].ReturnData = hexutil.Bytes(trace.ReturnData).String()
 		}
 		if trace.Memory != nil {
 			memory := make([]string, 0, (len(trace.Memory)+31)/32)

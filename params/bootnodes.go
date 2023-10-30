@@ -16,7 +16,7 @@
 
 package params
 
-import "github.com/ethereum/go-ethereum/common"
+import "github.com/Rethereum-blockchain/go-rethereum/common"
 
 // MainnetBootnodes are the enode URLs of the P2P bootstrap nodes running on
 // the main Ethereum network.
@@ -66,8 +66,6 @@ func KnownDNSNetwork(genesis common.Hash, protocol string) string {
 	switch genesis {
 	case MainnetGenesisHash:
 		net = "mainnet"
-	case RinkebyGenesisHash:
-		net = "rinkeby"
 	case GoerliGenesisHash:
 		net = "goerli"
 	case KrontosGenesisHash:

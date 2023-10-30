@@ -27,19 +27,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/bloombits"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/internal/ethapi"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/bloombits"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/ethapi"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 )
 
 type testBackend struct {
@@ -50,6 +50,8 @@ type testBackend struct {
 	rmLogsFeed      event.Feed
 	pendingLogsFeed event.Feed
 	chainFeed       event.Feed
+	pendingBlock    *types.Block
+	pendingReceipts types.Receipts
 }
 
 func (b *testBackend) ChainConfig() *params.ChainConfig {
@@ -111,7 +113,9 @@ func (b *testBackend) GetBody(ctx context.Context, hash common.Hash, number rpc.
 
 func (b *testBackend) GetReceipts(ctx context.Context, hash common.Hash) (types.Receipts, error) {
 	if number := rawdb.ReadHeaderNumber(b.db, hash); number != nil {
-		return rawdb.ReadReceipts(b.db, hash, *number, params.TestChainConfig), nil
+		if header := rawdb.ReadHeader(b.db, hash, *number); header != nil {
+			return rawdb.ReadReceipts(b.db, hash, *number, header.Time, params.TestChainConfig), nil
+		}
 	}
 	return nil, nil
 }
@@ -122,7 +126,7 @@ func (b *testBackend) GetLogs(ctx context.Context, hash common.Hash, number uint
 }
 
 func (b *testBackend) PendingBlockAndReceipts() (*types.Block, types.Receipts) {
-	return nil, nil
+	return b.pendingBlock, b.pendingReceipts
 }
 
 func (b *testBackend) SubscribeNewTxsEvent(ch chan<- core.NewTxsEvent) event.Subscription {

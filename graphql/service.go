@@ -24,10 +24,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/eth/filters"
-	"github.com/ethereum/go-ethereum/internal/ethapi"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/filters"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/ethapi"
+	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 	"github.com/graph-gophers/graphql-go"
 	gqlErrors "github.com/graph-gophers/graphql-go/errors"
 )
@@ -122,6 +122,7 @@ func newHandler(stack *node.Node, backend ethapi.Backend, filterSystem *filters.
 	handler := node.NewHTTPHandlerStack(h, cors, vhosts, nil)
 
 	stack.RegisterHandler("GraphQL UI", "/graphql/ui", GraphiQL{})
+	stack.RegisterHandler("GraphQL UI", "/graphql/ui/", GraphiQL{})
 	stack.RegisterHandler("GraphQL", "/graphql", handler)
 	stack.RegisterHandler("GraphQL", "/graphql/", handler)
 

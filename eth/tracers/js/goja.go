@@ -24,12 +24,12 @@ import (
 
 	"github.com/dop251/goja"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/eth/tracers"
-	jsassets "github.com/ethereum/go-ethereum/eth/tracers/js/internal/tracers"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/tracers"
+	jsassets "github.com/Rethereum-blockchain/go-rethereum/eth/tracers/js/internal/tracers"
 )
 
 var assetTracers = make(map[string]string)
@@ -86,10 +86,10 @@ func fromBuf(vm *goja.Runtime, bufType goja.Value, buf goja.Value, allowString b
 		if !obj.Get("constructor").SameAs(bufType) {
 			break
 		}
-		b := obj.Get("buffer").Export().(goja.ArrayBuffer).Bytes()
+		b := obj.Export().([]byte)
 		return b, nil
 	}
-	return nil, fmt.Errorf("invalid buffer type")
+	return nil, errors.New("invalid buffer type")
 }
 
 // jsTracer is an implementation of the Tracer interface which evaluates

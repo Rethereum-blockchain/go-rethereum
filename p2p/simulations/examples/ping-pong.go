@@ -25,12 +25,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/simulations"
-	"github.com/ethereum/go-ethereum/p2p/simulations/adapters"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/adapters"
 )
 
 var adapterType = flag.String("adapter", "sim", `node adapter to use (one of "sim", "exec" or "docker")`)
@@ -91,7 +91,7 @@ func main() {
 type pingPongService struct {
 	id       enode.ID
 	log      log.Logger
-	received int64
+	received atomic.Int64
 }
 
 func newPingPongService(id enode.ID) *pingPongService {
@@ -125,7 +125,7 @@ func (p *pingPongService) Info() interface{} {
 	return struct {
 		Received int64 `json:"received"`
 	}{
-		atomic.LoadInt64(&p.received),
+		p.received.Load(),
 	}
 }
 
@@ -162,7 +162,7 @@ func (p *pingPongService) Run(peer *p2p.Peer, rw p2p.MsgReadWriter) error {
 				return
 			}
 			log.Info("received message", "msg.code", msg.Code, "msg.payload", string(payload))
-			atomic.AddInt64(&p.received, 1)
+			p.received.Add(1)
 			if msg.Code == pingMsgCode {
 				log.Info("sending pong")
 				go p2p.Send(rw, pongMsgCode, "PONG")

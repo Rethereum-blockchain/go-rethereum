@@ -24,11 +24,11 @@ import (
 	"math/big"
 	"os"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/keystore"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
 )
 
 // SignerUIAPI implements methods Clef provides for a UI to query, in the bidirectional communication
@@ -177,7 +177,7 @@ func (s *UIServerAPI) Export(ctx context.Context, addr common.Address) (json.Raw
 		return nil, err
 	}
 	if wallet.URL().Scheme != keystore.KeyStoreScheme {
-		return nil, fmt.Errorf("account is not a keystore-account")
+		return nil, errors.New("account is not a keystore-account")
 	}
 	return os.ReadFile(wallet.URL().Path)
 }

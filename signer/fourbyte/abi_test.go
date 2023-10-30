@@ -22,8 +22,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/abi"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
 )
 
 func verify(t *testing.T, jsondata, calldata string, exp []interface{}) {

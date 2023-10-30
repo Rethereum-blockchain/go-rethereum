@@ -26,20 +26,20 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/internal/flags"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/Rethereum-blockchain/go-rethereum/cmd/utils"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/flags"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/metrics"
+	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 	"github.com/urfave/cli/v2"
 )
 
@@ -261,16 +261,16 @@ func importChain(ctx *cli.Context) error {
 	defer db.Close()
 
 	// Start periodically gathering memory profiles
-	var peakMemAlloc, peakMemSys uint64
+	var peakMemAlloc, peakMemSys atomic.Uint64
 	go func() {
 		stats := new(runtime.MemStats)
 		for {
 			runtime.ReadMemStats(stats)
-			if atomic.LoadUint64(&peakMemAlloc) < stats.Alloc {
-				atomic.StoreUint64(&peakMemAlloc, stats.Alloc)
+			if peakMemAlloc.Load() < stats.Alloc {
+				peakMemAlloc.Store(stats.Alloc)
 			}
-			if atomic.LoadUint64(&peakMemSys) < stats.Sys {
-				atomic.StoreUint64(&peakMemSys, stats.Sys)
+			if peakMemSys.Load() < stats.Sys {
+				peakMemSys.Store(stats.Sys)
 			}
 			time.Sleep(5 * time.Second)
 		}
@@ -303,8 +303,8 @@ func importChain(ctx *cli.Context) error {
 	mem := new(runtime.MemStats)
 	runtime.ReadMemStats(mem)
 
-	fmt.Printf("Object memory: %.3f MB current, %.3f MB peak\n", float64(mem.Alloc)/1024/1024, float64(atomic.LoadUint64(&peakMemAlloc))/1024/1024)
-	fmt.Printf("System memory: %.3f MB current, %.3f MB peak\n", float64(mem.Sys)/1024/1024, float64(atomic.LoadUint64(&peakMemSys))/1024/1024)
+	fmt.Printf("Object memory: %.3f MB current, %.3f MB peak\n", float64(mem.Alloc)/1024/1024, float64(peakMemAlloc.Load())/1024/1024)
+	fmt.Printf("System memory: %.3f MB current, %.3f MB peak\n", float64(mem.Sys)/1024/1024, float64(peakMemSys.Load())/1024/1024)
 	fmt.Printf("Allocations:   %.3f million\n", float64(mem.Mallocs)/1000000)
 	fmt.Printf("GC pause:      %v\n\n", time.Duration(mem.PauseTotalNs))
 
@@ -478,7 +478,7 @@ func dump(ctx *cli.Context) error {
 		if conf.OnlyWithAddresses {
 			fmt.Fprintf(os.Stderr, "If you want to include accounts with missing preimages, you need iterative output, since"+
 				" otherwise the accounts will overwrite each other in the resulting mapping.")
-			return fmt.Errorf("incompatible options")
+			return errors.New("incompatible options")
 		}
 		fmt.Println(string(state.Dump(conf)))
 	}

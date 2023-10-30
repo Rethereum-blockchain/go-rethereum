@@ -19,7 +19,7 @@ package core
 import (
 	"errors"
 
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
 )
 
 var (
@@ -100,4 +100,8 @@ var (
 
 	// ErrSenderNoEOA is returned if the sender of a transaction is a contract.
 	ErrSenderNoEOA = errors.New("sender not an eoa")
+
+	// ErrBlobFeeCapTooLow is returned if the transaction fee cap is less than the
+	// blob gas fee of the block.
+	ErrBlobFeeCapTooLow = errors.New("max fee per blob gas less than block blob gas fee")
 )

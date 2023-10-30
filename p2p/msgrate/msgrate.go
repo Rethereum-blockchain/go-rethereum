@@ -24,7 +24,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
 )
 
 // measurementImpact is the impact a single measurement has on a peer's final
@@ -329,7 +329,7 @@ func (t *Trackers) MeanCapacities() map[uint64]float64 {
 // meanCapacities is the internal lockless version of MeanCapacities used for
 // debug logging.
 func (t *Trackers) meanCapacities() map[uint64]float64 {
-	capacities := make(map[uint64]float64)
+	capacities := make(map[uint64]float64, len(t.trackers))
 	for _, tt := range t.trackers {
 		tt.lock.RLock()
 		for key, val := range tt.capacity {

@@ -17,10 +17,10 @@
 package vm
 
 import (
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
 )
 
 // Config are the configuration options for the Interpreter
@@ -56,6 +56,8 @@ func NewEVMInterpreter(evm *EVM) *EVMInterpreter {
 	// If jump table was not initialised we set the default one.
 	var table *JumpTable
 	switch {
+	case evm.chainRules.IsCancun:
+		table = &cancunInstructionSet
 	case evm.chainRules.IsShanghai:
 		table = &shanghaiInstructionSet
 	case evm.chainRules.IsMerge:

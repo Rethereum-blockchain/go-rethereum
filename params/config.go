@@ -17,19 +17,16 @@
 package params
 
 import (
-	"encoding/binary"
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"golang.org/x/crypto/sha3"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
 )
 
 // Genesis hashes to enforce below configs on.
 var (
 	MainnetGenesisHash = common.HexToHash("0x0fb784d1481f0aa911d21d639641763ca09641413842b35f1d10eb5d208abdf8")
 	KrontosGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
-	RinkebyGenesisHash = common.HexToHash("0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177")
 	GoerliGenesisHash  = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
 )
 
@@ -201,28 +198,6 @@ var (
 			Epoch:  30000,
 		},
 	}
-
-	// GoerliTrustedCheckpoint contains the light client trusted checkpoint for the Görli test network.
-	GoerliTrustedCheckpoint = &TrustedCheckpoint{
-		SectionIndex: 229,
-		SectionHead:  common.HexToHash("0xc5a7b57cb4af7b3d4cc251ac5f29acaac94e7464365358e7ad26129083b7729a"),
-		CHTRoot:      common.HexToHash("0x54c0d5c756d9c48eda26ea13c2a49c2e31f1cb7dfb01514ddc49f3d24272c77e"),
-		BloomRoot:    common.HexToHash("0xd681970a496f6187d089f8c8665a3587b5a78212d79b6ceef97c0dabd0188e56"),
-	}
-
-	// GoerliCheckpointOracle contains a set of configs for the Goerli test network oracle.
-	GoerliCheckpointOracle = &CheckpointOracleConfig{
-		Address: common.HexToAddress("0x18CA0E045F0D772a851BC7e48357Bcaab0a0795D"),
-		Signers: []common.Address{
-			common.HexToAddress("0x4769bcaD07e3b938B7f43EB7D278Bc7Cb9efFb38"), // Peter
-			common.HexToAddress("0x78d1aD571A1A09D60D9BBf25894b44e4C8859595"), // Martin
-			common.HexToAddress("0x286834935f4A8Cfb4FF4C77D5770C2775aE2b0E7"), // Zsolt
-			common.HexToAddress("0xb86e2B0Ab5A4B1373e40c51A7C712c70Ba2f9f8E"), // Gary
-			common.HexToAddress("0x0DF8fa387C602AE62559cC4aFa4972A7045d6707"), // Guillaume
-		},
-		Threshold: 2,
-	}
-
 	// AllEthashProtocolChanges contains every protocol change (EIPs) introduced
 	// and accepted by the Ethereum core developers into the Ethash consensus.
 	AllEthashProtocolChanges = &ChainConfig{
@@ -246,10 +221,32 @@ var (
 		ShanghaiTime:                  nil,
 		CancunTime:                    nil,
 		PragueTime:                    nil,
+		VerkleTime:                    nil,
 		TerminalTotalDifficulty:       nil,
-		TerminalTotalDifficultyPassed: false,
+		TerminalTotalDifficultyPassed: true,
 		Ethash:                        new(EthashConfig),
 		Clique:                        nil,
+	}
+
+	AllDevChainProtocolChanges = &ChainConfig{
+		ChainID:                       big.NewInt(1337),
+		HomesteadBlock:                big.NewInt(0),
+		EIP150Block:                   big.NewInt(0),
+		EIP155Block:                   big.NewInt(0),
+		EIP158Block:                   big.NewInt(0),
+		ByzantiumBlock:                big.NewInt(0),
+		ConstantinopleBlock:           big.NewInt(0),
+		PetersburgBlock:               big.NewInt(0),
+		IstanbulBlock:                 big.NewInt(0),
+		MuirGlacierBlock:              big.NewInt(0),
+		BerlinBlock:                   big.NewInt(0),
+		LondonBlock:                   big.NewInt(0),
+		ArrowGlacierBlock:             big.NewInt(0),
+		GrayGlacierBlock:              big.NewInt(0),
+		ShanghaiTime:                  newUint64(0),
+		TerminalTotalDifficulty:       big.NewInt(0),
+		TerminalTotalDifficultyPassed: true,
+		IsDevMode:                     true,
 	}
 
 	// AllCliqueProtocolChanges contains every protocol change (EIPs) introduced
@@ -275,6 +272,7 @@ var (
 		ShanghaiTime:                  nil,
 		CancunTime:                    nil,
 		PragueTime:                    nil,
+		VerkleTime:                    nil,
 		TerminalTotalDifficulty:       nil,
 		TerminalTotalDifficultyPassed: false,
 		Ethash:                        nil,
@@ -304,6 +302,7 @@ var (
 		ShanghaiTime:                  nil,
 		CancunTime:                    nil,
 		PragueTime:                    nil,
+		VerkleTime:                    nil,
 		TerminalTotalDifficulty:       nil,
 		TerminalTotalDifficultyPassed: false,
 		Ethash:                        new(EthashConfig),
@@ -333,6 +332,7 @@ var (
 		ShanghaiTime:                  nil,
 		CancunTime:                    nil,
 		PragueTime:                    nil,
+		VerkleTime:                    nil,
 		TerminalTotalDifficulty:       nil,
 		TerminalTotalDifficultyPassed: false,
 		Ethash:                        new(EthashConfig),
@@ -344,57 +344,8 @@ var (
 // NetworkNames are user friendly names to use in the chain spec banner.
 var NetworkNames = map[string]string{
 	MainnetChainConfig.ChainID.String(): "Rethereum Mainnet",
-	RinkebyChainConfig.ChainID.String(): "rinkeby",
 	GoerliChainConfig.ChainID.String():  "goerli",
 	KrontosChainConfig.ChainID.String(): "krontos",
-}
-
-// TrustedCheckpoint represents a set of post-processed trie roots (CHT and
-// BloomTrie) associated with the appropriate section index and head hash. It is
-// used to start light syncing from this checkpoint and avoid downloading the
-// entire header chain while still being able to securely access old headers/logs.
-type TrustedCheckpoint struct {
-	SectionIndex uint64      `json:"sectionIndex"`
-	SectionHead  common.Hash `json:"sectionHead"`
-	CHTRoot      common.Hash `json:"chtRoot"`
-	BloomRoot    common.Hash `json:"bloomRoot"`
-}
-
-// HashEqual returns an indicator comparing the itself hash with given one.
-func (c *TrustedCheckpoint) HashEqual(hash common.Hash) bool {
-	if c.Empty() {
-		return hash == common.Hash{}
-	}
-	return c.Hash() == hash
-}
-
-// Hash returns the hash of checkpoint's four key fields(index, sectionHead, chtRoot and bloomTrieRoot).
-func (c *TrustedCheckpoint) Hash() common.Hash {
-	var sectionIndex [8]byte
-	binary.BigEndian.PutUint64(sectionIndex[:], c.SectionIndex)
-
-	w := sha3.NewLegacyKeccak256()
-	w.Write(sectionIndex[:])
-	w.Write(c.SectionHead[:])
-	w.Write(c.CHTRoot[:])
-	w.Write(c.BloomRoot[:])
-
-	var h common.Hash
-	w.Sum(h[:0])
-	return h
-}
-
-// Empty returns an indicator whether the checkpoint is regarded as empty.
-func (c *TrustedCheckpoint) Empty() bool {
-	return c.SectionHead == (common.Hash{}) || c.CHTRoot == (common.Hash{}) || c.BloomRoot == (common.Hash{})
-}
-
-// CheckpointOracleConfig represents a set of checkpoint contract(which acts as an oracle)
-// config which used for light client checkpoint syncing.
-type CheckpointOracleConfig struct {
-	Address   common.Address   `json:"address"`
-	Signers   []common.Address `json:"signers"`
-	Threshold uint64           `json:"threshold"`
 }
 
 // ChainConfig is the core config which determines the blockchain settings.
@@ -433,6 +384,7 @@ type ChainConfig struct {
 	ShanghaiTime *uint64 `json:"shanghaiTime,omitempty"` // Shanghai switch time (nil = no fork, 0 = already on shanghai)
 	CancunTime   *uint64 `json:"cancunTime,omitempty"`   // Cancun switch time (nil = no fork, 0 = already on cancun)
 	PragueTime   *uint64 `json:"pragueTime,omitempty"`   // Prague switch time (nil = no fork, 0 = already on prague)
+	VerkleTime   *uint64 `json:"verkleTime,omitempty"`   // Verkle switch time (nil = no fork, 0 = already on verkle)
 
 	// TerminalTotalDifficulty is the amount of total difficulty reached by
 	// the network that triggers the consensus upgrade.
@@ -444,8 +396,9 @@ type ChainConfig struct {
 	TerminalTotalDifficultyPassed bool `json:"terminalTotalDifficultyPassed,omitempty"`
 
 	// Various consensus engines
-	Ethash *EthashConfig `json:"ethash,omitempty"`
-	Clique *CliqueConfig `json:"clique,omitempty"`
+	Ethash    *EthashConfig `json:"ethash,omitempty"`
+	Clique    *CliqueConfig `json:"clique,omitempty"`
+	IsDevMode bool          `json:"isDev,omitempty"`
 }
 
 type RethereumForks struct {
@@ -555,6 +508,9 @@ func (c *ChainConfig) Description() string {
 	if c.PragueTime != nil {
 		banner += fmt.Sprintf(" - Prague:                      @%-10v\n", *c.PragueTime)
 	}
+	if c.VerkleTime != nil {
+		banner += fmt.Sprintf(" - Verkle:                      @%-10v\n", *c.VerkleTime)
+	}
 	return banner
 }
 
@@ -649,18 +605,23 @@ func (c *ChainConfig) IsTerminalPoWBlock(parentTotalDiff *big.Int, totalDiff *bi
 }
 
 // IsShanghai returns whether time is either equal to the Shanghai fork time or greater.
-func (c *ChainConfig) IsShanghai(time uint64) bool {
-	return isTimestampForked(c.ShanghaiTime, time)
+func (c *ChainConfig) IsShanghai(num *big.Int, time uint64) bool {
+	return c.IsLondon(num) && isTimestampForked(c.ShanghaiTime, time)
 }
 
 // IsCancun returns whether num is either equal to the Cancun fork time or greater.
-func (c *ChainConfig) IsCancun(time uint64) bool {
-	return isTimestampForked(c.CancunTime, time)
+func (c *ChainConfig) IsCancun(num *big.Int, time uint64) bool {
+	return c.IsLondon(num) && isTimestampForked(c.CancunTime, time)
 }
 
 // IsPrague returns whether num is either equal to the Prague fork time or greater.
-func (c *ChainConfig) IsPrague(time uint64) bool {
-	return isTimestampForked(c.PragueTime, time)
+func (c *ChainConfig) IsPrague(num *big.Int, time uint64) bool {
+	return c.IsLondon(num) && isTimestampForked(c.PragueTime, time)
+}
+
+// IsVerkle returns whether num is either equal to the Verkle fork time or greater.
+func (c *ChainConfig) IsVerkle(num *big.Int, time uint64) bool {
+	return c.IsLondon(num) && isTimestampForked(c.VerkleTime, time)
 }
 
 // CheckCompatible checks whether scheduled fork transitions have been imported
@@ -717,6 +678,7 @@ func (c *ChainConfig) CheckConfigForkOrder() error {
 		{name: "shanghaiTime", timestamp: c.ShanghaiTime},
 		{name: "cancunTime", timestamp: c.CancunTime, optional: true},
 		{name: "pragueTime", timestamp: c.PragueTime, optional: true},
+		{name: "verkleTime", timestamp: c.VerkleTime, optional: true},
 	} {
 		if lastFork.name != "" {
 			switch {
@@ -819,6 +781,9 @@ func (c *ChainConfig) checkCompatible(newcfg *ChainConfig, headNumber *big.Int, 
 	}
 	if isForkTimestampIncompatible(c.PragueTime, newcfg.PragueTime, headTimestamp) {
 		return newTimestampCompatError("Prague fork timestamp", c.PragueTime, newcfg.PragueTime)
+	}
+	if isForkTimestampIncompatible(c.VerkleTime, newcfg.VerkleTime, headTimestamp) {
+		return newTimestampCompatError("Verkle fork timestamp", c.VerkleTime, newcfg.VerkleTime)
 	}
 	return nil
 }
@@ -965,6 +930,7 @@ type Rules struct {
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
 	IsBerlin, IsLondon                                      bool
 	IsMerge, IsShanghai, IsCancun, IsPrague, IsGaspar       bool
+	IsVerkle                                                bool
 }
 
 // Rules ensures c's ChainID is not nil.
@@ -986,9 +952,10 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules 
 		IsBerlin:         c.IsBerlin(num),
 		IsLondon:         c.IsLondon(num),
 		IsMerge:          isMerge,
-		IsShanghai:       c.IsShanghai(timestamp),
-		IsCancun:         c.IsCancun(timestamp),
-		IsPrague:         c.IsPrague(timestamp),
+		IsShanghai:       c.IsShanghai(num, timestamp),
+		IsCancun:         c.IsCancun(num, timestamp),
+		IsPrague:         c.IsPrague(num, timestamp),
+		IsVerkle:         c.IsVerkle(num, timestamp),
 		IsGaspar:         c.IsGaspar(num),
 	}
 }

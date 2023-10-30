@@ -21,15 +21,15 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 func BenchmarkInsertChain_empty_memdb(b *testing.B) {
@@ -84,7 +84,7 @@ func genValueTx(nbytes int) func(int, *BlockGen) {
 		toaddr := common.Address{}
 		data := make([]byte, nbytes)
 		gas, _ := IntrinsicGas(data, nil, false, false, false, false)
-		signer := types.MakeSigner(gen.config, big.NewInt(int64(i)))
+		signer := types.MakeSigner(gen.config, big.NewInt(int64(i)), gen.header.Time)
 		gasPrice := big.NewInt(0)
 		if gen.header.BaseFee != nil {
 			gasPrice = gen.header.BaseFee
@@ -128,7 +128,7 @@ func genTxRing(naccounts int) func(int, *BlockGen) {
 		if gen.header.BaseFee != nil {
 			gasPrice = gen.header.BaseFee
 		}
-		signer := types.MakeSigner(gen.config, big.NewInt(int64(i)))
+		signer := types.MakeSigner(gen.config, big.NewInt(int64(i)), gen.header.Time)
 		for {
 			gas -= params.TxGas
 			if gas < params.TxGas {
@@ -317,7 +317,7 @@ func benchReadChain(b *testing.B, full bool, count uint64) {
 			if full {
 				hash := header.Hash()
 				rawdb.ReadBody(db, hash, n)
-				rawdb.ReadReceipts(db, hash, n, chain.Config())
+				rawdb.ReadReceipts(db, hash, n, header.Time, chain.Config())
 			}
 		}
 		chain.Stop()

@@ -20,12 +20,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 )
 
 // handleGetBlockHeaders66 is the eth/66 version of handleGetBlockHeaders
@@ -498,7 +498,7 @@ func answerGetPooledTransactions(backend Backend, query GetPooledTransactionsPac
 			continue
 		}
 		// If known, encode and queue for response packet
-		if encoded, err := rlp.EncodeToBytes(tx); err != nil {
+		if encoded, err := rlp.EncodeToBytes(tx.Tx); err != nil {
 			log.Error("Failed to encode transaction", "err", err)
 		} else {
 			hashes = append(hashes, hash)

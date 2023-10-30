@@ -19,18 +19,19 @@ package ethtest
 import (
 	"compress/gzip"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"math/big"
 	"os"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/forkid"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/forkid"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 type Chain struct {
@@ -98,7 +99,7 @@ func (c *Chain) Head() *types.Block {
 
 func (c *Chain) GetHeaders(req *GetBlockHeaders) ([]*types.Header, error) {
 	if req.Amount < 1 {
-		return nil, fmt.Errorf("no block headers requested")
+		return nil, errors.New("no block headers requested")
 	}
 
 	headers := make([]*types.Header, req.Amount)

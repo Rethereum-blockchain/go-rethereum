@@ -25,10 +25,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/core/forkid"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/core/forkid"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 	"github.com/urfave/cli/v2"
 )
 
@@ -59,7 +59,7 @@ var (
 
 func nodesetInfo(ctx *cli.Context) error {
 	if ctx.NArg() < 1 {
-		return fmt.Errorf("need nodes file as argument")
+		return errors.New("need nodes file as argument")
 	}
 
 	ns := loadNodesJSON(ctx.Args().First())
@@ -98,7 +98,7 @@ func showAttributeCounts(ns nodeSet) {
 
 func nodesetFilter(ctx *cli.Context) error {
 	if ctx.NArg() < 1 {
-		return fmt.Errorf("need nodes file as argument")
+		return errors.New("need nodes file as argument")
 	}
 	// Parse -limit.
 	limit, err := parseFilterLimit(ctx.Args().Tail())
@@ -229,8 +229,6 @@ func ethFilter(args []string) (nodeFilter, error) {
 	switch args[0] {
 	case "mainnet":
 		filter = forkid.NewStaticFilter(params.MainnetChainConfig, params.MainnetGenesisHash)
-	case "rinkeby":
-		filter = forkid.NewStaticFilter(params.RinkebyChainConfig, params.RinkebyGenesisHash)
 	case "goerli":
 		filter = forkid.NewStaticFilter(params.GoerliChainConfig, params.GoerliGenesisHash)
 	case "krontos":

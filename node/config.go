@@ -25,11 +25,11 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 )
 
 const (
@@ -76,7 +76,7 @@ type Config struct {
 	// is created by New and destroyed when the node is stopped.
 	KeyStoreDir string `toml:",omitempty"`
 
-	// ExternalSigner specifies an external URI for a clef-type signer
+	// ExternalSigner specifies an external URI for a clef-type signer.
 	ExternalSigner string `toml:",omitempty"`
 
 	// UseLightweightKDF lowers the memory and CPU requirements of the key store
@@ -93,7 +93,7 @@ type Config struct {
 	// USB enables hardware wallet monitoring and connectivity.
 	USB bool `toml:",omitempty"`
 
-	// SmartCardDaemonPath is the path to the smartcard daemon's socket
+	// SmartCardDaemonPath is the path to the smartcard daemon's socket.
 	SmartCardDaemonPath string `toml:",omitempty"`
 
 	// IPCPath is the requested location to place the IPC endpoint. If the path is
@@ -197,6 +197,12 @@ type Config struct {
 
 	// AllowUnprotectedTxs allows non EIP-155 protected transactions to be send over RPC.
 	AllowUnprotectedTxs bool `toml:",omitempty"`
+
+	// BatchRequestLimit is the maximum number of requests in a batch.
+	BatchRequestLimit int `toml:",omitempty"`
+
+	// BatchResponseMaxSize is the maximum number of bytes returned from a batched rpc call.
+	BatchResponseMaxSize int `toml:",omitempty"`
 
 	// JWTSecret is the path to the hex-encoded jwt secret.
 	JWTSecret string `toml:",omitempty"`
@@ -397,7 +403,7 @@ func (c *Config) NodeKey() *ecdsa.PrivateKey {
 	return key
 }
 
-// CheckLegacyFiles inspects the datadir for signs of legacy static-nodes
+// checkLegacyFiles inspects the datadir for signs of legacy static-nodes
 // and trusted-nodes files. If they exist it raises an error.
 func (c *Config) checkLegacyFiles() {
 	c.checkLegacyFile(c.ResolvePath(datadirStaticNodes))
@@ -449,10 +455,10 @@ func (c *Config) KeyDirConfig() (string, error) {
 	return keydir, err
 }
 
-// getKeyStoreDir retrieves the key directory and will create
+// GetKeyStoreDir retrieves the key directory and will create
 // and ephemeral one if necessary.
-func getKeyStoreDir(conf *Config) (string, bool, error) {
-	keydir, err := conf.KeyDirConfig()
+func (c *Config) GetKeyStoreDir() (string, bool, error) {
+	keydir, err := c.KeyDirConfig()
 	if err != nil {
 		return "", false, err
 	}

@@ -21,8 +21,8 @@ import (
 	"container/heap"
 	"errors"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
 )
 
 // NodeResolver is used for looking up trie nodes before reaching into the real
@@ -387,7 +387,14 @@ func (it *nodeIterator) resolveHash(hash hashNode, path []byte) (node, error) {
 	// loaded blob will be tracked, while it's not required here since
 	// all loaded nodes won't be linked to trie at all and track nodes
 	// may lead to out-of-memory issue.
-	return it.trie.reader.node(path, common.BytesToHash(hash))
+	blob, err := it.trie.reader.node(path, common.BytesToHash(hash))
+	if err != nil {
+		return nil, err
+	}
+	// The raw-blob format nodes are loaded either from the
+	// clean cache or the database, they are all in their own
+	// copy and safe to use unsafe decoder.
+	return mustDecodeNodeUnsafe(hash, blob), nil
 }
 
 func (it *nodeIterator) resolveBlob(hash hashNode, path []byte) ([]byte, error) {
@@ -401,7 +408,7 @@ func (it *nodeIterator) resolveBlob(hash hashNode, path []byte) ([]byte, error) 
 	// loaded blob will be tracked, while it's not required here since
 	// all loaded nodes won't be linked to trie at all and track nodes
 	// may lead to out-of-memory issue.
-	return it.trie.reader.nodeBlob(path, common.BytesToHash(hash))
+	return it.trie.reader.node(path, common.BytesToHash(hash))
 }
 
 func (st *nodeIteratorState) resolve(it *nodeIterator, path []byte) error {

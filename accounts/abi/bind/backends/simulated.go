@@ -24,25 +24,25 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/bloombits"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/eth/filters"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/abi"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/abi/bind"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/bloombits"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/filters"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 )
 
 // This nil assignment ensures at compile time that SimulatedBackend implements bind.ContractBackend.
@@ -681,10 +681,10 @@ func (b *SimulatedBackend) SendTransaction(ctx context.Context, tx *types.Transa
 	// Get the last block
 	block, err := b.blockByHash(ctx, b.pendingBlock.ParentHash())
 	if err != nil {
-		return fmt.Errorf("could not fetch parent")
+		return errors.New("could not fetch parent")
 	}
 	// Check transaction validity
-	signer := types.MakeSigner(b.blockchain.Config(), block.Number())
+	signer := types.MakeSigner(b.blockchain.Config(), block.Number(), block.Time())
 	sender, err := types.Sender(signer, tx)
 	if err != nil {
 		return fmt.Errorf("invalid transaction: %v", err)
@@ -815,7 +815,7 @@ func (b *SimulatedBackend) AdjustTime(adjustment time.Duration) error {
 	// Get the last block
 	block := b.blockchain.GetBlockByHash(b.pendingBlock.ParentHash())
 	if block == nil {
-		return fmt.Errorf("could not find parent")
+		return errors.New("could not find parent")
 	}
 
 	blocks, _ := core.GenerateChain(b.config, block, ethash.NewFaker(), b.database, 1, func(number int, block *core.BlockGen) {
@@ -884,7 +884,11 @@ func (fb *filterBackend) GetReceipts(ctx context.Context, hash common.Hash) (typ
 	if number == nil {
 		return nil, nil
 	}
-	return rawdb.ReadReceipts(fb.db, hash, *number, fb.bc.Config()), nil
+	header := rawdb.ReadHeader(fb.db, hash, *number)
+	if header == nil {
+		return nil, nil
+	}
+	return rawdb.ReadReceipts(fb.db, hash, *number, header.Time, fb.bc.Config()), nil
 }
 
 func (fb *filterBackend) GetLogs(ctx context.Context, hash common.Hash, number uint64) ([][]*types.Log, error) {

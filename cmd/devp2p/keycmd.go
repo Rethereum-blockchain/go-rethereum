@@ -17,12 +17,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
 	"github.com/urfave/cli/v2"
 )
 
@@ -86,7 +87,7 @@ var (
 
 func genkey(ctx *cli.Context) error {
 	if ctx.NArg() != 1 {
-		return fmt.Errorf("need key file as argument")
+		return errors.New("need key file as argument")
 	}
 	file := ctx.Args().Get(0)
 
@@ -126,7 +127,7 @@ func keyToRecord(ctx *cli.Context) error {
 
 func makeRecord(ctx *cli.Context) (*enode.Node, error) {
 	if ctx.NArg() != 1 {
-		return nil, fmt.Errorf("need key file as argument")
+		return nil, errors.New("need key file as argument")
 	}
 
 	var (

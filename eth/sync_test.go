@@ -17,15 +17,14 @@
 package eth
 
 import (
-	"sync/atomic"
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/eth/downloader"
-	"github.com/ethereum/go-ethereum/eth/protocols/eth"
-	"github.com/ethereum/go-ethereum/eth/protocols/snap"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/downloader"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/eth"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/snap"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
 )
 
 // Tests that snap sync is disabled after a successful sync cycle.
@@ -39,14 +38,14 @@ func testSnapSyncDisabling(t *testing.T, ethVer uint, snapVer uint) {
 
 	// Create an empty handler and ensure it's in snap sync mode
 	empty := newTestHandler()
-	if atomic.LoadUint32(&empty.handler.snapSync) == 0 {
+	if !empty.handler.snapSync.Load() {
 		t.Fatalf("snap sync disabled on pristine blockchain")
 	}
 	defer empty.close()
 
 	// Create a full handler and ensure snap sync ends up disabled
 	full := newTestHandlerWithBlocks(1024)
-	if atomic.LoadUint32(&full.handler.snapSync) == 1 {
+	if full.handler.snapSync.Load() {
 		t.Fatalf("snap sync not disabled on non-empty blockchain")
 	}
 	defer full.close()
@@ -91,7 +90,7 @@ func testSnapSyncDisabling(t *testing.T, ethVer uint, snapVer uint) {
 	if err := empty.handler.doSync(op); err != nil {
 		t.Fatal("sync failed:", err)
 	}
-	if atomic.LoadUint32(&empty.handler.snapSync) == 1 {
+	if empty.handler.snapSync.Load() {
 		t.Fatalf("snap sync not disabled after successful synchronisation")
 	}
 }

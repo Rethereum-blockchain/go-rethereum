@@ -23,12 +23,12 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	vfc "github.com/ethereum/go-ethereum/les/vflux/client"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	vfc "github.com/Rethereum-blockchain/go-rethereum/les/vflux/client"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 // Constants to match up protocol versions and messages
@@ -40,9 +40,8 @@ const (
 
 // Supported versions of the les protocol (first is primary)
 var (
-	ClientProtocolVersions    = []uint{lpv2, lpv3, lpv4}
-	ServerProtocolVersions    = []uint{lpv2, lpv3, lpv4}
-	AdvertiseProtocolVersions = []uint{lpv2} // clients are searching for the first advertised protocol in the list
+	ClientProtocolVersions = []uint{lpv2, lpv3, lpv4}
+	ServerProtocolVersions = []uint{lpv2, lpv3, lpv4}
 )
 
 // ProtocolLengths is the number of implemented message corresponding to different protocol versions.

@@ -20,23 +20,22 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"math/big"
 	"reflect"
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/eth"
-	"github.com/ethereum/go-ethereum/eth/ethconfig"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/eth"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/ethconfig"
+	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 )
 
 // Verify that Client implements the ethereum interfaces.
@@ -55,7 +54,7 @@ var (
 )
 
 func TestToFilterArg(t *testing.T) {
-	blockHashErr := fmt.Errorf("cannot specify both BlockHash and FromBlock/ToBlock")
+	blockHashErr := errors.New("cannot specify both BlockHash and FromBlock/ToBlock")
 	addresses := []common.Address{
 		common.HexToAddress("0xD36722ADeC3EdCB29c8e7b5a47f352D701393462"),
 	}
@@ -221,7 +220,6 @@ func newTestBackend(t *testing.T) (*node.Node, []*types.Block) {
 	}
 	// Create Ethereum Service
 	config := &ethconfig.Config{Genesis: genesis}
-	config.Ethash.PowMode = ethash.ModeFake
 	ethservice, err := eth.New(n, config)
 	if err != nil {
 		t.Fatalf("can't create new ethereum service: %v", err)
@@ -252,7 +250,7 @@ func generateTestChain() []*types.Block {
 
 func TestEthClient(t *testing.T) {
 	backend, chain := newTestBackend(t)
-	client, _ := backend.Attach()
+	client := backend.Attach()
 	defer backend.Close()
 	defer client.Close()
 

@@ -21,12 +21,12 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/txpool"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/txpool"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
 )
 
 // NoOdr is the default context passed to an ODR capable function when the ODR
@@ -54,35 +54,35 @@ type OdrRequest interface {
 
 // TrieID identifies a state or account storage trie
 type TrieID struct {
-	BlockHash   common.Hash
-	BlockNumber uint64
-	StateRoot   common.Hash
-	Root        common.Hash
-	AccKey      []byte
+	BlockHash      common.Hash
+	BlockNumber    uint64
+	StateRoot      common.Hash
+	Root           common.Hash
+	AccountAddress []byte
 }
 
 // StateTrieID returns a TrieID for a state trie belonging to a certain block
 // header.
 func StateTrieID(header *types.Header) *TrieID {
 	return &TrieID{
-		BlockHash:   header.Hash(),
-		BlockNumber: header.Number.Uint64(),
-		StateRoot:   header.Root,
-		Root:        header.Root,
-		AccKey:      nil,
+		BlockHash:      header.Hash(),
+		BlockNumber:    header.Number.Uint64(),
+		StateRoot:      header.Root,
+		Root:           header.Root,
+		AccountAddress: nil,
 	}
 }
 
 // StorageTrieID returns a TrieID for a contract storage trie at a given account
 // of a given state trie. It also requires the root hash of the trie for
 // checking Merkle proofs.
-func StorageTrieID(state *TrieID, addrHash, root common.Hash) *TrieID {
+func StorageTrieID(state *TrieID, address common.Address, root common.Hash) *TrieID {
 	return &TrieID{
-		BlockHash:   state.BlockHash,
-		BlockNumber: state.BlockNumber,
-		StateRoot:   state.StateRoot,
-		AccKey:      addrHash[:],
-		Root:        root,
+		BlockHash:      state.BlockHash,
+		BlockNumber:    state.BlockNumber,
+		StateRoot:      state.StateRoot,
+		AccountAddress: address[:],
+		Root:           root,
 	}
 }
 
@@ -125,18 +125,15 @@ func (req *BlockRequest) StoreResult(db ethdb.Database) {
 
 // ReceiptsRequest is the ODR request type for retrieving receipts.
 type ReceiptsRequest struct {
-	Untrusted bool // Indicator whether the result retrieved is trusted or not
-	Hash      common.Hash
-	Number    uint64
-	Header    *types.Header
-	Receipts  types.Receipts
+	Hash     common.Hash
+	Number   uint64
+	Header   *types.Header
+	Receipts types.Receipts
 }
 
 // StoreResult stores the retrieved data in local database
 func (req *ReceiptsRequest) StoreResult(db ethdb.Database) {
-	if !req.Untrusted {
-		rawdb.WriteReceipts(db, req.Hash, req.Number, req.Receipts)
-	}
+	rawdb.WriteReceipts(db, req.Hash, req.Number, req.Receipts)
 }
 
 // ChtRequest is the ODR request type for retrieving header by Canonical Hash Trie

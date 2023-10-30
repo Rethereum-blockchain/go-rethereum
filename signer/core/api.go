@@ -26,18 +26,18 @@ import (
 	"os"
 	"reflect"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/accounts/scwallet"
-	"github.com/ethereum/go-ethereum/accounts/usbwallet"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/internal/ethapi"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/rpc"
-	"github.com/ethereum/go-ethereum/signer/core/apitypes"
-	"github.com/ethereum/go-ethereum/signer/storage"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/keystore"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/scwallet"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/usbwallet"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/ethapi"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/signer/core/apitypes"
+	"github.com/Rethereum-blockchain/go-rethereum/signer/storage"
 )
 
 const (
@@ -553,6 +553,7 @@ func (api *SignerAPI) SignTransaction(ctx context.Context, args apitypes.SendTxA
 	// If we are in 'rejectMode', then reject rather than show the user warnings
 	if api.rejectMode {
 		if err := msgs.GetWarnings(); err != nil {
+			log.Info("Signing aborted due to warnings. In order to continue despite warnings, please use the flag '--advanced'.")
 			return nil, err
 		}
 	}
@@ -625,6 +626,7 @@ func (api *SignerAPI) SignGnosisSafeTx(ctx context.Context, signerAddress common
 	// If we are in 'rejectMode', then reject rather than show the user warnings
 	if api.rejectMode {
 		if err := msgs.GetWarnings(); err != nil {
+			log.Info("Signing aborted due to warnings. In order to continue despite warnings, please use the flag '--advanced'.")
 			return nil, err
 		}
 	}

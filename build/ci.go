@@ -52,11 +52,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto/signify"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/build"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 	"github.com/cespare/cp"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto/signify"
-	"github.com/ethereum/go-ethereum/internal/build"
-	"github.com/ethereum/go-ethereum/params"
 )
 
 var (
@@ -139,7 +139,7 @@ var (
 	// This is the version of Go that will be downloaded by
 	//
 	//     go run ci.go install -dlgo
-	dlgoVersion = "1.20.3"
+	dlgoVersion = "1.20.7"
 
 	// This is the version of Go that will be used to bootstrap the PPA builder.
 	//
@@ -200,6 +200,7 @@ func doInstall(cmdline []string) {
 		staticlink = flag.Bool("static", false, "Create statically-linked executable")
 	)
 	flag.CommandLine.Parse(cmdline)
+	env := build.Env()
 
 	// Configure the toolchain.
 	tc := build.GoToolchain{GOARCH: *arch, CC: *cc}
@@ -211,8 +212,12 @@ func doInstall(cmdline []string) {
 	// Disable CLI markdown doc generation in release builds.
 	buildTags := []string{"urfave_cli_no_docs"}
 
+	// Enable linking the CKZG library since we can make it work with additional flags.
+	if env.UbuntuVersion != "trusty" {
+		buildTags = append(buildTags, "ckzg")
+	}
+
 	// Configure the build.
-	env := build.Env()
 	gobuild := tc.Go("build", buildFlags(env, *staticlink, buildTags)...)
 
 	// arm64 CI builders are memory-constrained and can't handle concurrent builds,
@@ -221,7 +226,6 @@ func doInstall(cmdline []string) {
 	if env.CI && runtime.GOARCH == "arm64" {
 		gobuild.Args = append(gobuild.Args, "-p", "1")
 	}
-
 	// We use -trimpath to avoid leaking local paths into the built executables.
 	gobuild.Args = append(gobuild.Args, "-trimpath")
 
@@ -249,8 +253,8 @@ func doInstall(cmdline []string) {
 func buildFlags(env build.Environment, staticLinking bool, buildTags []string) (flags []string) {
 	var ld []string
 	if env.Commit != "" {
-		ld = append(ld, "-X", "github.com/ethereum/go-ethereum/internal/version.gitCommit="+env.Commit)
-		ld = append(ld, "-X", "github.com/ethereum/go-ethereum/internal/version.gitDate="+env.Date)
+		ld = append(ld, "-X", "github.com/Rethereum-blockchain/go-rethereum/internal/version.gitCommit="+env.Commit)
+		ld = append(ld, "-X", "github.com/Rethereum-blockchain/go-rethereum/internal/version.gitDate="+env.Date)
 	}
 	// Strip DWARF on darwin. This used to be required for certain things,
 	// and there is no downside to this, so we just keep doing it.
@@ -300,6 +304,12 @@ func doTest(cmdline []string) {
 		tc.Root = build.DownloadGo(csdb, dlgoVersion)
 	}
 	gotest := tc.Go("test")
+
+	// CI needs a bit more time for the statetests (default 10m).
+	gotest.Args = append(gotest.Args, "-timeout=20m")
+
+	// Enable CKZG backend in CI.
+	gotest.Args = append(gotest.Args, "-tags=ckzg")
 
 	// Test a single package at a time. CI builders are slow
 	// and some tests run into timeouts under load.

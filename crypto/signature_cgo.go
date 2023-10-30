@@ -22,10 +22,11 @@ package crypto
 import (
 	"crypto/ecdsa"
 	"crypto/elliptic"
+	"errors"
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/crypto/secp256k1"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto/secp256k1"
 )
 
 // Ecrecover returns the uncompressed public key that created the given signature.
@@ -72,7 +73,7 @@ func VerifySignature(pubkey, digestHash, signature []byte) bool {
 func DecompressPubkey(pubkey []byte) (*ecdsa.PublicKey, error) {
 	x, y := secp256k1.DecompressPubkey(pubkey)
 	if x == nil {
-		return nil, fmt.Errorf("invalid public key")
+		return nil, errors.New("invalid public key")
 	}
 	return &ecdsa.PublicKey{X: x, Y: y, Curve: S256()}, nil
 }

@@ -20,12 +20,12 @@ import (
 	"bytes"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 // ReadTxLookupEntry retrieves the positional metadata associated with a transaction
@@ -130,8 +130,12 @@ func ReadReceipt(db ethdb.Reader, hash common.Hash, config *params.ChainConfig) 
 	if blockHash == (common.Hash{}) {
 		return nil, common.Hash{}, 0, 0
 	}
+	blockHeader := ReadHeader(db, blockHash, *blockNumber)
+	if blockHeader == nil {
+		return nil, common.Hash{}, 0, 0
+	}
 	// Read all the receipts from the block and return the one with the matching hash
-	receipts := ReadReceipts(db, blockHash, *blockNumber, config)
+	receipts := ReadReceipts(db, blockHash, *blockNumber, blockHeader.Time, config)
 	for receiptIndex, receipt := range receipts {
 		if receipt.TxHash == hash {
 			return receipt, blockHash, *blockNumber, uint64(receiptIndex)

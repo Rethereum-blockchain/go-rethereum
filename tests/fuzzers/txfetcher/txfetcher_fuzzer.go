@@ -23,10 +23,11 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/eth/fetcher"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/core/txpool"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/fetcher"
 )
 
 var (
@@ -79,7 +80,7 @@ func Fuzz(input []byte) int {
 
 	f := fetcher.NewTxFetcherForTests(
 		func(common.Hash) bool { return false },
-		func(txs []*types.Transaction) []error {
+		func(txs []*txpool.Transaction) []error {
 			return make([]error, len(txs))
 		},
 		func(string, []common.Hash) error { return nil },

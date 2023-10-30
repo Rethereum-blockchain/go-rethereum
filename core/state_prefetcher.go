@@ -19,11 +19,11 @@ package core
 import (
 	"sync/atomic"
 
-	"github.com/ethereum/go-ethereum/consensus"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 // statePrefetcher is a basic Prefetcher, which blindly executes a block on top
@@ -53,7 +53,7 @@ func (p *statePrefetcher) Prefetch(block *types.Block, statedb *state.StateDB, c
 		gaspool      = new(GasPool).AddGas(block.GasLimit())
 		blockContext = NewEVMBlockContext(header, p.bc, nil)
 		evm          = vm.NewEVM(blockContext, vm.TxContext{}, statedb, p.config, cfg)
-		signer       = types.MakeSigner(p.config, header.Number)
+		signer       = types.MakeSigner(p.config, header.Number, header.Time)
 	)
 	// Iterate over and process the individual transactions
 	byzantium := p.config.IsByzantium(block.Number())

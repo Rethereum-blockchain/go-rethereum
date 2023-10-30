@@ -19,7 +19,7 @@ package vm
 import (
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
 )
 
 // EVMLogger is used to collect execution traces from an EVM transaction

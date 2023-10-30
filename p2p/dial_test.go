@@ -27,11 +27,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/internal/testlog"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/netutil"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/testlog"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/netutil"
 )
 
 // This test checks that dynamic dials are launched from discovery results.
@@ -584,7 +584,7 @@ func (d *dialTestDialer) Dial(ctx context.Context, n *enode.Node) (net.Conn, err
 // waitForDials waits for calls to Dial with the given nodes as argument.
 // Those calls will be held blocking until completeDials is called with the same nodes.
 func (d *dialTestDialer) waitForDials(nodes []*enode.Node) error {
-	waitset := make(map[enode.ID]*enode.Node)
+	waitset := make(map[enode.ID]*enode.Node, len(nodes))
 	for _, n := range nodes {
 		waitset[n.ID()] = n
 	}

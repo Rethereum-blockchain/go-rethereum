@@ -17,19 +17,20 @@
 package external
 
 import (
+	"errors"
 	"fmt"
 	"math/big"
 	"sync"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/rpc"
-	"github.com/ethereum/go-ethereum/signer/core/apitypes"
+	"github.com/Rethereum-blockchain/go-rethereum"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/signer/core/apitypes"
 )
 
 type ExternalBackend struct {
@@ -98,11 +99,11 @@ func (api *ExternalSigner) Status() (string, error) {
 }
 
 func (api *ExternalSigner) Open(passphrase string) error {
-	return fmt.Errorf("operation not supported on external signers")
+	return errors.New("operation not supported on external signers")
 }
 
 func (api *ExternalSigner) Close() error {
-	return fmt.Errorf("operation not supported on external signers")
+	return errors.New("operation not supported on external signers")
 }
 
 func (api *ExternalSigner) Accounts() []accounts.Account {
@@ -145,7 +146,7 @@ func (api *ExternalSigner) Contains(account accounts.Account) bool {
 }
 
 func (api *ExternalSigner) Derive(path accounts.DerivationPath, pin bool) (accounts.Account, error) {
-	return accounts.Account{}, fmt.Errorf("operation not supported on external signers")
+	return accounts.Account{}, errors.New("operation not supported on external signers")
 }
 
 func (api *ExternalSigner) SelfDerive(bases []accounts.DerivationPath, chain ethereum.ChainStateReader) {
@@ -242,14 +243,14 @@ func (api *ExternalSigner) SignTx(account accounts.Account, tx *types.Transactio
 }
 
 func (api *ExternalSigner) SignTextWithPassphrase(account accounts.Account, passphrase string, text []byte) ([]byte, error) {
-	return []byte{}, fmt.Errorf("password-operations not supported on external signers")
+	return []byte{}, errors.New("password-operations not supported on external signers")
 }
 
 func (api *ExternalSigner) SignTxWithPassphrase(account accounts.Account, passphrase string, tx *types.Transaction, chainID *big.Int) (*types.Transaction, error) {
-	return nil, fmt.Errorf("password-operations not supported on external signers")
+	return nil, errors.New("password-operations not supported on external signers")
 }
 func (api *ExternalSigner) SignDataWithPassphrase(account accounts.Account, passphrase, mimeType string, data []byte) ([]byte, error) {
-	return nil, fmt.Errorf("password-operations not supported on external signers")
+	return nil, errors.New("password-operations not supported on external signers")
 }
 
 func (api *ExternalSigner) listAccounts() ([]common.Address, error) {

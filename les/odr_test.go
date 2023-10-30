@@ -16,6 +16,10 @@
 
 package les
 
+// Note: these tests are disabled now because they cannot work with the old sync
+// mechanism removed but will be useful again once the PoS ultralight mode is implemented
+
+/*
 import (
 	"bytes"
 	"context"
@@ -26,18 +30,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/txpool"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/light"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/txpool"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/light"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 type odrTestFn func(ctx context.Context, db ethdb.Database, config *params.ChainConfig, bc *core.BlockChain, lc *light.LightChain, bhash common.Hash) []byte
@@ -68,7 +72,9 @@ func odrGetReceipts(ctx context.Context, db ethdb.Database, config *params.Chain
 	var receipts types.Receipts
 	if bc != nil {
 		if number := rawdb.ReadHeaderNumber(db, bhash); number != nil {
-			receipts = rawdb.ReadReceipts(db, bhash, *number, config)
+			if header := rawdb.ReadHeader(db, bhash, *number); header != nil {
+				receipts = rawdb.ReadReceipts(db, bhash, *number, header.Time, config)
+			}
 		}
 	} else {
 		if number := rawdb.ReadHeaderNumber(db, bhash); number != nil {
@@ -449,3 +455,4 @@ func randomHash() common.Hash {
 	}
 	return hash
 }
+*/

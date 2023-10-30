@@ -19,18 +19,19 @@ package light
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"math/big"
 	"testing"
 
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/trie"
 )
 
 func TestNodeIterator(t *testing.T) {
@@ -61,8 +62,16 @@ func TestNodeIterator(t *testing.T) {
 }
 
 func diffTries(t1, t2 state.Trie) error {
-	i1 := trie.NewIterator(t1.NodeIterator(nil))
-	i2 := trie.NewIterator(t2.NodeIterator(nil))
+	trieIt1, err := t1.NodeIterator(nil)
+	if err != nil {
+		return err
+	}
+	trieIt2, err := t2.NodeIterator(nil)
+	if err != nil {
+		return err
+	}
+	i1 := trie.NewIterator(trieIt1)
+	i2 := trie.NewIterator(trieIt2)
 	for i1.Next() && i2.Next() {
 		if !bytes.Equal(i1.Key, i2.Key) {
 			spew.Dump(i2)
@@ -78,9 +87,9 @@ func diffTries(t1, t2 state.Trie) error {
 	case i2.Err != nil:
 		return fmt.Errorf("light trie iterator error: %v", i2.Err)
 	case i1.Next():
-		return fmt.Errorf("full trie iterator has more k/v pairs")
+		return errors.New("full trie iterator has more k/v pairs")
 	case i2.Next():
-		return fmt.Errorf("light trie iterator has more k/v pairs")
+		return errors.New("light trie iterator has more k/v pairs")
 	}
 	return nil
 }

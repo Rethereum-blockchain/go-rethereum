@@ -17,14 +17,15 @@
 package runtime
 
 import (
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
 )
 
 func NewEnv(cfg *Config) *vm.EVM {
 	txContext := vm.TxContext{
-		Origin:   cfg.Origin,
-		GasPrice: cfg.GasPrice,
+		Origin:     cfg.Origin,
+		GasPrice:   cfg.GasPrice,
+		BlobHashes: cfg.BlobHashes,
 	}
 	blockContext := vm.BlockContext{
 		CanTransfer: core.CanTransfer,

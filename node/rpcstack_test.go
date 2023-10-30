@@ -28,9 +28,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/internal/testlog"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/testlog"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
@@ -339,8 +339,10 @@ func TestJWT(t *testing.T) {
 		ss, _ := jwt.NewWithClaims(method, testClaim(input)).SignedString(secret)
 		return ss
 	}
-	srv := createAndStartServer(t, &httpConfig{jwtSecret: []byte("secret")},
-		true, &wsConfig{Origins: []string{"*"}, jwtSecret: []byte("secret")}, nil)
+	cfg := rpcEndpointConfig{jwtSecret: []byte("secret")}
+	httpcfg := &httpConfig{rpcEndpointConfig: cfg}
+	wscfg := &wsConfig{Origins: []string{"*"}, rpcEndpointConfig: cfg}
+	srv := createAndStartServer(t, httpcfg, true, wscfg, nil)
 	wsUrl := fmt.Sprintf("ws://%v", srv.listenAddr())
 	htUrl := fmt.Sprintf("http://%v", srv.listenAddr())
 

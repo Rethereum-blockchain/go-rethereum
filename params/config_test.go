@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
 )
 
 func TestCheckCompatible(t *testing.T) {
@@ -121,6 +121,7 @@ func TestCheckCompatible(t *testing.T) {
 
 func TestConfigRules(t *testing.T) {
 	c := &ChainConfig{
+		LondonBlock:  new(big.Int),
 		ShanghaiTime: newUint64(500),
 	}
 	var stamp uint64

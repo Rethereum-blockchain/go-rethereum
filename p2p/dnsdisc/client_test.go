@@ -24,14 +24,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/testlog"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/internal/testlog"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
 )
 
 var signingKeyForTesting, _ = crypto.ToECDSA(hexutil.MustDecode("0xdc599867fc513f8f5e2c2c9c489cde5e71362d1d9ec6e693e0de063236ed1240"))
@@ -439,7 +439,7 @@ func testNodes(keys []*ecdsa.PrivateKey) []*enode.Node {
 type mapResolver map[string]string
 
 func newMapResolver(maps ...map[string]string) mapResolver {
-	mr := make(mapResolver)
+	mr := make(mapResolver, len(maps))
 	for _, m := range maps {
 		mr.add(m)
 	}

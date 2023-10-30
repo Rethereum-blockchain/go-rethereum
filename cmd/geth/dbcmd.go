@@ -27,17 +27,17 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/console/prompt"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state/snapshot"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/internal/flags"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/Rethereum-blockchain/go-rethereum/cmd/utils"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/console/prompt"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/state/snapshot"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/flags"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli/v2"
 )
@@ -519,8 +519,12 @@ func dbDumpTrie(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
+	trieIt, err := theTrie.NodeIterator(start)
+	if err != nil {
+		return err
+	}
 	var count int64
-	it := trie.NewIterator(theTrie.NodeIterator(start))
+	it := trie.NewIterator(trieIt)
 	for it.Next() {
 		if max > 0 && count == max {
 			fmt.Printf("Exiting after %d values\n", count)

@@ -22,8 +22,8 @@ import (
 	"math/big"
 	"os"
 
-	"github.com/ethereum/go-ethereum/cmd/evm/internal/t8ntool"
-	"github.com/ethereum/go-ethereum/internal/flags"
+	"github.com/Rethereum-blockchain/go-rethereum/cmd/evm/internal/t8ntool"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/flags"
 	"github.com/urfave/cli/v2"
 )
 
@@ -179,9 +179,6 @@ var blockBuilderCommand = &cli.Command{
 		t8ntool.InputWithdrawalsFlag,
 		t8ntool.InputTxsRlpFlag,
 		t8ntool.SealCliqueFlag,
-		t8ntool.SealEthashFlag,
-		t8ntool.SealEthashDirFlag,
-		t8ntool.SealEthashModeFlag,
 		t8ntool.VerbosityFlag,
 	},
 }

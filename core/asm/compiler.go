@@ -22,8 +22,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
 )
 
 // Compiler contains information about the parsed source
@@ -157,13 +157,12 @@ func (c *Compiler) compileLine() error {
 }
 
 // compileNumber compiles the number to bytes
-func (c *Compiler) compileNumber(element token) (int, error) {
+func (c *Compiler) compileNumber(element token) {
 	num := math.MustParseBig256(element.text).Bytes()
 	if len(num) == 0 {
 		num = []byte{0}
 	}
 	c.pushBin(num)
-	return len(num), nil
 }
 
 // compileElement compiles the element (push & label or both)

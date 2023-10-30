@@ -19,23 +19,23 @@ package les
 import (
 	crand "crypto/rand"
 	"encoding/binary"
-	"fmt"
+	"errors"
 	"math/big"
 	"math/rand"
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/les/flowcontrol"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/les/flowcontrol"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 // requestBenchmark is an interface for different randomized request generators
@@ -59,7 +59,7 @@ func (b *benchmarkBlockHeaders) init(h *serverHandler, count int) error {
 	b.offset = 0
 	b.randMax = h.blockchain.CurrentHeader().Number.Int64() + 1 - d
 	if b.randMax < 0 {
-		return fmt.Errorf("chain is too short")
+		return errors.New("chain is too short")
 	}
 	if b.reverse {
 		b.offset = d
@@ -117,7 +117,7 @@ func (b *benchmarkProofsOrCode) request(peer *serverPeer, index int) error {
 	key := make([]byte, 32)
 	crand.Read(key)
 	if b.code {
-		return peer.requestCode(0, []CodeReq{{BHash: b.headHash, AccKey: key}})
+		return peer.requestCode(0, []CodeReq{{BHash: b.headHash, AccountAddress: key}})
 	}
 	return peer.requestProofs(0, []ProofReq{{BHash: b.headHash, Key: key}})
 }
@@ -137,7 +137,7 @@ func (b *benchmarkHelperTrie) init(h *serverHandler, count int) error {
 		b.headNum = b.sectionCount*params.CHTFrequency - 1
 	}
 	if b.sectionCount == 0 {
-		return fmt.Errorf("no processed sections available")
+		return errors.New("no processed sections available")
 	}
 	return nil
 }
@@ -338,7 +338,7 @@ func (h *serverHandler) measure(setup *benchmarkSetup, count int) error {
 	case <-h.closeCh:
 		clientPipe.Close()
 		serverPipe.Close()
-		return fmt.Errorf("Benchmark cancelled")
+		return errors.New("Benchmark cancelled")
 	}
 
 	setup.totalTime += time.Duration(mclock.Now() - start)

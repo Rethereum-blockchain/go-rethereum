@@ -22,14 +22,14 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/trie"
 )
 
 func TestInvalidCliqueConfig(t *testing.T) {
@@ -172,7 +172,6 @@ func TestGenesisHashes(t *testing.T) {
 	}{
 		{DefaultGenesisBlock(), params.MainnetGenesisHash},
 		{DefaultGoerliGenesisBlock(), params.GoerliGenesisHash},
-		{DefaultRinkebyGenesisBlock(), params.RinkebyGenesisHash},
 		{DefaultKrontosGenesisBlock(), params.KrontosGenesisHash},
 	} {
 		// Test via MustCommit

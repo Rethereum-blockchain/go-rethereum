@@ -23,13 +23,13 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/metrics"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 var (
@@ -333,7 +333,7 @@ func NewNodeStateMachine(db ethdb.KeyValueStore, dbKey []byte, clock mclock.Cloc
 		fields:    make([]*fieldInfo, len(setup.fields)),
 	}
 	ns.opWait = sync.NewCond(&ns.lock)
-	stateNameMap := make(map[string]int)
+	stateNameMap := make(map[string]int, len(setup.flags))
 	for index, flag := range setup.flags {
 		if _, ok := stateNameMap[flag.name]; ok {
 			panic("Node state flag name collision: " + flag.name)
@@ -343,7 +343,7 @@ func NewNodeStateMachine(db ethdb.KeyValueStore, dbKey []byte, clock mclock.Cloc
 			ns.saveFlags |= bitMask(1) << uint(index)
 		}
 	}
-	fieldNameMap := make(map[string]int)
+	fieldNameMap := make(map[string]int, len(setup.fields))
 	for index, field := range setup.fields {
 		if _, ok := fieldNameMap[field.name]; ok {
 			panic("Node field name collision: " + field.name)

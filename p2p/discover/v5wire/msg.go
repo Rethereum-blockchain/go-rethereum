@@ -20,11 +20,11 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 // Packet is implemented by all message types.
@@ -216,7 +216,7 @@ func (p *TalkRequest) RequestID() []byte      { return p.ReqID }
 func (p *TalkRequest) SetRequestID(id []byte) { p.ReqID = id }
 
 func (p *TalkRequest) AppendLogInfo(ctx []interface{}) []interface{} {
-	return append(ctx, "proto", p.Protocol, "reqid", hexutil.Bytes(p.ReqID), "len", len(p.Message))
+	return append(ctx, "proto", p.Protocol, "req", hexutil.Bytes(p.ReqID), "len", len(p.Message))
 }
 
 func (*TalkResponse) Name() string             { return "TALKRESP/v5" }
@@ -225,5 +225,5 @@ func (p *TalkResponse) RequestID() []byte      { return p.ReqID }
 func (p *TalkResponse) SetRequestID(id []byte) { p.ReqID = id }
 
 func (p *TalkResponse) AppendLogInfo(ctx []interface{}) []interface{} {
-	return append(ctx, "req", p.ReqID, "len", len(p.Message))
+	return append(ctx, "req", hexutil.Bytes(p.ReqID), "len", len(p.Message))
 }

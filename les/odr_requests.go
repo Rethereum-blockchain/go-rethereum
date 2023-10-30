@@ -21,15 +21,15 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/light"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/light"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 )
 
 var (
@@ -183,9 +183,9 @@ func (r *ReceiptsRequest) Validate(db ethdb.Database, msg *Msg) error {
 }
 
 type ProofReq struct {
-	BHash       common.Hash
-	AccKey, Key []byte
-	FromLevel   uint
+	BHash               common.Hash
+	AccountAddress, Key []byte
+	FromLevel           uint
 }
 
 // ODR request type for state/storage trie entries, see LesOdrRequest interface
@@ -206,9 +206,9 @@ func (r *TrieRequest) CanSend(peer *serverPeer) bool {
 func (r *TrieRequest) Request(reqID uint64, peer *serverPeer) error {
 	peer.Log().Debug("Requesting trie proof", "root", r.Id.Root, "key", r.Key)
 	req := ProofReq{
-		BHash:  r.Id.BlockHash,
-		AccKey: r.Id.AccKey,
-		Key:    r.Key,
+		BHash:          r.Id.BlockHash,
+		AccountAddress: r.Id.AccountAddress,
+		Key:            r.Key,
 	}
 	return peer.requestProofs(reqID, []ProofReq{req})
 }
@@ -238,8 +238,8 @@ func (r *TrieRequest) Validate(db ethdb.Database, msg *Msg) error {
 }
 
 type CodeReq struct {
-	BHash  common.Hash
-	AccKey []byte
+	BHash          common.Hash
+	AccountAddress []byte
 }
 
 // CodeRequest is the ODR request type for node data (used for retrieving contract code), see LesOdrRequest interface
@@ -260,8 +260,8 @@ func (r *CodeRequest) CanSend(peer *serverPeer) bool {
 func (r *CodeRequest) Request(reqID uint64, peer *serverPeer) error {
 	peer.Log().Debug("Requesting code data", "hash", r.Hash)
 	req := CodeReq{
-		BHash:  r.Id.BlockHash,
-		AccKey: r.Id.AccKey,
+		BHash:          r.Id.BlockHash,
+		AccountAddress: r.Id.AccountAddress,
 	}
 	return peer.requestCode(reqID, []CodeReq{req})
 }

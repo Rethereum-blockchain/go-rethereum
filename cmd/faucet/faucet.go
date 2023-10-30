@@ -39,24 +39,24 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/eth/downloader"
-	"github.com/ethereum/go-ethereum/eth/ethconfig"
-	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/ethstats"
-	"github.com/ethereum/go-ethereum/internal/version"
-	"github.com/ethereum/go-ethereum/les"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/nat"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/keystore"
+	"github.com/Rethereum-blockchain/go-rethereum/cmd/utils"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/downloader"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/ethconfig"
+	"github.com/Rethereum-blockchain/go-rethereum/ethclient"
+	"github.com/Rethereum-blockchain/go-rethereum/ethstats"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/version"
+	"github.com/Rethereum-blockchain/go-rethereum/les"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/nat"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 	"github.com/gorilla/websocket"
 )
 
@@ -86,7 +86,6 @@ var (
 	twitterTokenV1Flag = flag.String("twitter.token.v1", "", "Bearer token to authenticate with the v1.1 Twitter API")
 
 	goerliFlag  = flag.Bool("goerli", false, "Initializes the faucet with Görli network config")
-	rinkebyFlag = flag.Bool("rinkeby", false, "Initializes the faucet with Rinkeby network config")
 	krontosFlag = flag.Bool("krontos", false, "Initializes the faucet with Krontos network config")
 )
 
@@ -140,7 +139,7 @@ func main() {
 		log.Crit("Failed to render the faucet template", "err", err)
 	}
 	// Load and parse the genesis block requested by the user
-	genesis, err := getGenesis(*genesisFlag, *goerliFlag, *rinkebyFlag, *krontosFlag)
+	genesis, err := getGenesis(*genesisFlag, *goerliFlag, *sepoliaFlag)
 	if err != nil {
 		log.Crit("Failed to parse genesis config", "err", err)
 	}
@@ -269,11 +268,7 @@ func newFaucet(genesis *core.Genesis, port int, enodes []*enode.Node, network ui
 		}
 	}
 	// Attach to the client and retrieve and interesting metadatas
-	api, err := stack.Attach()
-	if err != nil {
-		stack.Close()
-		return nil, err
-	}
+	api := stack.Attach()
 	client := ethclient.NewClient(api)
 
 	return &faucet{
@@ -463,7 +458,7 @@ func (f *faucet) apiHandler(w http.ResponseWriter, r *http.Request) {
 			id = username
 		default:
 			//lint:ignore ST1005 This error is to be displayed in the browser
-			err = errors.New("Something funky happened, please open an issue at https://github.com/ethereum/go-ethereum/issues")
+			err = errors.New("Something funky happened, please open an issue at https://github.com/Rethereum-blockchain/go-rethereum/issues")
 		}
 		if err != nil {
 			if err = sendError(wsconn, err); err != nil {
@@ -888,11 +883,9 @@ func getGenesis(genesisFlag string, goerliFlag bool, rinkebyFlag bool, krontosFl
 		return &genesis, err
 	case goerliFlag:
 		return core.DefaultGoerliGenesisBlock(), nil
-	case rinkebyFlag:
-		return core.DefaultRinkebyGenesisBlock(), nil
 	case krontosFlag:
 		return core.DefaultKrontosGenesisBlock(), nil
 	default:
-		return nil, fmt.Errorf("no genesis flag provided")
+		return nil, errors.New("no genesis flag provided")
 	}
 }

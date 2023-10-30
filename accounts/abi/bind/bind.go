@@ -17,7 +17,7 @@
 // Package bind generates Ethereum contract Go bindings.
 //
 // Detailed usage document and tutorial available on the go-ethereum Wiki page:
-// https://github.com/ethereum/go-ethereum/wiki/Native-DApps:-Go-bindings-to-Ethereum-contracts
+// https://github.com/Rethereum-blockchain/go-rethereum/wiki/Native-DApps:-Go-bindings-to-Ethereum-contracts
 package bind
 
 import (
@@ -29,8 +29,8 @@ import (
 	"text/template"
 	"unicode"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/abi"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
 )
 
 // Lang is a target programming language selector to generate bindings for.
@@ -133,11 +133,18 @@ func Bind(types []string, abis []string, bytecodes []string, fsigs []map[string]
 			// Normalize the method for capital cases and non-anonymous inputs/outputs
 			normalized := original
 			normalizedName := methodNormalizer[lang](alias(aliases, original.Name))
-
 			// Ensure there is no duplicated identifier
 			var identifiers = callIdentifiers
 			if !original.IsConstant() {
 				identifiers = transactIdentifiers
+			}
+			// Name shouldn't start with a digit. It will make the generated code invalid.
+			if len(normalizedName) > 0 && unicode.IsDigit(rune(normalizedName[0])) {
+				normalizedName = fmt.Sprintf("M%s", normalizedName)
+				normalizedName = abi.ResolveNameConflict(normalizedName, func(name string) bool {
+					_, ok := identifiers[name]
+					return ok
+				})
 			}
 			if identifiers[normalizedName] {
 				return "", fmt.Errorf("duplicated identifier \"%s\"(normalized \"%s\"), use --alias for renaming", original.Name, normalizedName)
@@ -182,6 +189,14 @@ func Bind(types []string, abis []string, bytecodes []string, fsigs []map[string]
 
 			// Ensure there is no duplicated identifier
 			normalizedName := methodNormalizer[lang](alias(aliases, original.Name))
+			// Name shouldn't start with a digit. It will make the generated code invalid.
+			if len(normalizedName) > 0 && unicode.IsDigit(rune(normalizedName[0])) {
+				normalizedName = fmt.Sprintf("E%s", normalizedName)
+				normalizedName = abi.ResolveNameConflict(normalizedName, func(name string) bool {
+					_, ok := eventIdentifiers[name]
+					return ok
+				})
+			}
 			if eventIdentifiers[normalizedName] {
 				return "", fmt.Errorf("duplicated identifier \"%s\"(normalized \"%s\"), use --alias for renaming", original.Name, normalizedName)
 			}

@@ -23,13 +23,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/core/vm"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 type testTxRelay struct {
@@ -103,7 +103,7 @@ func TestTxPool(t *testing.T) {
 		discard: make(chan int, 1),
 		mined:   make(chan int, 1),
 	}
-	lightchain, _ := NewLightChain(odr, params.TestChainConfig, ethash.NewFullFaker(), nil)
+	lightchain, _ := NewLightChain(odr, params.TestChainConfig, ethash.NewFullFaker())
 	txPermanent = 50
 	pool := NewTxPool(params.TestChainConfig, lightchain, relay)
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
@@ -122,7 +122,7 @@ func TestTxPool(t *testing.T) {
 			}
 		}
 
-		if _, err := lightchain.InsertHeaderChain([]*types.Header{block.Header()}, 1); err != nil {
+		if _, err := lightchain.InsertHeaderChain([]*types.Header{block.Header()}); err != nil {
 			panic(err)
 		}
 

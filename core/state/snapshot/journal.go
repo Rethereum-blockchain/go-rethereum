@@ -24,13 +24,13 @@ import (
 	"io"
 	"time"
 
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/rawdb"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/trie"
 	"github.com/VictoriaMetrics/fastcache"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/trie"
 )
 
 const journalVersion uint64 = 0
@@ -305,7 +305,7 @@ func iterateJournal(db ethdb.KeyValueReader, callback journalCallback) error {
 	}
 	if baseRoot := rawdb.ReadSnapshotRoot(db); baseRoot != parent {
 		log.Warn("Loaded snapshot journal", "diskroot", baseRoot, "diffs", "unmatched")
-		return fmt.Errorf("mismatched disk and diff layers")
+		return errors.New("mismatched disk and diff layers")
 	}
 	for {
 		var (

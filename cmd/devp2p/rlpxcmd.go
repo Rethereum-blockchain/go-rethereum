@@ -17,14 +17,15 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net"
 
-	"github.com/ethereum/go-ethereum/cmd/devp2p/internal/ethtest"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/rlpx"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/cmd/devp2p/internal/ethtest"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/rlpx"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 	"github.com/urfave/cli/v2"
 )
 
@@ -91,7 +92,7 @@ func rlpxPing(ctx *cli.Context) error {
 	case 1:
 		var msg []p2p.DiscReason
 		if rlp.DecodeBytes(data, &msg); len(msg) == 0 {
-			return fmt.Errorf("invalid disconnect message")
+			return errors.New("invalid disconnect message")
 		}
 		return fmt.Errorf("received disconnect message: %v", msg[0])
 	default:

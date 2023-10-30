@@ -19,17 +19,19 @@ package vm
 import (
 	"errors"
 
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 // LookupInstructionSet returns the instructionset for the fork configured by
 // the rules.
 func LookupInstructionSet(rules params.Rules) (JumpTable, error) {
 	switch {
+	case rules.IsVerkle:
+		return newCancunInstructionSet(), errors.New("verkle-fork not defined yet")
 	case rules.IsPrague:
-		return newShanghaiInstructionSet(), errors.New("prague-fork not defined yet")
+		return newCancunInstructionSet(), errors.New("prague-fork not defined yet")
 	case rules.IsCancun:
-		return newShanghaiInstructionSet(), errors.New("cancun-fork not defined yet")
+		return newCancunInstructionSet(), nil
 	case rules.IsGaspar:
 		return newShanghaiInstructionSet(), nil
 	case rules.IsShanghai:

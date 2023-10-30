@@ -27,14 +27,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/abi"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/abi/bind"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 func TestSimulatedBackend(t *testing.T) {
@@ -161,6 +161,7 @@ func TestAdjustTime(t *testing.T) {
 func TestNewAdjustTimeFail(t *testing.T) {
 	testAddr := crypto.PubkeyToAddress(testKey.PublicKey)
 	sim := simTestBackend(testAddr)
+	defer sim.blockchain.Stop()
 
 	// Create tx and send
 	head, _ := sim.HeaderByNumber(context.Background(), nil) // Should be child's, good enough

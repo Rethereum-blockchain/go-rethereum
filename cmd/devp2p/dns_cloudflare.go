@@ -18,12 +18,13 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/dnsdisc"
 	"github.com/cloudflare/cloudflare-go"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/dnsdisc"
 	"github.com/urfave/cli/v2"
 )
 
@@ -48,7 +49,7 @@ type cloudflareClient struct {
 func newCloudflareClient(ctx *cli.Context) *cloudflareClient {
 	token := ctx.String(cloudflareTokenFlag.Name)
 	if token == "" {
-		exit(fmt.Errorf("need cloudflare API token to proceed"))
+		exit(errors.New("need cloudflare API token to proceed"))
 	}
 	api, err := cloudflare.NewWithAPIToken(token)
 	if err != nil {

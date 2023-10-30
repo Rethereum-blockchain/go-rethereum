@@ -21,17 +21,17 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"sort"
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/metrics"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"golang.org/x/exp/slices"
 )
 
 var (
@@ -296,6 +296,7 @@ loop:
 
 func (p *Peer) pingLoop() {
 	defer p.wg.Done()
+
 	ping := time.NewTimer(pingInterval)
 	defer ping.Stop()
 
@@ -337,7 +338,6 @@ func (p *Peer) handle(msg Msg) error {
 	switch {
 	case msg.Code == pingMsg:
 		msg.Discard()
-
 		select {
 		case p.pingRecv <- struct{}{}:
 		case <-p.closed:
@@ -386,7 +386,7 @@ func countMatchingProtocols(protocols []Protocol, caps []Cap) int {
 
 // matchProtocols creates structures for matching named subprotocols.
 func matchProtocols(protocols []Protocol, caps []Cap, rw MsgReadWriter) map[string]*protoRW {
-	sort.Sort(capsByNameAndVersion(caps))
+	slices.SortFunc(caps, Cap.Cmp)
 	offset := baseProtocolLength
 	result := make(map[string]*protoRW)
 
@@ -521,7 +521,7 @@ func (p *Peer) Info() *PeerInfo {
 		ID:        p.ID().String(),
 		Name:      p.Fullname(),
 		Caps:      caps,
-		Protocols: make(map[string]interface{}),
+		Protocols: make(map[string]interface{}, len(p.running)),
 	}
 	if p.Node().Seq() > 0 {
 		info.ENR = p.Node().String()

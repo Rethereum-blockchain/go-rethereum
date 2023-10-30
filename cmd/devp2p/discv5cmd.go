@@ -17,13 +17,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
-	"github.com/ethereum/go-ethereum/cmd/devp2p/internal/v5test"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/internal/flags"
-	"github.com/ethereum/go-ethereum/p2p/discover"
+	"github.com/Rethereum-blockchain/go-rethereum/cmd/devp2p/internal/v5test"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/flags"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/discover"
 	"github.com/urfave/cli/v2"
 )
 
@@ -98,7 +99,7 @@ func discv5Resolve(ctx *cli.Context) error {
 
 func discv5Crawl(ctx *cli.Context) error {
 	if ctx.NArg() < 1 {
-		return fmt.Errorf("need nodes file as argument")
+		return errors.New("need nodes file as argument")
 	}
 	nodesFile := ctx.Args().First()
 	var inputSet nodeSet

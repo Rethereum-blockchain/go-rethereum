@@ -28,20 +28,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/eth"
-	ethdownloader "github.com/ethereum/go-ethereum/eth/downloader"
-	"github.com/ethereum/go-ethereum/eth/ethconfig"
-	"github.com/ethereum/go-ethereum/les/downloader"
-	"github.com/ethereum/go-ethereum/les/flowcontrol"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/simulations"
-	"github.com/ethereum/go-ethereum/p2p/simulations/adapters"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/eth"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/downloader"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/ethconfig"
+	"github.com/Rethereum-blockchain/go-rethereum/les/flowcontrol"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/adapters"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 	"github.com/mattn/go-colorable"
 )
 
@@ -494,14 +492,13 @@ func testSim(t *testing.T, serverCount, clientCount int, serverDir, clientDir []
 
 func newLesClientService(ctx *adapters.ServiceContext, stack *node.Node) (node.Lifecycle, error) {
 	config := ethconfig.Defaults
-	config.SyncMode = (ethdownloader.SyncMode)(downloader.LightSync)
-	config.Ethash.PowMode = ethash.ModeFake
+	config.SyncMode = downloader.LightSync
 	return New(stack, &config)
 }
 
 func newLesServerService(ctx *adapters.ServiceContext, stack *node.Node) (node.Lifecycle, error) {
 	config := ethconfig.Defaults
-	config.SyncMode = (ethdownloader.SyncMode)(downloader.FullSync)
+	config.SyncMode = downloader.FullSync
 	config.LightServ = testServerCapacity
 	config.LightPeers = testMaxClients
 	ethereum, err := eth.New(stack, &config)

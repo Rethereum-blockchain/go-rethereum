@@ -19,7 +19,7 @@ package netutil
 import (
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/mclock"
+	"github.com/Rethereum-blockchain/go-rethereum/common/mclock"
 )
 
 // IPTracker predicts the external endpoint, i.e. IP address and port, of the local host
@@ -78,7 +78,7 @@ func (it *IPTracker) PredictEndpoint() string {
 	it.gcStatements(it.clock.Now())
 
 	// The current strategy is simple: find the endpoint with most statements.
-	counts := make(map[string]int)
+	counts := make(map[string]int, len(it.statements))
 	maxcount, max := 0, ""
 	for _, s := range it.statements {
 		c := counts[s.endpoint] + 1

@@ -24,13 +24,13 @@ import (
 	"net"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/simulations/pipes"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/event"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/simulations/pipes"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
 	"github.com/gorilla/websocket"
 )
 
@@ -147,7 +147,7 @@ func (s *SimAdapter) DialRPC(id enode.ID) (*rpc.Client, error) {
 	if !ok {
 		return nil, fmt.Errorf("unknown node: %s", id)
 	}
-	return node.node.Attach()
+	return node.node.Attach(), nil
 }
 
 // GetNode returns the node with the given ID if it exists
@@ -274,10 +274,7 @@ func (sn *SimNode) Start(snapshots map[string][]byte) error {
 	}
 
 	// create an in-process RPC client
-	client, err := sn.node.Attach()
-	if err != nil {
-		return err
-	}
+	client := sn.node.Attach()
 	sn.lock.Lock()
 	sn.client = client
 	sn.lock.Unlock()

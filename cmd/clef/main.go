@@ -35,25 +35,25 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/internal/ethapi"
-	"github.com/ethereum/go-ethereum/internal/flags"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/ethereum/go-ethereum/rpc"
-	"github.com/ethereum/go-ethereum/signer/core"
-	"github.com/ethereum/go-ethereum/signer/core/apitypes"
-	"github.com/ethereum/go-ethereum/signer/fourbyte"
-	"github.com/ethereum/go-ethereum/signer/rules"
-	"github.com/ethereum/go-ethereum/signer/storage"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts"
+	"github.com/Rethereum-blockchain/go-rethereum/accounts/keystore"
+	"github.com/Rethereum-blockchain/go-rethereum/cmd/utils"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/hexutil"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/ethapi"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/flags"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/node"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/rpc"
+	"github.com/Rethereum-blockchain/go-rethereum/signer/core"
+	"github.com/Rethereum-blockchain/go-rethereum/signer/core/apitypes"
+	"github.com/Rethereum-blockchain/go-rethereum/signer/fourbyte"
+	"github.com/Rethereum-blockchain/go-rethereum/signer/rules"
+	"github.com/Rethereum-blockchain/go-rethereum/signer/storage"
 	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-isatty"
 	"github.com/urfave/cli/v2"
@@ -100,7 +100,7 @@ var (
 	chainIdFlag = &cli.Int64Flag{
 		Name:  "chainid",
 		Value: params.MainnetChainConfig.ChainID.Int64(),
-		Usage: "Chain id to use for signing (1=mainnet, 4=Rinkeby, 5=Goerli)",
+		Usage: "Chain id to use for signing (1=mainnet, 5=Goerli)",
 	}
 	rpcPortFlag = &cli.IntFlag{
 		Name:     "http.port",
@@ -327,7 +327,7 @@ func initializeSecrets(c *cli.Context) error {
 		return err
 	}
 	if num != len(masterSeed) {
-		return fmt.Errorf("failed to read enough random")
+		return errors.New("failed to read enough random")
 	}
 	n, p := keystore.StandardScryptN, keystore.StandardScryptP
 	if c.Bool(utils.LightKDFFlag.Name) {
@@ -483,7 +483,7 @@ func initialize(c *cli.Context) error {
 		}
 	} else if !c.Bool(acceptFlag.Name) {
 		if !confirm(legalWarning) {
-			return fmt.Errorf("aborted by user")
+			return errors.New("aborted by user")
 		}
 		fmt.Println()
 	}
@@ -591,7 +591,7 @@ func accountImport(c *cli.Context) error {
   Address %v
   Keystore file: %v
 
-The key is now encrypted; losing the password will result in permanently losing 
+The key is now encrypted; losing the password will result in permanently losing
 access to the key and all associated funds!
 
 Make sure to backup keystore and passwords in a safe location.`,
@@ -733,6 +733,7 @@ func signer(c *cli.Context) error {
 		cors := utils.SplitAndTrim(c.String(utils.HTTPCORSDomainFlag.Name))
 
 		srv := rpc.NewServer()
+		srv.SetBatchLimits(node.DefaultConfig.BatchRequestLimit, node.DefaultConfig.BatchResponseMaxSize)
 		err := node.RegisterApis(rpcAPI, []string{"account"}, srv)
 		if err != nil {
 			utils.Fatalf("Could not register API: %w", err)
@@ -845,7 +846,7 @@ func readMasterKey(ctx *cli.Context, ui core.UIClientAPI) ([]byte, error) {
 	}
 	masterSeed, err := decryptSeed(cipherKey, password)
 	if err != nil {
-		return nil, fmt.Errorf("failed to decrypt the master seed of clef")
+		return nil, errors.New("failed to decrypt the master seed of clef")
 	}
 	if len(masterSeed) < 256 {
 		return nil, fmt.Errorf("master seed of insufficient length, expected >255 bytes, got %d", len(masterSeed))
@@ -869,7 +870,7 @@ func checkFile(filename string) error {
 	}
 	// Check the unix permission bits
 	// However, on windows, we cannot use the unix perm-bits, see
-	// https://github.com/ethereum/go-ethereum/issues/20123
+	// https://github.com/Rethereum-blockchain/go-rethereum/issues/20123
 	if runtime.GOOS != "windows" && info.Mode().Perm()&0377 != 0 {
 		return fmt.Errorf("file (%v) has insecure file permissions (%v)", filename, info.Mode().String())
 	}

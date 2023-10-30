@@ -18,25 +18,21 @@
 package ethconfig
 
 import (
-	"os"
-	"os/user"
-	"path/filepath"
-	"runtime"
+	"errors"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/consensus"
-	"github.com/ethereum/go-ethereum/consensus/clique"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/txpool"
-	"github.com/ethereum/go-ethereum/eth/downloader"
-	"github.com/ethereum/go-ethereum/eth/gasprice"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/miner"
-	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/clique"
+	"github.com/Rethereum-blockchain/go-rethereum/consensus/ethash"
+	"github.com/Rethereum-blockchain/go-rethereum/core"
+	"github.com/Rethereum-blockchain/go-rethereum/core/txpool/blobpool"
+	"github.com/Rethereum-blockchain/go-rethereum/core/txpool/legacypool"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/downloader"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/gasprice"
+	"github.com/Rethereum-blockchain/go-rethereum/ethdb"
+	"github.com/Rethereum-blockchain/go-rethereum/miner"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 // FullNodeGPO contains default gasprice oracle settings for full node.
@@ -144,18 +140,12 @@ type Config struct {
 	RequiredBlocks map[uint64]common.Hash `toml:"-"`
 
 	// Light client options
-	LightServ          int  `toml:",omitempty"` // Maximum percentage of time allowed for serving LES requests
-	LightIngress       int  `toml:",omitempty"` // Incoming bandwidth limit for light servers
-	LightEgress        int  `toml:",omitempty"` // Outgoing bandwidth limit for light servers
-	LightPeers         int  `toml:",omitempty"` // Maximum number of LES client peers
-	LightNoPrune       bool `toml:",omitempty"` // Whether to disable light chain pruning
-	LightNoSyncServe   bool `toml:",omitempty"` // Whether to serve light clients before syncing
-	SyncFromCheckpoint bool `toml:",omitempty"` // Whether to sync the header chain from the configured checkpoint
-
-	// Ultra Light client options
-	UltraLightServers      []string `toml:",omitempty"` // List of trusted ultra light servers
-	UltraLightFraction     int      `toml:",omitempty"` // Percentage of trusted servers to accept an announcement
-	UltraLightOnlyAnnounce bool     `toml:",omitempty"` // Whether to only announce headers, or also serve them
+	LightServ        int  `toml:",omitempty"` // Maximum percentage of time allowed for serving LES requests
+	LightIngress     int  `toml:",omitempty"` // Incoming bandwidth limit for light servers
+	LightEgress      int  `toml:",omitempty"` // Outgoing bandwidth limit for light servers
+	LightPeers       int  `toml:",omitempty"` // Maximum number of LES client peers
+	LightNoPrune     bool `toml:",omitempty"` // Whether to disable light chain pruning
+	LightNoSyncServe bool `toml:",omitempty"` // Whether to serve light clients before syncing
 
 	// Database options
 	SkipBcVersionCheck bool `toml:"-"`
@@ -163,13 +153,11 @@ type Config struct {
 	DatabaseCache      int
 	DatabaseFreezer    string
 
-	TrieCleanCache          int
-	TrieCleanCacheJournal   string        `toml:",omitempty"` // Disk journal directory for trie cache to survive node restarts
-	TrieCleanCacheRejournal time.Duration `toml:",omitempty"` // Time interval to regenerate the journal for clean cache
-	TrieDirtyCache          int
-	TrieTimeout             time.Duration
-	SnapshotCache           int
-	Preimages               bool
+	TrieCleanCache int
+	TrieDirtyCache int
+	TrieTimeout    time.Duration
+	SnapshotCache  int
+	Preimages      bool
 
 	// This is the number of blocks for which logs will be cached in the filter system.
 	FilterLogCacheSize int
@@ -177,11 +165,9 @@ type Config struct {
 	// Mining options
 	Miner miner.Config
 
-	// Ethash options
-	Ethash ethash.Config
-
 	// Transaction pool options
-	TxPool txpool.Config
+	TxPool   legacypool.Config
+	BlobPool blobpool.Config
 
 	// Gas Price Oracle options
 	GPO gasprice.Config
@@ -202,44 +188,20 @@ type Config struct {
 	// send-transaction variants. The unit is ether.
 	RPCTxFeeCap float64
 
-	// Checkpoint is a hardcoded checkpoint which can be nil.
-	Checkpoint *params.TrustedCheckpoint `toml:",omitempty"`
+	// OverrideCancun (TODO: remove after the fork)
+	OverrideCancun *uint64 `toml:",omitempty"`
 
-	// CheckpointOracle is the configuration for checkpoint oracle.
-	CheckpointOracle *params.CheckpointOracleConfig `toml:",omitempty"`
-
-	// OverrideShanghai (TODO: remove after the fork)
-	OverrideShanghai *uint64 `toml:",omitempty"`
+	// OverrideVerkle (TODO: remove after the fork)
+	OverrideVerkle *uint64 `toml:",omitempty"`
 }
 
-// CreateConsensusEngine creates a consensus engine for the given chain configuration.
-func CreateConsensusEngine(stack *node.Node, ethashConfig *ethash.Config, cliqueConfig *params.CliqueConfig, notify []string, noverify bool, db ethdb.Database) consensus.Engine {
+// CreateConsensusEngine creates a consensus engine for the given chain config.
+// Clique is allowed for now to live standalone, but ethash is forbidden and can
+// only exist on already merged networks.
+func CreateConsensusEngine(config *params.ChainConfig, db ethdb.Database) (consensus.Engine, error) {
 	// If proof-of-authority is requested, set it up
-	var engine consensus.Engine
-	if cliqueConfig != nil {
-		engine = clique.New(cliqueConfig, db)
-	} else {
-		switch ethashConfig.PowMode {
-		case ethash.ModeFake:
-			log.Warn("Ethash used in fake mode")
-		case ethash.ModeTest:
-			log.Warn("Ethash used in test mode")
-		case ethash.ModeShared:
-			log.Warn("Ethash used in shared mode")
-		}
-		engine = ethash.New(ethash.Config{
-			PowMode:          ethashConfig.PowMode,
-			CacheDir:         stack.ResolvePath(ethashConfig.CacheDir),
-			CachesInMem:      ethashConfig.CachesInMem,
-			CachesOnDisk:     ethashConfig.CachesOnDisk,
-			CachesLockMmap:   ethashConfig.CachesLockMmap,
-			DatasetDir:       ethashConfig.DatasetDir,
-			DatasetsInMem:    ethashConfig.DatasetsInMem,
-			DatasetsOnDisk:   ethashConfig.DatasetsOnDisk,
-			DatasetsLockMmap: ethashConfig.DatasetsLockMmap,
-			NotifyFull:       ethashConfig.NotifyFull,
-		}, notify, noverify)
-		engine.(*ethash.Ethash).SetThreads(-1) // Disable CPU mining
+	if config.Clique != nil {
+		return beacon.New(clique.New(config.Clique, db)), nil
 	}
 	return engine
 }

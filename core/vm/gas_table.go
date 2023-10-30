@@ -19,9 +19,9 @@ package vm
 import (
 	"errors"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/common/math"
+	"github.com/Rethereum-blockchain/go-rethereum/params"
 )
 
 // memoryGasCost calculates the quadratic gas for memory expansion. It does so
@@ -60,6 +60,7 @@ func memoryGasCost(mem *Memory, newMemSize uint64) (uint64, error) {
 // as argument:
 // CALLDATACOPY (stack position 2)
 // CODECOPY (stack position 2)
+// MCOPY (stack position 2)
 // EXTCODECOPY (stack position 3)
 // RETURNDATACOPY (stack position 2)
 func memoryCopierGas(stackpos int) gasFunc {
@@ -89,6 +90,7 @@ func memoryCopierGas(stackpos int) gasFunc {
 var (
 	gasCallDataCopy   = memoryCopierGas(2)
 	gasCodeCopy       = memoryCopierGas(2)
+	gasMcopy          = memoryCopierGas(2)
 	gasExtCodeCopy    = memoryCopierGas(3)
 	gasReturnDataCopy = memoryCopierGas(2)
 )
@@ -470,7 +472,7 @@ func gasSelfdestruct(evm *EVM, contract *Contract, stack *Stack, mem *Memory, me
 		}
 	}
 
-	if !evm.StateDB.HasSuicided(contract.Address()) {
+	if !evm.StateDB.HasSelfDestructed(contract.Address()) {
 		evm.StateDB.AddRefund(params.SelfdestructRefundGas)
 	}
 	return gas, nil

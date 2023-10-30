@@ -31,11 +31,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/internal/testlog"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/discover/v4wire"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/testlog"
+	"github.com/Rethereum-blockchain/go-rethereum/log"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/discover/v4wire"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enode"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/enr"
 )
 
 // shared test variables
@@ -394,7 +394,7 @@ func TestUDPv4_pingMatchIP(t *testing.T) {
 func TestUDPv4_successfulPing(t *testing.T) {
 	test := newUDPTest(t)
 	added := make(chan *node, 1)
-	test.table.nodeAddedHook = func(n *node) { added <- n }
+	test.table.nodeAddedHook = func(b *bucket, n *node) { added <- n }
 	defer test.close()
 
 	// The remote side sends a ping packet to initiate the exchange.

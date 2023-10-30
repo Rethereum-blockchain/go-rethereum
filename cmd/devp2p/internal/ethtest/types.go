@@ -18,13 +18,14 @@ package ethtest
 
 import (
 	"crypto/ecdsa"
+	"errors"
 	"fmt"
 	"time"
 
-	"github.com/ethereum/go-ethereum/eth/protocols/eth"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/rlpx"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/eth"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/rlpx"
+	"github.com/Rethereum-blockchain/go-rethereum/rlp"
 )
 
 type Message interface {
@@ -286,5 +287,5 @@ func (c *Conn) ReadSnap(id uint64) (Message, error) {
 		}
 		return snpMsg.(Message), nil
 	}
-	return nil, fmt.Errorf("request timed out")
+	return nil, errors.New("request timed out")
 }

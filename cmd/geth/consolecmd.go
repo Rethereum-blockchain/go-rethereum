@@ -20,9 +20,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/console"
-	"github.com/ethereum/go-ethereum/internal/flags"
+	"github.com/Rethereum-blockchain/go-rethereum/cmd/utils"
+	"github.com/Rethereum-blockchain/go-rethereum/console"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/flags"
 	"github.com/urfave/cli/v2"
 )
 
@@ -75,10 +75,7 @@ func localConsole(ctx *cli.Context) error {
 	defer stack.Close()
 
 	// Attach to the newly started node and create the JavaScript console.
-	client, err := stack.Attach()
-	if err != nil {
-		return fmt.Errorf("failed to attach to the inproc geth: %v", err)
-	}
+	client := stack.Attach()
 	config := console.Config{
 		DataDir: utils.MakeDataDir(ctx),
 		DocRoot: ctx.String(utils.JSpathFlag.Name),

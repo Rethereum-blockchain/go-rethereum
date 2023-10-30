@@ -17,20 +17,21 @@
 package ethtest
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"reflect"
 	"strings"
 	"time"
 
+	"github.com/Rethereum-blockchain/go-rethereum/common"
+	"github.com/Rethereum-blockchain/go-rethereum/core/types"
+	"github.com/Rethereum-blockchain/go-rethereum/crypto"
+	"github.com/Rethereum-blockchain/go-rethereum/eth/protocols/eth"
+	"github.com/Rethereum-blockchain/go-rethereum/internal/utesting"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p"
+	"github.com/Rethereum-blockchain/go-rethereum/p2p/rlpx"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/eth/protocols/eth"
-	"github.com/ethereum/go-ethereum/internal/utesting"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/rlpx"
 )
 
 var (
@@ -185,7 +186,7 @@ loop:
 	}
 	// make sure eth protocol version is set for negotiation
 	if c.negotiatedProtoVersion == 0 {
-		return nil, fmt.Errorf("eth protocol version must be set in Conn")
+		return nil, errors.New("eth protocol version must be set in Conn")
 	}
 	if status == nil {
 		// default status message
