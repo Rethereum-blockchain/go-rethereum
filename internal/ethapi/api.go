@@ -21,6 +21,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/misc/eip1559"
 	"math/big"
 	"strings"
 	"time"
@@ -35,7 +36,6 @@ import (
 	"github.com/rethereum-blockchain/go-rethereum/common/math"
 	"github.com/rethereum-blockchain/go-rethereum/consensus"
 	"github.com/rethereum-blockchain/go-rethereum/consensus/ethash"
-	"github.com/rethereum-blockchain/go-rethereum/consensus/misc"
 	"github.com/rethereum-blockchain/go-rethereum/core"
 	"github.com/rethereum-blockchain/go-rethereum/core/state"
 	"github.com/rethereum-blockchain/go-rethereum/core/types"
@@ -1426,7 +1426,7 @@ func NewRPCPendingTransaction(tx *types.Transaction, current *types.Header, conf
 	var baseFee *big.Int
 	blockNumber := uint64(0)
 	if current != nil {
-		baseFee = misc.CalcBaseFee(config, current)
+		baseFee = eip1559.CalcBaseFee(config, current)
 		blockNumber = current.Number.Uint64()
 	}
 	return newRPCTransaction(tx, common.Hash{}, blockNumber, 0, baseFee, config)

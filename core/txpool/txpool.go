@@ -19,6 +19,7 @@ package txpool
 import (
 	"errors"
 	"fmt"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/misc/eip1559"
 	"math"
 	"math/big"
 	"sort"
@@ -28,7 +29,6 @@ import (
 
 	"github.com/rethereum-blockchain/go-rethereum/common"
 	"github.com/rethereum-blockchain/go-rethereum/common/prque"
-	"github.com/rethereum-blockchain/go-rethereum/consensus/misc"
 	"github.com/rethereum-blockchain/go-rethereum/core"
 	"github.com/rethereum-blockchain/go-rethereum/core/state"
 	"github.com/rethereum-blockchain/go-rethereum/core/types"
@@ -1268,7 +1268,7 @@ func (pool *TxPool) runReorg(done chan struct{}, reset *txpoolResetRequest, dirt
 	if reset != nil {
 		pool.demoteUnexecutables()
 		if reset.newHead != nil && pool.chainconfig.IsLondon(new(big.Int).Add(reset.newHead.Number, big.NewInt(1))) {
-			pendingBaseFee := misc.CalcBaseFee(pool.chainconfig, reset.newHead)
+			pendingBaseFee := eip1559.CalcBaseFee(pool.chainconfig, reset.newHead)
 			pool.priced.SetBaseFee(pendingBaseFee)
 		}
 		// Update all accounts to the latest known pending nonce

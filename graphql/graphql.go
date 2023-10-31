@@ -21,6 +21,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/misc/eip1559"
 	"math/big"
 	"sort"
 	"strconv"
@@ -30,7 +31,6 @@ import (
 	"github.com/rethereum-blockchain/go-rethereum/common"
 	"github.com/rethereum-blockchain/go-rethereum/common/hexutil"
 	"github.com/rethereum-blockchain/go-rethereum/common/math"
-	"github.com/rethereum-blockchain/go-rethereum/consensus/misc"
 	"github.com/rethereum-blockchain/go-rethereum/core/state"
 	"github.com/rethereum-blockchain/go-rethereum/core/types"
 	"github.com/rethereum-blockchain/go-rethereum/eth/filters"
@@ -703,7 +703,7 @@ func (b *Block) NextBaseFeePerGas(ctx context.Context) (*hexutil.Big, error) {
 			return nil, nil
 		}
 	}
-	nextBaseFee := misc.CalcBaseFee(chaincfg, header)
+	nextBaseFee := eip1559.CalcBaseFee(chaincfg, header)
 	return (*hexutil.Big)(nextBaseFee), nil
 }
 

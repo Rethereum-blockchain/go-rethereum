@@ -19,11 +19,11 @@ package beacon
 import (
 	"errors"
 	"fmt"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/misc/eip1559"
 	"math/big"
 
 	"github.com/rethereum-blockchain/go-rethereum/common"
 	"github.com/rethereum-blockchain/go-rethereum/consensus"
-	"github.com/rethereum-blockchain/go-rethereum/consensus/misc"
 	"github.com/rethereum-blockchain/go-rethereum/core/state"
 	"github.com/rethereum-blockchain/go-rethereum/core/types"
 	"github.com/rethereum-blockchain/go-rethereum/params"
@@ -257,7 +257,7 @@ func (beacon *Beacon) verifyHeader(chain consensus.ChainHeaderReader, header, pa
 		return consensus.ErrInvalidNumber
 	}
 	// Verify the header's EIP-1559 attributes.
-	if err := misc.VerifyEip1559Header(chain.Config(), parent, header); err != nil {
+	if err := eip1559.VerifyEip1559Header(chain.Config(), parent, header); err != nil {
 		return err
 	}
 	// Verify existence / non-existence of withdrawalsHash.
