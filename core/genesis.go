@@ -561,10 +561,10 @@ func DefaultKrontosGenesisBlock() *Genesis {
 	return &Genesis{
 		Config:     params.KrontosChainConfig,
 		Nonce:      0,
-		ExtraData:  []byte("Krontos, Athens, Attica, Greece!"),
+		ExtraData:  []byte("The Krontos area is built on a region of tall rocky islands and mountains"),
 		GasLimit:   0x1c9c380,
 		Difficulty: big.NewInt(0x20000),
-		Timestamp:  1633267481,
+		Timestamp:  1698777540,
 		Alloc:      decodePrealloc(krontosAllocData),
 	}
 }

@@ -539,6 +539,14 @@ func (c *ChainConfig) Description() string {
 		banner += fmt.Sprintf(" - Gray Glacier:                #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/gray-glacier.md)\n", c.GrayGlacierBlock)
 	}
 	banner += "\n"
+	banner += "Rethereum Forks (block based):\n"
+	if c.RethereumForks.Veldin != nil {
+		banner += fmt.Sprintf(" - Veldin:                #%-8v \n", c.RethereumForks.Veldin)
+	}
+	if c.RethereumForks.Gaspar != nil {
+		banner += fmt.Sprintf(" - Gaspar:                #%-8v \n", c.RethereumForks.Gaspar)
+	}
+	banner += "\n"
 
 	// Add a special section for the merge as it's non-obvious
 	if c.TerminalTotalDifficulty == nil {
