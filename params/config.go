@@ -28,7 +28,7 @@ import (
 // Genesis hashes to enforce below configs on.
 var (
 	MainnetGenesisHash = common.HexToHash("0x0fb784d1481f0aa911d21d639641763ca09641413842b35f1d10eb5d208abdf8")
-	SepoliaGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
+	KrontosGenesisHash = common.HexToHash("0x25a5cc106eea7138acab33231d7160d69cb777ee0c2c553fcddf5138993e6dd9")
 	RinkebyGenesisHash = common.HexToHash("0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177")
 	GoerliGenesisHash  = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
 )
@@ -37,7 +37,7 @@ var (
 // the chain it belongs to.
 var TrustedCheckpoints = map[common.Hash]*TrustedCheckpoint{
 	MainnetGenesisHash: MainnetTrustedCheckpoint,
-	SepoliaGenesisHash: SepoliaTrustedCheckpoint,
+	KrontosGenesisHash: KrontosTrustedCheckpoint,
 	RinkebyGenesisHash: RinkebyTrustedCheckpoint,
 	GoerliGenesisHash:  GoerliTrustedCheckpoint,
 }
@@ -56,36 +56,37 @@ var (
 	// MainnetChainConfig is the chain parameters to run a node on the main network.
 	// All checkpoints should be a prime number the prevent the possibility of a collision with a malicious checkpoint.
 	MainnetChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(622277),
-		HomesteadBlock:                big.NewInt(0),
-		DAOForkBlock:                  big.NewInt(0),
-		DAOForkSupport:                false,
-		EIP150Block:                   big.NewInt(0),
-		EIP155Block:                   big.NewInt(0),
-		EIP158Block:                   big.NewInt(0),
-		ByzantiumBlock:                big.NewInt(1001), // Byzantium switch block (used to enable smart contracts) - 5449 blocks should be enough for gaslimit
-		ConstantinopleBlock:           big.NewInt(5503),
-		PetersburgBlock:               big.NewInt(5507),
-		IstanbulBlock:                 big.NewInt(5519),
-		MuirGlacierBlock:              big.NewInt(5521),
-		BerlinBlock:                   big.NewInt(5527),
-		LondonBlock:                   big.NewInt(13_524_557), // Roughly 3 years after Berlin
-		ArrowGlacierBlock:             big.NewInt(27_200_177), // Roughly 3 years after London
-		GrayGlacierBlock:              big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
-		TerminalTotalDifficulty:       nil,                    // nil disables the terminal total difficulty check
-		TerminalTotalDifficultyPassed: false,                  // false disables the consensus check for terminal total difficulty
-		Ethash:                        new(EthashConfig),
+		ChainID:             big.NewInt(622277),
+		HomesteadBlock:      big.NewInt(0),
+		DAOForkBlock:        big.NewInt(0),
+		DAOForkSupport:      false,
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(1001), // Byzantium switch block (used to enable smart contracts) - 5449 blocks should be enough for gaslimit
+		ConstantinopleBlock: big.NewInt(5503),
+		PetersburgBlock:     big.NewInt(5507),
+		IstanbulBlock:       big.NewInt(5519),
+		MuirGlacierBlock:    big.NewInt(5521),
+		BerlinBlock:         big.NewInt(5527),
+		LondonBlock:         big.NewInt(13_524_557), // Roughly 3 years after Berlin
+		ArrowGlacierBlock:   big.NewInt(27_200_177), // Roughly 3 years after London
+		GrayGlacierBlock:    big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		RethereumForks: &RethereumForks{
 			Veldin: big.NewInt(500_009),
+			Gaspar: big.NewInt(10_000_000),
 		},
+		TerminalTotalDifficulty:       nil,   // nil disables the terminal total difficulty check
+		TerminalTotalDifficultyPassed: false, // false disables the consensus check for terminal total difficulty
+		Ethash:                        new(EthashConfig),
 	}
 
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
 	MainnetTrustedCheckpoint = &TrustedCheckpoint{
-		BloomRoot:    common.HexToHash("0x76d432f033536c0356f7449bd4dc5109198c5b54ca1a36e1ac8417c39ce5847c"),
-		CHTRoot:      common.HexToHash("0xd30fc66dc5da5e58ece4e4d8bc3ecfa6a087be1237b3c66f736989d73fb4f0c8"),
-		SectionHead:  common.HexToHash("0x1cfe3de6f176409fa5bc7915e4dcfbb04c745beeb5d4d7bddd9256610f0f7f94"),
-		SectionIndex: 9,
+		BloomRoot:    common.HexToHash("0x02968707d84a001843f462968a6bc1c332aac1980331a167cf217fb00d1b3c71"),
+		CHTRoot:      common.HexToHash("0x547889b0237b5b49b71d63edf11f32e7f0fefed61a2e29367e74e116307fc656"),
+		SectionHead:  common.HexToHash("0x88395d1ce87715957e832624590cfe0987b8247f5f5d08181c9d729f0da30793"),
+		SectionIndex: 29,
 	}
 
 	// MainnetCheckpointOracle contains a set of configs for the main network oracle.
@@ -97,29 +98,35 @@ var (
 		Threshold: 1,
 	}
 
-	// SepoliaChainConfig contains the chain parameters to run a node on the Sepolia test network.
-	SepoliaChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(8010),
-		HomesteadBlock:                big.NewInt(0),
-		DAOForkBlock:                  nil,
-		DAOForkSupport:                true,
-		EIP150Block:                   big.NewInt(0),
-		EIP155Block:                   big.NewInt(0),
-		EIP158Block:                   big.NewInt(0),
-		ByzantiumBlock:                big.NewInt(0),
-		ConstantinopleBlock:           big.NewInt(0),
-		PetersburgBlock:               big.NewInt(0),
-		IstanbulBlock:                 big.NewInt(0),
-		MuirGlacierBlock:              big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),
-		LondonBlock:                   big.NewInt(0),
+	// KrontosChainConfig contains the chain parameters to run a node on the Krontos test network.
+	KrontosChainConfig = &ChainConfig{
+		ChainID:             big.NewInt(622301),
+		HomesteadBlock:      big.NewInt(0),
+		DAOForkBlock:        nil,
+		DAOForkSupport:      false,
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
+		MuirGlacierBlock:    big.NewInt(0),
+		BerlinBlock:         big.NewInt(0),
+		LondonBlock:         big.NewInt(0),
+		ArrowGlacierBlock:   big.NewInt(0),
+		GrayGlacierBlock:    big.NewInt(0),
+		RethereumForks: &RethereumForks{
+			Veldin: big.NewInt(0),
+			Gaspar: big.NewInt(0),
+		},
 		TerminalTotalDifficulty:       nil,
 		TerminalTotalDifficultyPassed: false,
 		Ethash:                        new(EthashConfig),
 	}
 
-	// SepoliaTrustedCheckpoint contains the light client trusted checkpoint for the Sepolia test network.
-	SepoliaTrustedCheckpoint = &TrustedCheckpoint{
+	// KrontosTrustedCheckpoint contains the light client trusted checkpoint for the Krontos test network.
+	KrontosTrustedCheckpoint = &TrustedCheckpoint{
 		SectionIndex: 55,
 		SectionHead:  common.HexToHash("0xb70ea113ab4db9d6e015c5b55d486713f60c40bda666121914a71ce3aec53a75"),
 		CHTRoot:      common.HexToHash("0x206456d8847b66aaf427ed551f55e24cff90241bdb0a02583c761bf8164f78e4"),
@@ -277,24 +284,28 @@ var (
 	// TestChainConfig contains every protocol change (EIPs) introduced
 	// and accepted by the Ethereum core developers for testing proposes.
 	TestChainConfig = &ChainConfig{
-		ChainID:                       big.NewInt(1),
-		HomesteadBlock:                big.NewInt(0),
-		DAOForkBlock:                  nil,
-		DAOForkSupport:                false,
-		EIP150Block:                   big.NewInt(0),
-		EIP155Block:                   big.NewInt(0),
-		EIP158Block:                   big.NewInt(0),
-		ByzantiumBlock:                big.NewInt(0),
-		ConstantinopleBlock:           big.NewInt(0),
-		PetersburgBlock:               big.NewInt(0),
-		IstanbulBlock:                 big.NewInt(0),
-		MuirGlacierBlock:              big.NewInt(0),
-		BerlinBlock:                   big.NewInt(0),
-		LondonBlock:                   big.NewInt(0),
-		ArrowGlacierBlock:             big.NewInt(0),
-		GrayGlacierBlock:              big.NewInt(0),
-		MergeNetsplitBlock:            nil,
-		ShanghaiTime:                  nil,
+		ChainID:             big.NewInt(1),
+		HomesteadBlock:      big.NewInt(0),
+		DAOForkBlock:        nil,
+		DAOForkSupport:      false,
+		EIP150Block:         big.NewInt(0),
+		EIP155Block:         big.NewInt(0),
+		EIP158Block:         big.NewInt(0),
+		ByzantiumBlock:      big.NewInt(0),
+		ConstantinopleBlock: big.NewInt(0),
+		PetersburgBlock:     big.NewInt(0),
+		IstanbulBlock:       big.NewInt(0),
+		MuirGlacierBlock:    big.NewInt(0),
+		BerlinBlock:         big.NewInt(0),
+		LondonBlock:         big.NewInt(0),
+		ArrowGlacierBlock:   big.NewInt(0),
+		GrayGlacierBlock:    big.NewInt(0),
+		MergeNetsplitBlock:  nil,
+		ShanghaiTime:        nil,
+		RethereumForks: &RethereumForks{
+			Veldin: big.NewInt(0),
+			Gaspar: big.NewInt(0),
+		},
 		CancunTime:                    nil,
 		PragueTime:                    nil,
 		TerminalTotalDifficulty:       nil,
@@ -306,24 +317,28 @@ var (
 	// NonActivatedConfig defines the chain configuration without activating
 	// any protocol change (EIPs).
 	NonActivatedConfig = &ChainConfig{
-		ChainID:                       big.NewInt(1),
-		HomesteadBlock:                nil,
-		DAOForkBlock:                  nil,
-		DAOForkSupport:                false,
-		EIP150Block:                   nil,
-		EIP155Block:                   nil,
-		EIP158Block:                   nil,
-		ByzantiumBlock:                nil,
-		ConstantinopleBlock:           nil,
-		PetersburgBlock:               nil,
-		IstanbulBlock:                 nil,
-		MuirGlacierBlock:              nil,
-		BerlinBlock:                   nil,
-		LondonBlock:                   nil,
-		ArrowGlacierBlock:             nil,
-		GrayGlacierBlock:              nil,
-		MergeNetsplitBlock:            nil,
-		ShanghaiTime:                  nil,
+		ChainID:             big.NewInt(1),
+		HomesteadBlock:      nil,
+		DAOForkBlock:        nil,
+		DAOForkSupport:      false,
+		EIP150Block:         nil,
+		EIP155Block:         nil,
+		EIP158Block:         nil,
+		ByzantiumBlock:      nil,
+		ConstantinopleBlock: nil,
+		PetersburgBlock:     nil,
+		IstanbulBlock:       nil,
+		MuirGlacierBlock:    nil,
+		BerlinBlock:         nil,
+		LondonBlock:         nil,
+		ArrowGlacierBlock:   nil,
+		GrayGlacierBlock:    nil,
+		MergeNetsplitBlock:  nil,
+		ShanghaiTime:        nil,
+		RethereumForks: &RethereumForks{
+			Veldin: nil,
+			Gaspar: nil,
+		},
 		CancunTime:                    nil,
 		PragueTime:                    nil,
 		TerminalTotalDifficulty:       nil,
@@ -339,7 +354,7 @@ var NetworkNames = map[string]string{
 	MainnetChainConfig.ChainID.String(): "Rethereum Mainnet",
 	RinkebyChainConfig.ChainID.String(): "rinkeby",
 	GoerliChainConfig.ChainID.String():  "goerli",
-	SepoliaChainConfig.ChainID.String(): "sepolia",
+	KrontosChainConfig.ChainID.String(): "krontos",
 }
 
 // TrustedCheckpoint represents a set of post-processed trie roots (CHT and
@@ -443,6 +458,7 @@ type ChainConfig struct {
 
 type RethereumForks struct {
 	Veldin *big.Int `json:"veldin,omitempty"` // Veldin fork for onchain fix of GPU difficulty lock and block fee calculation
+	Gaspar *big.Int `json:"gaspar,omitempty"` // Gaspar fork will enable Merge and Shangai EVM upgrades.
 }
 
 // EthashConfig is the consensus engine configs for proof-of-work based sealing.
@@ -625,6 +641,11 @@ func (c *ChainConfig) IsGrayGlacier(num *big.Int) bool {
 // IsVeldin
 func (c *ChainConfig) IsVeldin(num *big.Int) bool {
 	return isBlockForked(c.RethereumForks.Veldin, num)
+}
+
+// IsGaspar
+func (c *ChainConfig) IsGaspar(num *big.Int) bool {
+	return isBlockForked(c.RethereumForks.Gaspar, num)
 }
 
 // IsTerminalPoWBlock returns whether the given block is the last block of PoW stage.
@@ -951,7 +972,7 @@ type Rules struct {
 	IsHomestead, IsEIP150, IsEIP155, IsEIP158               bool
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
 	IsBerlin, IsLondon                                      bool
-	IsMerge, IsShanghai, IsCancun, IsPrague                 bool
+	IsMerge, IsShanghai, IsCancun, IsPrague, IsGaspar       bool
 }
 
 // Rules ensures c's ChainID is not nil.
@@ -976,5 +997,6 @@ func (c *ChainConfig) Rules(num *big.Int, isMerge bool, timestamp uint64) Rules 
 		IsShanghai:       c.IsShanghai(timestamp),
 		IsCancun:         c.IsCancun(timestamp),
 		IsPrague:         c.IsPrague(timestamp),
+		IsGaspar:         c.IsGaspar(num),
 	}
 }

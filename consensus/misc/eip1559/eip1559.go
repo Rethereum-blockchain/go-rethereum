@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
-package misc
+package eip1559
 
 import (
 	"fmt"
@@ -22,6 +22,7 @@ import (
 
 	"github.com/rethereum-blockchain/go-rethereum/common"
 	"github.com/rethereum-blockchain/go-rethereum/common/math"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/misc"
 	"github.com/rethereum-blockchain/go-rethereum/core/types"
 	"github.com/rethereum-blockchain/go-rethereum/params"
 )
@@ -35,7 +36,7 @@ func VerifyEip1559Header(config *params.ChainConfig, parent, header *types.Heade
 	if !config.IsLondon(parent.Number) {
 		parentGasLimit = parent.GasLimit * config.ElasticityMultiplier()
 	}
-	if err := VerifyGaslimit(parentGasLimit, header.GasLimit); err != nil {
+	if err := misc.VerifyGaslimit(parentGasLimit, header.GasLimit); err != nil {
 		return err
 	}
 	// Verify the header is not malformed

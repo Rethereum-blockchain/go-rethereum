@@ -19,6 +19,7 @@ package miner
 import (
 	"errors"
 	"fmt"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/misc/eip1559"
 	"math/big"
 	"sync"
 	"sync/atomic"
@@ -27,7 +28,6 @@ import (
 	mapset "github.com/deckarep/golang-set/v2"
 	"github.com/rethereum-blockchain/go-rethereum/common"
 	"github.com/rethereum-blockchain/go-rethereum/consensus"
-	"github.com/rethereum-blockchain/go-rethereum/consensus/misc"
 	"github.com/rethereum-blockchain/go-rethereum/core"
 	"github.com/rethereum-blockchain/go-rethereum/core/state"
 	"github.com/rethereum-blockchain/go-rethereum/core/types"
@@ -628,7 +628,7 @@ func (w *worker) mainLoop() {
 				if gp := w.current.gasPool; gp != nil && gp.Gas() < params.TxGas {
 					continue
 				}
-				txs := make(map[common.Address]types.Transactions)
+				txs := make(map[common.Address]types.Transactions, len(ev.Txs))
 				for _, tx := range ev.Txs {
 					acc, _ := types.Sender(w.current.signer, tx)
 					txs[acc] = append(txs[acc], tx)
@@ -1009,7 +1009,7 @@ func (w *worker) prepareWork(genParams *generateParams) (*environment, error) {
 	}
 	// Set baseFee and GasLimit if we are on an EIP-1559 chain
 	if w.chainConfig.IsLondon(header.Number) {
-		header.BaseFee = misc.CalcBaseFee(w.chainConfig, parent)
+		header.BaseFee = eip1559.CalcBaseFee(w.chainConfig, parent)
 		if !w.chainConfig.IsLondon(parent.Number) {
 			parentGasLimit := parent.GasLimit * w.chainConfig.ElasticityMultiplier()
 			header.GasLimit = core.CalcGasLimit(parentGasLimit, w.config.GasCeil)

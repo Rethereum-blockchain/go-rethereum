@@ -1,0 +1,997 @@
+From ff44323285c7b5dabf3f2b89fc47760542dbedfa Mon Sep 17 00:00:00 2001
+From: Sina Mahmoodi <itz.s1na@gmail.com>
+Date: Mon, 2 Jan 2023 17:16:33 +0100
+Subject: [PATCH 1/4] internal/ethapi: add block overrides to eth_call
+
+---
+ eth/api_backend.go                       |   5 +-
+ eth/tracers/api.go                       |  26 +-
+ graphql/graphql.go                       |   4 +-
+ internal/ethapi/api.go                   |  53 ++-
+ internal/ethapi/api_test.go              | 467 +++++++++++++++++++++++
+ internal/ethapi/backend.go               |   2 +-
+ internal/ethapi/transaction_args_test.go |   2 +-
+ internal/web3ext/web3ext.go              |   4 +-
+ les/api_backend.go                       |   5 +-
+ 9 files changed, 529 insertions(+), 39 deletions(-)
+
+diff --git a/eth/api_backend.go b/eth/api_backend.go
+index ac160b0736a12..e44c948edbc50 100644
+--- a/eth/api_backend.go
++++ b/eth/api_backend.go
+@@ -240,12 +240,15 @@ func (b *EthAPIBackend) GetTd(ctx context.Context, hash common.Hash) *big.Int {
+ 	return nil
+ }
+ 
+-func (b *EthAPIBackend) GetEVM(ctx context.Context, msg *core.Message, state *state.StateDB, header *types.Header, vmConfig *vm.Config) (*vm.EVM, func() error, error) {
++func (b *EthAPIBackend) GetEVM(ctx context.Context, msg *core.Message, state *state.StateDB, header *types.Header, vmConfig *vm.Config, blockCtx *vm.BlockContext) (*vm.EVM, func() error, error) {
+ 	if vmConfig == nil {
+ 		vmConfig = b.eth.blockchain.GetVMConfig()
+ 	}
+ 	txContext := core.NewEVMTxContext(msg)
+ 	context := core.NewEVMBlockContext(header, b.eth.BlockChain(), nil)
++	if blockCtx != nil {
++		context = *blockCtx
++	}
+ 	return vm.NewEVM(context, txContext, state, b.eth.blockchain.Config(), *vmConfig), state.Error, nil
+ }
+ 
+diff --git a/eth/tracers/api.go b/eth/tracers/api.go
+index 9eef8c2e06be4..26fbe44a22b49 100644
+--- a/eth/tracers/api.go
++++ b/eth/tracers/api.go
+@@ -100,34 +100,10 @@ func NewAPI(backend Backend) *API {
+ 	return &API{backend: backend}
+ }
+ 
+-type chainContext struct {
+-	api *API
+-	ctx context.Context
+-}
+-
+-func (context *chainContext) Engine() consensus.Engine {
+-	return context.api.backend.Engine()
+-}
+-
+-func (context *chainContext) GetHeader(hash common.Hash, number uint64) *types.Header {
+-	header, err := context.api.backend.HeaderByNumber(context.ctx, rpc.BlockNumber(number))
+-	if err != nil {
+-		return nil
+-	}
+-	if header.Hash() == hash {
+-		return header
+-	}
+-	header, err = context.api.backend.HeaderByHash(context.ctx, hash)
+-	if err != nil {
+-		return nil
+-	}
+-	return header
+-}
+-
+ // chainContext constructs the context reader which is used by the evm for reading
+ // the necessary chain context.
+ func (api *API) chainContext(ctx context.Context) core.ChainContext {
+-	return &chainContext{api: api, ctx: ctx}
++	return ethapi.NewChainContext(ctx, api.backend)
+ }
+ 
+ // blockByNumber is the wrapper of the chain access function offered by the backend.
+diff --git a/graphql/graphql.go b/graphql/graphql.go
+index 45a1f7a2aa745..3421d98467920 100644
+--- a/graphql/graphql.go
++++ b/graphql/graphql.go
+@@ -1067,7 +1067,7 @@ func (c *CallResult) Status() Long {
+ func (b *Block) Call(ctx context.Context, args struct {
+ 	Data ethapi.TransactionArgs
+ }) (*CallResult, error) {
+-	result, err := ethapi.DoCall(ctx, b.r.backend, args.Data, *b.numberOrHash, nil, b.r.backend.RPCEVMTimeout(), b.r.backend.RPCGasCap())
++	result, err := ethapi.DoCall(ctx, b.r.backend, args.Data, *b.numberOrHash, nil, nil, b.r.backend.RPCEVMTimeout(), b.r.backend.RPCGasCap())
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -1131,7 +1131,7 @@ func (p *Pending) Call(ctx context.Context, args struct {
+ 	Data ethapi.TransactionArgs
+ }) (*CallResult, error) {
+ 	pendingBlockNr := rpc.BlockNumberOrHashWithNumber(rpc.PendingBlockNumber)
+-	result, err := ethapi.DoCall(ctx, p.r.backend, args.Data, pendingBlockNr, nil, p.r.backend.RPCEVMTimeout(), p.r.backend.RPCGasCap())
++	result, err := ethapi.DoCall(ctx, p.r.backend, args.Data, pendingBlockNr, nil, nil, p.r.backend.RPCEVMTimeout(), p.r.backend.RPCGasCap())
+ 	if err != nil {
+ 		return nil, err
+ 	}
+diff --git a/internal/ethapi/api.go b/internal/ethapi/api.go
+index b7ad30a6eacde..58d50c0ad7b7b 100644
+--- a/internal/ethapi/api.go
++++ b/internal/ethapi/api.go
+@@ -33,6 +33,7 @@ import (
+ 	"github.com/ethereum/go-ethereum/common"
+ 	"github.com/ethereum/go-ethereum/common/hexutil"
+ 	"github.com/ethereum/go-ethereum/common/math"
++	"github.com/ethereum/go-ethereum/consensus"
+ 	"github.com/ethereum/go-ethereum/consensus/ethash"
+ 	"github.com/ethereum/go-ethereum/consensus/misc"
+ 	"github.com/ethereum/go-ethereum/core"
+@@ -955,7 +956,39 @@ func (diff *BlockOverrides) Apply(blockCtx *vm.BlockContext) {
+ 	}
+ }
+ 
+-func DoCall(ctx context.Context, b Backend, args TransactionArgs, blockNrOrHash rpc.BlockNumberOrHash, overrides *StateOverride, timeout time.Duration, globalGasCap uint64) (*core.ExecutionResult, error) {
++// ChainContextBackend provides methods required to implement ChainContext.
++type ChainContextBackend interface {
++	Engine() consensus.Engine
++	HeaderByNumber(context.Context, rpc.BlockNumber) (*types.Header, error)
++}
++
++// ChainContext is an implementation of core.ChainContext. It's main use-case
++// is instantiating a vm.BlockContext without having access to the BlockChain object.
++type ChainContext struct {
++	b   ChainContextBackend
++	ctx context.Context
++}
++
++// NewChainContext creates a new ChainContext object.
++func NewChainContext(ctx context.Context, backend ChainContextBackend) *ChainContext {
++	return &ChainContext{ctx: ctx, b: backend}
++}
++
++func (context *ChainContext) Engine() consensus.Engine {
++	return context.b.Engine()
++}
++
++func (context *ChainContext) GetHeader(hash common.Hash, number uint64) *types.Header {
++	// This method is called to get the hash for a block number when executing the BLOCKHASH
++	// opcode. Hence no need to search for non-canonical blocks.
++	header, err := context.b.HeaderByNumber(context.ctx, rpc.BlockNumber(number))
++	if err != nil || header.Hash() != hash {
++		return nil
++	}
++	return header
++}
++
++func DoCall(ctx context.Context, b Backend, args TransactionArgs, blockNrOrHash rpc.BlockNumberOrHash, overrides *StateOverride, blockOverrides *BlockOverrides, timeout time.Duration, globalGasCap uint64) (*core.ExecutionResult, error) {
+ 	defer func(start time.Time) { log.Debug("Executing EVM call finished", "runtime", time.Since(start)) }(time.Now())
+ 
+ 	state, header, err := b.StateAndHeaderByNumberOrHash(ctx, blockNrOrHash)
+@@ -982,7 +1015,11 @@ func DoCall(ctx context.Context, b Backend, args TransactionArgs, blockNrOrHash
+ 	if err != nil {
+ 		return nil, err
+ 	}
+-	evm, vmError, err := b.GetEVM(ctx, msg, state, header, &vm.Config{NoBaseFee: true})
++	blockCtx := core.NewEVMBlockContext(header, NewChainContext(ctx, b), nil)
++	if blockOverrides != nil {
++		blockOverrides.Apply(&blockCtx)
++	}
++	evm, vmError, err := b.GetEVM(ctx, msg, state, header, &vm.Config{NoBaseFee: true}, &blockCtx)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -1040,14 +1077,18 @@ func (e *revertError) ErrorData() interface{} {
+ 	return e.reason
+ }
+ 
++type callConfig struct {
++	BlockOverrides *BlockOverrides
++}
++
+ // Call executes the given transaction on the state for the given block number.
+ //
+ // Additionally, the caller can specify a batch of contract for fields overriding.
+ //
+ // Note, this function doesn't make and changes in the state/blockchain and is
+ // useful to execute and retrieve values.
+-func (s *BlockChainAPI) Call(ctx context.Context, args TransactionArgs, blockNrOrHash rpc.BlockNumberOrHash, overrides *StateOverride) (hexutil.Bytes, error) {
+-	result, err := DoCall(ctx, s.b, args, blockNrOrHash, overrides, s.b.RPCEVMTimeout(), s.b.RPCGasCap())
++func (s *BlockChainAPI) Call(ctx context.Context, args TransactionArgs, blockNrOrHash rpc.BlockNumberOrHash, overrides *StateOverride, blockOverrides *BlockOverrides) (hexutil.Bytes, error) {
++	result, err := DoCall(ctx, s.b, args, blockNrOrHash, overrides, blockOverrides, s.b.RPCEVMTimeout(), s.b.RPCGasCap())
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -1132,7 +1173,7 @@ func DoEstimateGas(ctx context.Context, b Backend, args TransactionArgs, blockNr
+ 	executable := func(gas uint64) (bool, *core.ExecutionResult, error) {
+ 		args.Gas = (*hexutil.Uint64)(&gas)
+ 
+-		result, err := DoCall(ctx, b, args, blockNrOrHash, nil, 0, gasCap)
++		result, err := DoCall(ctx, b, args, blockNrOrHash, nil, nil, 0, gasCap)
+ 		if err != nil {
+ 			if errors.Is(err, core.ErrIntrinsicGas) {
+ 				return true, nil, nil // Special case, raise gas limit
+@@ -1474,7 +1515,7 @@ func AccessList(ctx context.Context, b Backend, blockNrOrHash rpc.BlockNumberOrH
+ 		// Apply the transaction with the access list tracer
+ 		tracer := logger.NewAccessListTracer(accessList, args.from(), to, precompiles)
+ 		config := vm.Config{Tracer: tracer, NoBaseFee: true}
+-		vmenv, _, err := b.GetEVM(ctx, msg, statedb, header, &config)
++		vmenv, _, err := b.GetEVM(ctx, msg, statedb, header, &config, nil)
+ 		if err != nil {
+ 			return nil, 0, nil, err
+ 		}
+diff --git a/internal/ethapi/api_test.go b/internal/ethapi/api_test.go
+index 762dc8337d307..c882eebf8a178 100644
+--- a/internal/ethapi/api_test.go
++++ b/internal/ethapi/api_test.go
+@@ -17,14 +17,34 @@
+ package ethapi
+ 
+ import (
++	"bytes"
++	"context"
++	"crypto/ecdsa"
+ 	"encoding/json"
++	"errors"
+ 	"math/big"
++	"reflect"
++	"sort"
+ 	"testing"
++	"time"
+ 
++	"github.com/ethereum/go-ethereum"
++	"github.com/ethereum/go-ethereum/accounts"
+ 	"github.com/ethereum/go-ethereum/common"
++	"github.com/ethereum/go-ethereum/common/hexutil"
++	"github.com/ethereum/go-ethereum/consensus"
++	"github.com/ethereum/go-ethereum/consensus/ethash"
++	"github.com/ethereum/go-ethereum/core"
++	"github.com/ethereum/go-ethereum/core/bloombits"
++	"github.com/ethereum/go-ethereum/core/rawdb"
++	"github.com/ethereum/go-ethereum/core/state"
+ 	"github.com/ethereum/go-ethereum/core/types"
++	"github.com/ethereum/go-ethereum/core/vm"
+ 	"github.com/ethereum/go-ethereum/crypto"
++	"github.com/ethereum/go-ethereum/ethdb"
++	"github.com/ethereum/go-ethereum/event"
+ 	"github.com/ethereum/go-ethereum/params"
++	"github.com/ethereum/go-ethereum/rpc"
+ )
+ 
+ func TestTransaction_RoundTripRpcJSON(t *testing.T) {
+@@ -157,3 +177,450 @@ func allTransactionTypes(addr common.Address, config *params.ChainConfig) []type
+ 		},
+ 	}
+ }
++
++type testBackend struct {
++	db    ethdb.Database
++	chain *core.BlockChain
++}
++
++func newTestBackend(t *testing.T, n int, gspec *core.Genesis, generator func(i int, b *core.BlockGen)) *testBackend {
++	var (
++		engine  = ethash.NewFaker()
++		backend = &testBackend{
++			db: rawdb.NewMemoryDatabase(),
++		}
++		cacheConfig = &core.CacheConfig{
++			TrieCleanLimit:    256,
++			TrieDirtyLimit:    256,
++			TrieTimeLimit:     5 * time.Minute,
++			SnapshotLimit:     0,
++			TrieDirtyDisabled: true, // Archive mode
++		}
++	)
++	// Generate blocks for testing
++	_, blocks, _ := core.GenerateChainWithGenesis(gspec, engine, n, generator)
++	chain, err := core.NewBlockChain(backend.db, cacheConfig, gspec, nil, engine, vm.Config{}, nil, nil)
++	if err != nil {
++		t.Fatalf("failed to create tester chain: %v", err)
++	}
++	if n, err := chain.InsertChain(blocks); err != nil {
++		t.Fatalf("block %d: failed to insert into chain: %v", n, err)
++	}
++	backend.chain = chain
++	return backend
++}
++
++func (b testBackend) SyncProgress() ethereum.SyncProgress { return ethereum.SyncProgress{} }
++func (b testBackend) SuggestGasTipCap(ctx context.Context) (*big.Int, error) {
++	return big.NewInt(0), nil
++}
++func (b testBackend) FeeHistory(ctx context.Context, blockCount uint64, lastBlock rpc.BlockNumber, rewardPercentiles []float64) (*big.Int, [][]*big.Int, []*big.Int, []float64, error) {
++	return nil, nil, nil, nil, nil
++}
++func (b testBackend) ChainDb() ethdb.Database           { return b.db }
++func (b testBackend) AccountManager() *accounts.Manager { return nil }
++func (b testBackend) ExtRPCEnabled() bool               { return false }
++func (b testBackend) RPCGasCap() uint64                 { return 10000000 }
++func (b testBackend) RPCEVMTimeout() time.Duration      { return time.Second }
++func (b testBackend) RPCTxFeeCap() float64              { return 0 }
++func (b testBackend) UnprotectedAllowed() bool          { return false }
++func (b testBackend) SetHead(number uint64)             {}
++func (b testBackend) HeaderByNumber(ctx context.Context, number rpc.BlockNumber) (*types.Header, error) {
++	if number == rpc.LatestBlockNumber {
++		return b.chain.CurrentBlock(), nil
++	}
++	return b.chain.GetHeaderByNumber(uint64(number)), nil
++}
++func (b testBackend) HeaderByHash(ctx context.Context, hash common.Hash) (*types.Header, error) {
++	panic("implement me")
++}
++func (b testBackend) HeaderByNumberOrHash(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (*types.Header, error) {
++	panic("implement me")
++}
++func (b testBackend) CurrentHeader() *types.Header { panic("implement me") }
++func (b testBackend) CurrentBlock() *types.Header  { panic("implement me") }
++func (b testBackend) BlockByNumber(ctx context.Context, number rpc.BlockNumber) (*types.Block, error) {
++	if number == rpc.LatestBlockNumber {
++		head := b.chain.CurrentBlock()
++		return b.chain.GetBlock(head.Hash(), head.Number.Uint64()), nil
++	}
++	return b.chain.GetBlockByNumber(uint64(number)), nil
++}
++func (b testBackend) BlockByHash(ctx context.Context, hash common.Hash) (*types.Block, error) {
++	panic("implement me")
++}
++func (b testBackend) BlockByNumberOrHash(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (*types.Block, error) {
++	if blockNr, ok := blockNrOrHash.Number(); ok {
++		return b.BlockByNumber(ctx, blockNr)
++	}
++	panic("implement me")
++}
++func (b testBackend) GetBody(ctx context.Context, hash common.Hash, number rpc.BlockNumber) (*types.Body, error) {
++	return b.chain.GetBlock(hash, uint64(number.Int64())).Body(), nil
++}
++func (b testBackend) StateAndHeaderByNumber(ctx context.Context, number rpc.BlockNumber) (*state.StateDB, *types.Header, error) {
++	if number == rpc.PendingBlockNumber {
++		panic("pending state not implemented")
++	}
++	header, err := b.HeaderByNumber(ctx, number)
++	if err != nil {
++		return nil, nil, err
++	}
++	if header == nil {
++		return nil, nil, errors.New("header not found")
++	}
++	stateDb, err := b.chain.StateAt(header.Root)
++	return stateDb, header, err
++}
++func (b testBackend) StateAndHeaderByNumberOrHash(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (*state.StateDB, *types.Header, error) {
++	if blockNr, ok := blockNrOrHash.Number(); ok {
++		return b.StateAndHeaderByNumber(ctx, blockNr)
++	}
++	panic("only implemented for number")
++}
++func (b testBackend) PendingBlockAndReceipts() (*types.Block, types.Receipts) { panic("implement me") }
++func (b testBackend) GetReceipts(ctx context.Context, hash common.Hash) (types.Receipts, error) {
++	panic("implement me")
++}
++func (b testBackend) GetTd(ctx context.Context, hash common.Hash) *big.Int { panic("implement me") }
++func (b testBackend) GetEVM(ctx context.Context, msg *core.Message, state *state.StateDB, header *types.Header, vmConfig *vm.Config, blockContext *vm.BlockContext) (*vm.EVM, func() error, error) {
++	vmError := func() error { return nil }
++	if vmConfig == nil {
++		vmConfig = b.chain.GetVMConfig()
++	}
++	txContext := core.NewEVMTxContext(msg)
++	context := core.NewEVMBlockContext(header, b.chain, nil)
++	if blockContext != nil {
++		context = *blockContext
++	}
++	return vm.NewEVM(context, txContext, state, b.chain.Config(), *vmConfig), vmError, nil
++}
++func (b testBackend) SubscribeChainEvent(ch chan<- core.ChainEvent) event.Subscription {
++	panic("implement me")
++}
++func (b testBackend) SubscribeChainHeadEvent(ch chan<- core.ChainHeadEvent) event.Subscription {
++	panic("implement me")
++}
++func (b testBackend) SubscribeChainSideEvent(ch chan<- core.ChainSideEvent) event.Subscription {
++	panic("implement me")
++}
++func (b testBackend) SendTx(ctx context.Context, signedTx *types.Transaction) error {
++	panic("implement me")
++}
++func (b testBackend) GetTransaction(ctx context.Context, txHash common.Hash) (*types.Transaction, common.Hash, uint64, uint64, error) {
++	panic("implement me")
++}
++func (b testBackend) GetPoolTransactions() (types.Transactions, error)         { panic("implement me") }
++func (b testBackend) GetPoolTransaction(txHash common.Hash) *types.Transaction { panic("implement me") }
++func (b testBackend) GetPoolNonce(ctx context.Context, addr common.Address) (uint64, error) {
++	panic("implement me")
++}
++func (b testBackend) Stats() (pending int, queued int) { panic("implement me") }
++func (b testBackend) TxPoolContent() (map[common.Address]types.Transactions, map[common.Address]types.Transactions) {
++	panic("implement me")
++}
++func (b testBackend) TxPoolContentFrom(addr common.Address) (types.Transactions, types.Transactions) {
++	panic("implement me")
++}
++func (b testBackend) SubscribeNewTxsEvent(events chan<- core.NewTxsEvent) event.Subscription {
++	panic("implement me")
++}
++func (b testBackend) ChainConfig() *params.ChainConfig { return b.chain.Config() }
++func (b testBackend) Engine() consensus.Engine         { return b.chain.Engine() }
++func (b testBackend) GetLogs(ctx context.Context, blockHash common.Hash, number uint64) ([][]*types.Log, error) {
++	panic("implement me")
++}
++func (b testBackend) SubscribeRemovedLogsEvent(ch chan<- core.RemovedLogsEvent) event.Subscription {
++	panic("implement me")
++}
++func (b testBackend) SubscribeLogsEvent(ch chan<- []*types.Log) event.Subscription {
++	panic("implement me")
++}
++func (b testBackend) SubscribePendingLogsEvent(ch chan<- []*types.Log) event.Subscription {
++	panic("implement me")
++}
++func (b testBackend) BloomStatus() (uint64, uint64) { panic("implement me") }
++func (b testBackend) ServiceFilter(ctx context.Context, session *bloombits.MatcherSession) {
++	panic("implement me")
++}
++
++func TestEstimateGas(t *testing.T) {
++	t.Parallel()
++	// Initialize test accounts
++	var (
++		accounts = newAccounts(2)
++		genesis  = &core.Genesis{
++			Config: params.TestChainConfig,
++			Alloc: core.GenesisAlloc{
++				accounts[0].addr: {Balance: big.NewInt(params.Ether)},
++				accounts[1].addr: {Balance: big.NewInt(params.Ether)},
++			},
++		}
++		genBlocks      = 10
++		signer         = types.HomesteadSigner{}
++		randomAccounts = newAccounts(2)
++	)
++	api := NewBlockChainAPI(newTestBackend(t, genBlocks, genesis, func(i int, b *core.BlockGen) {
++		// Transfer from account[0] to account[1]
++		//    value: 1000 wei
++		//    fee:   0 wei
++		tx, _ := types.SignTx(types.NewTx(&types.LegacyTx{Nonce: uint64(i), To: &accounts[1].addr, Value: big.NewInt(1000), Gas: params.TxGas, GasPrice: b.BaseFee(), Data: nil}), signer, accounts[0].key)
++		b.AddTx(tx)
++	}))
++	var testSuite = []struct {
++		blockNumber rpc.BlockNumber
++		call        TransactionArgs
++		expectErr   error
++		want        uint64
++	}{
++		// simple transfer on latest block
++		{
++			blockNumber: rpc.LatestBlockNumber,
++			call: TransactionArgs{
++				From:  &accounts[0].addr,
++				To:    &accounts[1].addr,
++				Value: (*hexutil.Big)(big.NewInt(1000)),
++			},
++			expectErr: nil,
++			want:      21000,
++		},
++		// simple transfer with insufficient funds on latest block
++		{
++			blockNumber: rpc.LatestBlockNumber,
++			call: TransactionArgs{
++				From:  &randomAccounts[0].addr,
++				To:    &accounts[1].addr,
++				Value: (*hexutil.Big)(big.NewInt(1000)),
++			},
++			expectErr: core.ErrInsufficientFunds,
++			want:      21000,
++		},
++		// empty create
++		{
++			blockNumber: rpc.LatestBlockNumber,
++			call:        TransactionArgs{},
++			expectErr:   nil,
++			want:        53000,
++		},
++	}
++	for i, tc := range testSuite {
++		result, err := api.EstimateGas(context.Background(), tc.call, &rpc.BlockNumberOrHash{BlockNumber: &tc.blockNumber})
++		if tc.expectErr != nil {
++			if err == nil {
++				t.Errorf("test %d: want error %v, have nothing", i, tc.expectErr)
++				continue
++			}
++			if !errors.Is(err, tc.expectErr) {
++				t.Errorf("test %d: error mismatch, want %v, have %v", i, tc.expectErr, err)
++			}
++			continue
++		}
++		if err != nil {
++			t.Errorf("test %d: want no error, have %v", i, err)
++			continue
++		}
++		if uint64(result) != tc.want {
++			t.Errorf("test %d, result mismatch, have\n%v\n, want\n%v\n", i, uint64(result), tc.want)
++		}
++	}
++}
++
++func TestCall(t *testing.T) {
++	t.Parallel()
++	// Initialize test accounts
++	var (
++		accounts = newAccounts(3)
++		genesis  = &core.Genesis{
++			Config: params.TestChainConfig,
++			Alloc: core.GenesisAlloc{
++				accounts[0].addr: {Balance: big.NewInt(params.Ether)},
++				accounts[1].addr: {Balance: big.NewInt(params.Ether)},
++				accounts[2].addr: {Balance: big.NewInt(params.Ether)},
++			},
++		}
++		genBlocks = 10
++		signer    = types.HomesteadSigner{}
++	)
++	api := NewBlockChainAPI(newTestBackend(t, genBlocks, genesis, func(i int, b *core.BlockGen) {
++		// Transfer from account[0] to account[1]
++		//    value: 1000 wei
++		//    fee:   0 wei
++		tx, _ := types.SignTx(types.NewTx(&types.LegacyTx{Nonce: uint64(i), To: &accounts[1].addr, Value: big.NewInt(1000), Gas: params.TxGas, GasPrice: b.BaseFee(), Data: nil}), signer, accounts[0].key)
++		b.AddTx(tx)
++	}))
++	randomAccounts := newAccounts(3)
++	var testSuite = []struct {
++		blockNumber    rpc.BlockNumber
++		overrides      StateOverride
++		call           TransactionArgs
++		blockOverrides BlockOverrides
++		expectErr      error
++		want           string
++	}{
++		// transfer on genesis
++		{
++			blockNumber: rpc.BlockNumber(0),
++			call: TransactionArgs{
++				From:  &accounts[0].addr,
++				To:    &accounts[1].addr,
++				Value: (*hexutil.Big)(big.NewInt(1000)),
++			},
++			expectErr: nil,
++			want:      "0x",
++		},
++		// transfer on the head
++		{
++			blockNumber: rpc.BlockNumber(genBlocks),
++			call: TransactionArgs{
++				From:  &accounts[0].addr,
++				To:    &accounts[1].addr,
++				Value: (*hexutil.Big)(big.NewInt(1000)),
++			},
++			expectErr: nil,
++			want:      "0x",
++		},
++		// transfer on a non-existent block, error expects
++		{
++			blockNumber: rpc.BlockNumber(genBlocks + 1),
++			call: TransactionArgs{
++				From:  &accounts[0].addr,
++				To:    &accounts[1].addr,
++				Value: (*hexutil.Big)(big.NewInt(1000)),
++			},
++			expectErr: errors.New("header not found"),
++		},
++		// transfer on the latest block
++		{
++			blockNumber: rpc.LatestBlockNumber,
++			call: TransactionArgs{
++				From:  &accounts[0].addr,
++				To:    &accounts[1].addr,
++				Value: (*hexutil.Big)(big.NewInt(1000)),
++			},
++			expectErr: nil,
++			want:      "0x",
++		},
++		// Call which can only succeed if state is state overridden
++		{
++			blockNumber: rpc.LatestBlockNumber,
++			call: TransactionArgs{
++				From:  &randomAccounts[0].addr,
++				To:    &randomAccounts[1].addr,
++				Value: (*hexutil.Big)(big.NewInt(1000)),
++			},
++			overrides: StateOverride{
++				randomAccounts[0].addr: OverrideAccount{Balance: newRPCBalance(new(big.Int).Mul(big.NewInt(1), big.NewInt(params.Ether)))},
++			},
++			want: "0x",
++		},
++		// Invalid call without state overriding
++		{
++			blockNumber: rpc.LatestBlockNumber,
++			call: TransactionArgs{
++				From:  &randomAccounts[0].addr,
++				To:    &randomAccounts[1].addr,
++				Value: (*hexutil.Big)(big.NewInt(1000)),
++			},
++			expectErr: core.ErrInsufficientFunds,
++		},
++		// Successful simple contract call
++		//
++		// // SPDX-License-Identifier: GPL-3.0
++		//
++		//  pragma solidity >=0.7.0 <0.8.0;
++		//
++		//  /**
++		//   * @title Storage
++		//   * @dev Store & retrieve value in a variable
++		//   */
++		//  contract Storage {
++		//      uint256 public number;
++		//      constructor() {
++		//          number = block.number;
++		//      }
++		//  }
++		{
++			blockNumber: rpc.LatestBlockNumber,
++			call: TransactionArgs{
++				From: &randomAccounts[0].addr,
++				To:   &randomAccounts[2].addr,
++				Data: hex2Bytes("8381f58a"), // call number()
++			},
++			overrides: StateOverride{
++				randomAccounts[2].addr: OverrideAccount{
++					Code:      hex2Bytes("6080604052348015600f57600080fd5b506004361060285760003560e01c80638381f58a14602d575b600080fd5b60336049565b6040518082815260200191505060405180910390f35b6000548156fea2646970667358221220eab35ffa6ab2adfe380772a48b8ba78e82a1b820a18fcb6f59aa4efb20a5f60064736f6c63430007040033"),
++					StateDiff: &map[common.Hash]common.Hash{common.Hash{}: common.BigToHash(big.NewInt(123))},
++				},
++			},
++			want: "0x000000000000000000000000000000000000000000000000000000000000007b",
++		},
++		// Block overrides should work
++		{
++			blockNumber: rpc.LatestBlockNumber,
++			call: TransactionArgs{
++				From: &accounts[1].addr,
++				Input: &hexutil.Bytes{
++					0x43,             // NUMBER
++					0x60, 0x00, 0x52, // MSTORE offset 0
++					0x60, 0x20, 0x60, 0x00, 0xf3,
++				},
++			},
++			blockOverrides: BlockOverrides{Number: (*hexutil.Big)(big.NewInt(11))},
++			want:           "0x000000000000000000000000000000000000000000000000000000000000000b",
++		},
++	}
++	for i, tc := range testSuite {
++		result, err := api.Call(context.Background(), tc.call, rpc.BlockNumberOrHash{BlockNumber: &tc.blockNumber}, &tc.overrides, &tc.blockOverrides)
++		if tc.expectErr != nil {
++			if err == nil {
++				t.Errorf("test %d: want error %v, have nothing", i, tc.expectErr)
++				continue
++			}
++			if !errors.Is(err, tc.expectErr) {
++				// Second try
++				if !reflect.DeepEqual(err, tc.expectErr) {
++					t.Errorf("test %d: error mismatch, want %v, have %v", i, tc.expectErr, err)
++				}
++			}
++			continue
++		}
++		if err != nil {
++			t.Errorf("test %d: want no error, have %v", i, err)
++			continue
++		}
++		if !reflect.DeepEqual(result.String(), tc.want) {
++			t.Errorf("test %d, result mismatch, have\n%v\n, want\n%v\n", i, result.String(), tc.want)
++		}
++	}
++}
++
++type Account struct {
++	key  *ecdsa.PrivateKey
++	addr common.Address
++}
++
++type Accounts []Account
++
++func (a Accounts) Len() int           { return len(a) }
++func (a Accounts) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
++func (a Accounts) Less(i, j int) bool { return bytes.Compare(a[i].addr.Bytes(), a[j].addr.Bytes()) < 0 }
++
++func newAccounts(n int) (accounts Accounts) {
++	for i := 0; i < n; i++ {
++		key, _ := crypto.GenerateKey()
++		addr := crypto.PubkeyToAddress(key.PublicKey)
++		accounts = append(accounts, Account{key: key, addr: addr})
++	}
++	sort.Sort(accounts)
++	return accounts
++}
++
++func newRPCBalance(balance *big.Int) **hexutil.Big {
++	rpcBalance := (*hexutil.Big)(balance)
++	return &rpcBalance
++}
++
++func hex2Bytes(str string) *hexutil.Bytes {
++	rpcBytes := hexutil.Bytes(common.Hex2Bytes(str))
++	return &rpcBytes
++}
+diff --git a/internal/ethapi/backend.go b/internal/ethapi/backend.go
+index 0249c8664d3c1..3e4ee505f3892 100644
+--- a/internal/ethapi/backend.go
++++ b/internal/ethapi/backend.go
+@@ -68,7 +68,7 @@ type Backend interface {
+ 	PendingBlockAndReceipts() (*types.Block, types.Receipts)
+ 	GetReceipts(ctx context.Context, hash common.Hash) (types.Receipts, error)
+ 	GetTd(ctx context.Context, hash common.Hash) *big.Int
+-	GetEVM(ctx context.Context, msg *core.Message, state *state.StateDB, header *types.Header, vmConfig *vm.Config) (*vm.EVM, func() error, error)
++	GetEVM(ctx context.Context, msg *core.Message, state *state.StateDB, header *types.Header, vmConfig *vm.Config, blockCtx *vm.BlockContext) (*vm.EVM, func() error, error)
+ 	SubscribeChainEvent(ch chan<- core.ChainEvent) event.Subscription
+ 	SubscribeChainHeadEvent(ch chan<- core.ChainHeadEvent) event.Subscription
+ 	SubscribeChainSideEvent(ch chan<- core.ChainSideEvent) event.Subscription
+diff --git a/internal/ethapi/transaction_args_test.go b/internal/ethapi/transaction_args_test.go
+index 24c15b7775601..124f2164cf0a7 100644
+--- a/internal/ethapi/transaction_args_test.go
++++ b/internal/ethapi/transaction_args_test.go
+@@ -305,7 +305,7 @@ func (b *backendMock) GetLogs(ctx context.Context, blockHash common.Hash, number
+ 	return nil, nil
+ }
+ func (b *backendMock) GetTd(ctx context.Context, hash common.Hash) *big.Int { return nil }
+-func (b *backendMock) GetEVM(ctx context.Context, msg *core.Message, state *state.StateDB, header *types.Header, vmConfig *vm.Config) (*vm.EVM, func() error, error) {
++func (b *backendMock) GetEVM(ctx context.Context, msg *core.Message, state *state.StateDB, header *types.Header, vmConfig *vm.Config, blockCtx *vm.BlockContext) (*vm.EVM, func() error, error) {
+ 	return nil, nil, nil
+ }
+ func (b *backendMock) SubscribeChainEvent(ch chan<- core.ChainEvent) event.Subscription { return nil }
+diff --git a/internal/web3ext/web3ext.go b/internal/web3ext/web3ext.go
+index 388eed8a2fa6f..336632964321d 100644
+--- a/internal/web3ext/web3ext.go
++++ b/internal/web3ext/web3ext.go
+@@ -608,8 +608,8 @@ web3._extend({
+ 		new web3._extend.Method({
+ 			name: 'call',
+ 			call: 'eth_call',
+-			params: 3,
+-			inputFormatter: [web3._extend.formatters.inputCallFormatter, web3._extend.formatters.inputDefaultBlockNumberFormatter, null],
++			params: 4,
++			inputFormatter: [web3._extend.formatters.inputCallFormatter, web3._extend.formatters.inputDefaultBlockNumberFormatter, null, null],
+ 		}),
+ 	],
+ 	properties: [
+diff --git a/les/api_backend.go b/les/api_backend.go
+index 2d1fccd9ad43f..86da26da65f53 100644
+--- a/les/api_backend.go
++++ b/les/api_backend.go
+@@ -184,12 +184,15 @@ func (b *LesApiBackend) GetTd(ctx context.Context, hash common.Hash) *big.Int {
+ 	return nil
+ }
+ 
+-func (b *LesApiBackend) GetEVM(ctx context.Context, msg *core.Message, state *state.StateDB, header *types.Header, vmConfig *vm.Config) (*vm.EVM, func() error, error) {
++func (b *LesApiBackend) GetEVM(ctx context.Context, msg *core.Message, state *state.StateDB, header *types.Header, vmConfig *vm.Config, blockCtx *vm.BlockContext) (*vm.EVM, func() error, error) {
+ 	if vmConfig == nil {
+ 		vmConfig = new(vm.Config)
+ 	}
+ 	txContext := core.NewEVMTxContext(msg)
+ 	context := core.NewEVMBlockContext(header, b.eth.blockchain, nil)
++	if blockCtx != nil {
++		context = *blockCtx
++	}
+ 	return vm.NewEVM(context, txContext, state, b.eth.chainConfig, *vmConfig), state.Error, nil
+ }
+ 
+
+From 46e5d5e848018f82a66dc2fb4468c0d056a66734 Mon Sep 17 00:00:00 2001
+From: Sina Mahmoodi <itz.s1na@gmail.com>
+Date: Tue, 4 Apr 2023 18:03:31 +0200
+Subject: [PATCH 2/4] rm callConfig object
+
+---
+ internal/ethapi/api.go | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/internal/ethapi/api.go b/internal/ethapi/api.go
+index 58d50c0ad7b7b..d2ebe16bee8fe 100644
+--- a/internal/ethapi/api.go
++++ b/internal/ethapi/api.go
+@@ -1077,10 +1077,6 @@ func (e *revertError) ErrorData() interface{} {
+ 	return e.reason
+ }
+ 
+-type callConfig struct {
+-	BlockOverrides *BlockOverrides
+-}
+-
+ // Call executes the given transaction on the state for the given block number.
+ //
+ // Additionally, the caller can specify a batch of contract for fields overriding.
+
+From 8b9861426ede6d0cceed5ec9eeb19e8d6d48d7f9 Mon Sep 17 00:00:00 2001
+From: Sina Mahmoodi <itz.s1na@gmail.com>
+Date: Fri, 7 Apr 2023 12:59:07 +0300
+Subject: [PATCH 3/4] add new call method with block overrides
+
+---
+ ethclient/gethclient/gethclient.go      | 71 +++++++++++++++++++++++
+ ethclient/gethclient/gethclient_test.go | 75 +++++++++++++++++++++++++
+ 2 files changed, 146 insertions(+)
+
+diff --git a/ethclient/gethclient/gethclient.go b/ethclient/gethclient/gethclient.go
+index fdcfb9a0ac406..718cdfea426a6 100644
+--- a/ethclient/gethclient/gethclient.go
++++ b/ethclient/gethclient/gethclient.go
+@@ -143,6 +143,28 @@ func (ec *Client) CallContract(ctx context.Context, msg ethereum.CallMsg, blockN
+ 	return hex, err
+ }
+ 
++// CallContractWithBlockOverrides executes a message call transaction, which is directly executed
++// in the VM  of the node, but never mined into the blockchain.
++//
++// blockNumber selects the block height at which the call runs. It can be nil, in which
++// case the code is taken from the latest known block. Note that state from very old
++// blocks might not be available.
++//
++// overrides specifies a map of contract states that should be overwritten before executing
++// the message call.
++//
++// blockOverrides specifies block fields exposed to the EVM that can be overridden for the call.
++//
++// Please use ethclient.CallContract instead if you don't need the override functionality.
++func (ec *Client) CallContractWithBlockOverrides(ctx context.Context, msg ethereum.CallMsg, blockNumber *big.Int, overrides *map[common.Address]OverrideAccount, blockOverrides BlockOverrides) ([]byte, error) {
++	var hex hexutil.Bytes
++	err := ec.c.CallContext(
++		ctx, &hex, "eth_call", toCallArg(msg),
++		toBlockNumArg(blockNumber), overrides, blockOverrides,
++	)
++	return hex, err
++}
++
+ // GCStats retrieves the current garbage collection stats from a geth node.
+ func (ec *Client) GCStats(ctx context.Context) (*debug.GCStats, error) {
+ 	var result debug.GCStats
+@@ -265,3 +287,52 @@ func (a OverrideAccount) MarshalJSON() ([]byte, error) {
+ 	}
+ 	return json.Marshal(output)
+ }
++
++// BlockOverrides specifies the  set of header fields to override.
++type BlockOverrides struct {
++	// Number overrides the block number.
++	Number *big.Int
++	// Difficulty overrides the block difficulty.
++	Difficulty *big.Int
++	// Time overrides the block timestamp. Time is applied only when
++	// it is non-zero.
++	Time uint64
++	// GasLimit overrides the block gas limit. GasLimit is applied only when
++	// it is non-zero.
++	GasLimit uint64
++	// Coinbase overrides the block coinbase. Coinbase is applied only when
++	// it is different from the zero address.
++	Coinbase common.Address
++	// Random overrides the block extra data which feeds into the RANDOM opcode.
++	// Random is applied only when it is a non-zero hash.
++	Random common.Hash
++	// BaseFee overrides the block base fee.
++	BaseFee *big.Int
++}
++
++func (o BlockOverrides) MarshalJSON() ([]byte, error) {
++	type override struct {
++		Number     *hexutil.Big    `json:"number,omitempty"`
++		Difficulty *hexutil.Big    `json:"difficulty,omitempty"`
++		Time       hexutil.Uint64  `json:"time,omitempty"`
++		GasLimit   hexutil.Uint64  `json:"gasLimit,omitempty"`
++		Coinbase   *common.Address `json:"coinbase,omitempty"`
++		Random     *common.Hash    `json:"random,omitempty"`
++		BaseFee    *hexutil.Big    `json:"baseFee,omitempty"`
++	}
++
++	output := override{
++		Number:     (*hexutil.Big)(o.Number),
++		Difficulty: (*hexutil.Big)(o.Difficulty),
++		Time:       hexutil.Uint64(o.Time),
++		GasLimit:   hexutil.Uint64(o.GasLimit),
++		BaseFee:    (*hexutil.Big)(o.BaseFee),
++	}
++	if o.Coinbase != (common.Address{}) {
++		output.Coinbase = &o.Coinbase
++	}
++	if o.Random != (common.Hash{}) {
++		output.Random = &o.Random
++	}
++	return json.Marshal(output)
++}
+diff --git a/ethclient/gethclient/gethclient_test.go b/ethclient/gethclient/gethclient_test.go
+index a9637d182f1f9..87456fd64c64e 100644
+--- a/ethclient/gethclient/gethclient_test.go
++++ b/ethclient/gethclient/gethclient_test.go
+@@ -127,6 +127,9 @@ func TestGethClient(t *testing.T) {
+ 		}, {
+ 			"TestCallContract",
+ 			func(t *testing.T) { testCallContract(t, client) },
++		}, {
++			"TestCallContractWithBlockOverrides",
++			func(t *testing.T) { testCallContractWithBlockOverrides(t, client) },
+ 		},
+ 		// The testaccesslist is a bit time-sensitive: the newTestBackend imports
+ 		// one block. The `testAcessList` fails if the miner has not yet created a
+@@ -413,3 +416,75 @@ func TestOverrideAccountMarshal(t *testing.T) {
+ 		t.Error("want:", expected)
+ 	}
+ }
++
++func TestBlockOverridesMarshal(t *testing.T) {
++	for i, tt := range []struct {
++		bo   BlockOverrides
++		want string
++	}{
++		{
++			bo:   BlockOverrides{},
++			want: `{}`,
++		},
++		{
++			bo: BlockOverrides{
++				Coinbase: common.HexToAddress("0x1111111111111111111111111111111111111111"),
++			},
++			want: `{"coinbase":"0x1111111111111111111111111111111111111111"}`,
++		},
++		{
++			bo: BlockOverrides{
++				Number:     big.NewInt(1),
++				Difficulty: big.NewInt(2),
++				Time:       3,
++				GasLimit:   4,
++				BaseFee:    big.NewInt(5),
++			},
++			want: `{"number":"0x1","difficulty":"0x2","time":"0x3","gasLimit":"0x4","baseFee":"0x5"}`,
++		},
++	} {
++		marshalled, err := json.Marshal(&tt.bo)
++		if err != nil {
++			t.Fatalf("unexpected error: %v", err)
++		}
++		if string(marshalled) != tt.want {
++			t.Errorf("Testcase #%d failed. expected\n%s\ngot\n%s", i, tt.want, string(marshalled))
++		}
++	}
++}
++
++func testCallContractWithBlockOverrides(t *testing.T, client *rpc.Client) {
++	ec := New(client)
++	msg := ethereum.CallMsg{
++		From:     testAddr,
++		To:       &common.Address{},
++		Gas:      50000,
++		GasPrice: big.NewInt(1000000000),
++		Value:    big.NewInt(1),
++	}
++	override := OverrideAccount{
++		// Returns coinbase address.
++		Code: common.FromHex("0x41806000526014600cf3"),
++	}
++	mapAcc := make(map[common.Address]OverrideAccount)
++	mapAcc[common.Address{}] = override
++	res, err := ec.CallContract(context.Background(), msg, big.NewInt(0), &mapAcc)
++	if err != nil {
++		t.Fatalf("unexpected error: %v", err)
++	}
++	if !bytes.Equal(res, common.FromHex("0x0000000000000000000000000000000000000000")) {
++		t.Fatalf("unexpected result: %x", res)
++	}
++
++	// Now test with block overrides
++	bo := BlockOverrides{
++		Coinbase: common.HexToAddress("0x1111111111111111111111111111111111111111"),
++	}
++	res, err = ec.CallContractWithBlockOverrides(context.Background(), msg, big.NewInt(0), &mapAcc, bo)
++	if err != nil {
++		t.Fatalf("unexpected error: %v", err)
++	}
++	if !bytes.Equal(res, common.FromHex("0x1111111111111111111111111111111111111111")) {
++		t.Fatalf("unexpected result: %x", res)
++	}
++}
+
+From 6c91499733b23c040057605613b5f5bfcf0ed702 Mon Sep 17 00:00:00 2001
+From: Sina Mahmoodi <1591639+s1na@users.noreply.github.com>
+Date: Thu, 27 Apr 2023 16:21:00 +0200
+Subject: [PATCH 4/4] Update eth/api_backend.go
+
+Co-authored-by: Martin Holst Swende <martin@swende.se>
+---
+ eth/api_backend.go | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/eth/api_backend.go b/eth/api_backend.go
+index e44c948edbc50..83fcbad9b6a98 100644
+--- a/eth/api_backend.go
++++ b/eth/api_backend.go
+@@ -245,9 +245,11 @@ func (b *EthAPIBackend) GetEVM(ctx context.Context, msg *core.Message, state *st
+ 		vmConfig = b.eth.blockchain.GetVMConfig()
+ 	}
+ 	txContext := core.NewEVMTxContext(msg)
+-	context := core.NewEVMBlockContext(header, b.eth.BlockChain(), nil)
++	var context vm.BlockContext
+ 	if blockCtx != nil {
+ 		context = *blockCtx
++	} else {
++		context = core.NewEVMBlockContext(header, b.eth.BlockChain(), nil)
+ 	}
+ 	return vm.NewEVM(context, txContext, state, b.eth.blockchain.Config(), *vmConfig), state.Error, nil
+ }

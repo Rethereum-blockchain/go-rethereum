@@ -21,13 +21,13 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"github.com/rethereum-blockchain/go-rethereum/consensus/misc/eip1559"
 	"math"
 	"math/big"
 	"sort"
 	"sync/atomic"
 
 	"github.com/rethereum-blockchain/go-rethereum/common"
-	"github.com/rethereum-blockchain/go-rethereum/consensus/misc"
 	"github.com/rethereum-blockchain/go-rethereum/core/types"
 	"github.com/rethereum-blockchain/go-rethereum/log"
 	"github.com/rethereum-blockchain/go-rethereum/rpc"
@@ -94,7 +94,7 @@ func (oracle *Oracle) processBlock(bf *blockFees, percentiles []float64) {
 		bf.results.baseFee = new(big.Int)
 	}
 	if chainconfig.IsLondon(big.NewInt(int64(bf.blockNumber + 1))) {
-		bf.results.nextBaseFee = misc.CalcBaseFee(chainconfig, bf.header)
+		bf.results.nextBaseFee = eip1559.CalcBaseFee(chainconfig, bf.header)
 	} else {
 		bf.results.nextBaseFee = new(big.Int)
 	}
@@ -251,10 +251,10 @@ func (oracle *Oracle) FeeHistory(ctx context.Context, blocks uint64, unresolvedL
 	}
 	oldestBlock := lastBlock + 1 - blocks
 
-	var (
-		next    = oldestBlock
-		results = make(chan *blockFees, blocks)
-	)
+	var next atomic.Uint64
+	next.Store(oldestBlock)
+	results := make(chan *blockFees, blocks)
+
 	percentileKey := make([]byte, 8*len(rewardPercentiles))
 	for i, p := range rewardPercentiles {
 		binary.LittleEndian.PutUint64(percentileKey[i*8:(i+1)*8], math.Float64bits(p))
@@ -263,7 +263,7 @@ func (oracle *Oracle) FeeHistory(ctx context.Context, blocks uint64, unresolvedL
 		go func() {
 			for {
 				// Retrieve the next block number to fetch with this goroutine
-				blockNumber := atomic.AddUint64(&next, 1) - 1
+				blockNumber := next.Add(1) - 1
 				if blockNumber > lastBlock {
 					return
 				}

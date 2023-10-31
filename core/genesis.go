@@ -193,8 +193,8 @@ func CommitGenesisState(db ethdb.Database, triedb *trie.Database, blockhash comm
 			genesis = DefaultRinkebyGenesisBlock()
 		case params.GoerliGenesisHash:
 			genesis = DefaultGoerliGenesisBlock()
-		case params.SepoliaGenesisHash:
-			genesis = DefaultSepoliaGenesisBlock()
+		case params.KrontosGenesisHash:
+			genesis = DefaultKrontosGenesisBlock()
 		}
 		if genesis != nil {
 			alloc = genesis.Alloc
@@ -421,8 +421,8 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 		return g.Config
 	case ghash == params.MainnetGenesisHash:
 		return params.MainnetChainConfig
-	case ghash == params.SepoliaGenesisHash:
-		return params.SepoliaChainConfig
+	case ghash == params.KrontosGenesisHash:
+		return params.KrontosChainConfig
 	case ghash == params.RinkebyGenesisHash:
 		return params.RinkebyChainConfig
 	case ghash == params.GoerliGenesisHash:
@@ -556,16 +556,16 @@ func DefaultGoerliGenesisBlock() *Genesis {
 	}
 }
 
-// DefaultSepoliaGenesisBlock returns the Sepolia network genesis block.
-func DefaultSepoliaGenesisBlock() *Genesis {
+// DefaultKrontosGenesisBlock returns the Krontos network genesis block.
+func DefaultKrontosGenesisBlock() *Genesis {
 	return &Genesis{
-		Config:     params.SepoliaChainConfig,
+		Config:     params.KrontosChainConfig,
 		Nonce:      0,
-		ExtraData:  []byte("Sepolia, Athens, Attica, Greece!"),
+		ExtraData:  []byte("Krontos, Athens, Attica, Greece!"),
 		GasLimit:   0x1c9c380,
 		Difficulty: big.NewInt(0x20000),
 		Timestamp:  1633267481,
-		Alloc:      decodePrealloc(sepoliaAllocData),
+		Alloc:      decodePrealloc(krontosAllocData),
 	}
 }
 

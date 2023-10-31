@@ -134,7 +134,7 @@ var (
 	}
 	NetworkIdFlag = &cli.Uint64Flag{
 		Name:     "networkid",
-		Usage:    "Explicitly set network id (integer)(For testnets: use --rinkeby, --goerli, --sepolia instead)",
+		Usage:    "Explicitly set network id (integer)(For testnets: use --rinkeby, --goerli, --krontos instead)",
 		Value:    ethconfig.Defaults.NetworkId,
 		Category: flags.EthCategory,
 	}
@@ -153,9 +153,9 @@ var (
 		Usage:    "Görli network: pre-configured proof-of-authority test network",
 		Category: flags.EthCategory,
 	}
-	SepoliaFlag = &cli.BoolFlag{
-		Name:     "sepolia",
-		Usage:    "Sepolia network: pre-configured proof-of-work test network",
+	KrontosFlag = &cli.BoolFlag{
+		Name:     "krontos",
+		Usage:    "Krontos network: pre-configured proof-of-work test network",
 		Category: flags.EthCategory,
 	}
 
@@ -1002,7 +1002,7 @@ var (
 	TestnetFlags = []cli.Flag{
 		RinkebyFlag,
 		GoerliFlag,
-		SepoliaFlag,
+		KrontosFlag,
 	}
 	// NetworkFlags is the flag group of all built-in supported networks.
 	NetworkFlags = append([]cli.Flag{MainnetFlag}, TestnetFlags...)
@@ -1033,8 +1033,8 @@ func MakeDataDir(ctx *cli.Context) string {
 		if ctx.Bool(GoerliFlag.Name) {
 			return filepath.Join(path, "goerli")
 		}
-		if ctx.Bool(SepoliaFlag.Name) {
-			return filepath.Join(path, "sepolia")
+		if ctx.Bool(KrontosFlag.Name) {
+			return filepath.Join(path, "krontos")
 		}
 		return path
 	}
@@ -1082,8 +1082,8 @@ func setBootstrapNodes(ctx *cli.Context, cfg *p2p.Config) {
 	switch {
 	case ctx.IsSet(BootnodesFlag.Name):
 		urls = SplitAndTrim(ctx.String(BootnodesFlag.Name))
-	case ctx.Bool(SepoliaFlag.Name):
-		urls = params.SepoliaBootnodes
+	case ctx.Bool(KrontosFlag.Name):
+		urls = params.KrontosBootnodes
 	case ctx.Bool(RinkebyFlag.Name):
 		urls = params.RinkebyBootnodes
 	case ctx.Bool(GoerliFlag.Name):
@@ -1537,8 +1537,8 @@ func SetDataDir(ctx *cli.Context, cfg *node.Config) {
 		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "rinkeby")
 	case ctx.Bool(GoerliFlag.Name) && cfg.DataDir == node.DefaultDataDir():
 		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "goerli")
-	case ctx.Bool(SepoliaFlag.Name) && cfg.DataDir == node.DefaultDataDir():
-		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "sepolia")
+	case ctx.Bool(KrontosFlag.Name) && cfg.DataDir == node.DefaultDataDir():
+		cfg.DataDir = filepath.Join(node.DefaultDataDir(), "krontos")
 	}
 }
 
@@ -1729,7 +1729,7 @@ func CheckExclusive(ctx *cli.Context, args ...interface{}) {
 // SetEthConfig applies eth-related command line flags to the config.
 func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 	// Avoid conflicting network flags
-	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, RinkebyFlag, GoerliFlag, SepoliaFlag)
+	CheckExclusive(ctx, MainnetFlag, DeveloperFlag, RinkebyFlag, GoerliFlag, KrontosFlag)
 	CheckExclusive(ctx, LightServeFlag, SyncModeFlag, "light")
 	CheckExclusive(ctx, DeveloperFlag, ExternalSignerFlag) // Can't use both ephemeral unlocked and external signer
 	if ctx.String(GCModeFlag.Name) == "archive" && ctx.Uint64(TxLookupLimitFlag.Name) != 0 {
@@ -1867,20 +1867,20 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *ethconfig.Config) {
 		}
 		cfg.Genesis = core.DefaultGenesisBlock()
 		SetDNSDiscoveryDefaults(cfg, params.MainnetGenesisHash)
-	case ctx.Bool(SepoliaFlag.Name):
+	case ctx.Bool(KrontosFlag.Name):
 		if !ctx.IsSet(NetworkIdFlag.Name) {
 			cfg.NetworkId = 11155111
 		}
-		cfg.Genesis = core.DefaultSepoliaGenesisBlock()
-		SetDNSDiscoveryDefaults(cfg, params.SepoliaGenesisHash)
+		cfg.Genesis = core.DefaultKrontosGenesisBlock()
+		SetDNSDiscoveryDefaults(cfg, params.KrontosGenesisHash)
 	case ctx.Bool(RinkebyFlag.Name):
 		log.Warn("")
 		log.Warn("--------------------------------------------------------------------------------")
 		log.Warn("Please note, Rinkeby has been deprecated. It will still work for the time being,")
 		log.Warn("but there will be no further hard-forks shipped for it.")
 		log.Warn("The network will be permanently halted in Q2/Q3 of 2023.")
-		log.Warn("For the most future proof testnet, choose Sepolia as")
-		log.Warn("your replacement environment (--sepolia instead of --rinkeby).")
+		log.Warn("For the most future proof testnet, choose Krontos as")
+		log.Warn("your replacement environment (--krontos instead of --rinkeby).")
 		log.Warn("--------------------------------------------------------------------------------")
 		log.Warn("")
 
@@ -2209,8 +2209,8 @@ func MakeGenesis(ctx *cli.Context) *core.Genesis {
 	switch {
 	case ctx.Bool(MainnetFlag.Name):
 		genesis = core.DefaultGenesisBlock()
-	case ctx.Bool(SepoliaFlag.Name):
-		genesis = core.DefaultSepoliaGenesisBlock()
+	case ctx.Bool(KrontosFlag.Name):
+		genesis = core.DefaultKrontosGenesisBlock()
 	case ctx.Bool(RinkebyFlag.Name):
 		genesis = core.DefaultRinkebyGenesisBlock()
 	case ctx.Bool(GoerliFlag.Name):
