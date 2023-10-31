@@ -551,6 +551,9 @@ func (t *UDPv5) dispatch() {
 		case r := <-t.sendCh:
 			t.send(r.destID, r.destAddr, r.msg, nil)
 
+		case r := <-t.sendCh:
+			t.send(r.destID, r.destAddr, r.msg, nil)
+
 		case p := <-t.packetInCh:
 			t.handlePacket(p.Data, p.Addr)
 			// Arm next read.
