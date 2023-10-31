@@ -268,7 +268,7 @@ func (h *handler) doSync(op *chainSyncOp) error {
 		// Checkpoint passed, sanity check the timestamp to have a fallback mechanism
 		// for non-checkpointed (number = 0) private networks.
 		if head.Time >= uint64(time.Now().AddDate(0, -1, 0).Unix()) {
-			atomic.StoreUint32(&h.acceptTxs, 1)
+			h.acceptTxs.Store(true)
 		}
 	}
 	if head.Number.Uint64() > 0 {
