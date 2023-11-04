@@ -631,12 +631,12 @@ func accumulateRewards(config *params.ChainConfig, state *state.StateDB, header 
 
 	if len(uncles) == 0 { // If no uncles, the miner gets the entire block fee.
 		minerReward.Add(minerReward, blockFeeReward)
-	} else if config.IsBerlin(header.Number) { // During Berlin block, each miner and uncles are rewarded the block fee.
-		uncleReward.Add(uncleReward, blockFeeReward)
-		minerReward.Add(minerReward, blockFeeReward)
 	} else if config.IsLondon(header.Number) { // After london block, miners and uncles are rewarded the block fee divided between them.
 		uncleCount.Add(uncleCount, big1) // Add 1 to uncleCount to account for the miner in the division.
 		blockFeeReward.Div(blockFeeReward, uncleCount)
+		uncleReward.Add(uncleReward, blockFeeReward)
+		minerReward.Add(minerReward, blockFeeReward)
+	} else if config.IsBerlin(header.Number) { // During Berlin block, each miner and uncles are rewarded the block fee.
 		uncleReward.Add(uncleReward, blockFeeReward)
 		minerReward.Add(minerReward, blockFeeReward)
 	} else if config.IsHomestead(header.Number) { // Until Berlin block, Miners and Uncles are rewarded for the amount of uncles generated.
