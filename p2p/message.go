@@ -212,14 +212,14 @@ func (p *MsgPipeRW) ReadMsg() (Msg, error) {
 // Close unblocks any pending ReadMsg and WriteMsg calls on both ends
 // of the pipe. They will return ErrPipeClosed. Close also
 // interrupts any reads from a message payload.
-func (p *MsgPipeRW) Close() error {
+func (p *MsgPipeRW) Close() {
 	if atomic.AddInt32(p.closed, 1) != 1 {
 		// someone else is already closing
 		atomic.StoreInt32(p.closed, 1) // avoid overflow
-		return nil
+		return
 	}
 	close(p.closing)
-	return nil
+	return
 }
 
 // ExpectMsg reads a message from r and verifies that its
