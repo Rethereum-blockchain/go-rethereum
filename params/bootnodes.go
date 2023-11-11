@@ -34,21 +34,16 @@ var MainnetBootnodes = []string{
 // Krontos test network.
 var KrontosBootnodes = []string{
 	// EF DevOps
-	"enode://4e5e92199ee224a01932a377160aa432f31d0b351f84ab413a8e0a42f4f36476f8fb1cbe914af0d9aef0d51665c214cf653c651c4bbd9d5550a934f241f1682b@138.197.51.181:30303", // krontos-bootnode-1-nyc3
+	"enode://9a392272f3688e8fa414c88bd9a341690acc651078d4e22551f1161b3a96e28f60a09fd39bae0a78f63388aa62f549011853444f195cc6b0db85954745b017fa@77.100.75.201:30305", // krontos-bootnode-1-nyc3
 }
 
 // RinkebyBootnodes are the enode URLs of the P2P bootstrap nodes running on the
 // Rinkeby test network.
-var RinkebyBootnodes = []string{
-	"enode://a24ac7c5484ef4ed0c5eb2d36620ba4e4aa13b8c84684e1b4aab0cebea2ae45cb4d375b77eab56516d34bfbd3c1a833fc51296ff084b770b94fb9028c4d25ccf@52.169.42.101:30303", // IE
-}
+var RinkebyBootnodes = []string{}
 
 // GoerliBootnodes are the enode URLs of the P2P bootstrap nodes running on the
 // Görli test network.
-var GoerliBootnodes = []string{
-	// Upstream bootnodes
-	"enode://011f758e6552d105183b1761c5e2dea0111bc20fd5f6422bc7f91e0fabbec9a6595caf6239b37feb773dddd3f87240d99d859431891e4a642cf2a0a9e6cbb98a@51.141.78.53:30303",
-}
+var GoerliBootnodes = []string{}
 
 var V5Bootnodes = []string{
 	// Teku team's bootnode

@@ -128,9 +128,9 @@ var (
 	// KrontosTrustedCheckpoint contains the light client trusted checkpoint for the Krontos test network.
 	KrontosTrustedCheckpoint = &TrustedCheckpoint{
 		SectionIndex: 0,
-		SectionHead:  common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
-		CHTRoot:      common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
-		BloomRoot:    common.HexToHash("0x0000000000000000000000000000000000000000000000000000000000000000"),
+		SectionHead:  common.HexToHash("0x4cf8717d2c94f2432221d99d90832f11504302d9d9c1a5ddab99ef135a47f1f5"),
+		CHTRoot:      common.HexToHash("0x51e4bf79ed798298ff607ab11f46f3caf51494cbb8da63df2346d85ddb346392"),
+		BloomRoot:    common.HexToHash("0x4cf8717d2c94f2432221d99d90832f11504302d9d9c1a5ddab99ef135a47f1f5"),
 	}
 
 	// RinkebyChainConfig contains the chain parameters to run a node on the Rinkeby test network.
