@@ -74,7 +74,7 @@ var (
 		GrayGlacierBlock:    big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		RethereumForks: &RethereumForks{
 			Veldin: big.NewInt(500_009),
-			Gaspar: big.NewInt(10_000_000),
+			Gaspar: big.NewInt(1_354_811),
 		},
 		TerminalTotalDifficulty:       nil,   // nil disables the terminal total difficulty check
 		TerminalTotalDifficultyPassed: false, // false disables the consensus check for terminal total difficulty
