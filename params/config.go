@@ -83,10 +83,10 @@ var (
 
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
 	MainnetTrustedCheckpoint = &TrustedCheckpoint{
-		BloomRoot:    common.HexToHash("0xf015cef2601121dcb488eb5d1009afa01f8f9262bb9c4d4c426b0613fac932f7"),
-		CHTRoot:      common.HexToHash("0x414cd37c86cbaeeff7a5dd9a21feeca69abbd4c8441f7cb2a69b40cdd02e5cfe"),
-		SectionHead:  common.HexToHash("0xfa45d0a5114aa7594508498c9669c5204171982f2ebc18baa4bb63f164c81ecc"),
-		SectionIndex: 30,
+		BloomRoot:    common.HexToHash("0x1ad318ca46364813efd07b389ea10e27ec001154e78f6380b12f36eafbf02fb5"),
+		CHTRoot:      common.HexToHash("0xf8c67cd8a02f03582d992625ad44497ad616b23fd31bbe3d4ada5f7e670b92bf"),
+		SectionHead:  common.HexToHash("0x6293986bfc9cd40ee00d5ac683d61158346b1dcd2ae873fa167cc0e73624ad52"),
+		SectionIndex: 35,
 	}
 
 	// MainnetCheckpointOracle contains a set of configs for the main network oracle.
@@ -127,10 +127,10 @@ var (
 
 	// KrontosTrustedCheckpoint contains the light client trusted checkpoint for the Krontos test network.
 	KrontosTrustedCheckpoint = &TrustedCheckpoint{
-		SectionIndex: 0,
-		SectionHead:  common.HexToHash("0x4cf8717d2c94f2432221d99d90832f11504302d9d9c1a5ddab99ef135a47f1f5"),
-		CHTRoot:      common.HexToHash("0x51e4bf79ed798298ff607ab11f46f3caf51494cbb8da63df2346d85ddb346392"),
 		BloomRoot:    common.HexToHash("0x4cf8717d2c94f2432221d99d90832f11504302d9d9c1a5ddab99ef135a47f1f5"),
+		CHTRoot:      common.HexToHash("0x51e4bf79ed798298ff607ab11f46f3caf51494cbb8da63df2346d85ddb346392"),
+		SectionHead:  common.HexToHash("0x4cf8717d2c94f2432221d99d90832f11504302d9d9c1a5ddab99ef135a47f1f5"),
+		SectionIndex: 0,
 	}
 
 	// RinkebyChainConfig contains the chain parameters to run a node on the Rinkeby test network.
