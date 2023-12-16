@@ -73,8 +73,8 @@ var (
 		ArrowGlacierBlock:   big.NewInt(27_200_177), // Roughly 3 years after London
 		GrayGlacierBlock:    big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		RethereumForks: &RethereumForks{
-			Veldin: big.NewInt(500_009),
-			Gaspar: big.NewInt(1_600_957),
+			Veldin: big.NewInt(500_009),   // September-10-2023
+			Gaspar: big.NewInt(1_600_957), // December-29-2023
 		},
 		TerminalTotalDifficulty:       nil,   // nil disables the terminal total difficulty check
 		TerminalTotalDifficultyPassed: false, // false disables the consensus check for terminal total difficulty
