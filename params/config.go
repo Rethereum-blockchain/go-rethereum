@@ -74,7 +74,7 @@ var (
 		GrayGlacierBlock:    big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		RethereumForks: &RethereumForks{
 			Veldin: big.NewInt(500_009),
-			Gaspar: big.NewInt(10_000_000),
+			Gaspar: big.NewInt(1_600_957),
 		},
 		TerminalTotalDifficulty:       nil,   // nil disables the terminal total difficulty check
 		TerminalTotalDifficultyPassed: false, // false disables the consensus check for terminal total difficulty
@@ -83,10 +83,10 @@ var (
 
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
 	MainnetTrustedCheckpoint = &TrustedCheckpoint{
-		BloomRoot:    common.HexToHash("0x1ad318ca46364813efd07b389ea10e27ec001154e78f6380b12f36eafbf02fb5"),
-		CHTRoot:      common.HexToHash("0xf8c67cd8a02f03582d992625ad44497ad616b23fd31bbe3d4ada5f7e670b92bf"),
-		SectionHead:  common.HexToHash("0x6293986bfc9cd40ee00d5ac683d61158346b1dcd2ae873fa167cc0e73624ad52"),
-		SectionIndex: 35,
+		BloomRoot:    common.HexToHash("0xb09a3dc1215903dc757dd83c960c6dd77ec508e03c185b16df62af069d197fc3"),
+		CHTRoot:      common.HexToHash("0x21f6a69cbd097bd2c1d250ed7144888e483d46105b66a99a68e4847c99a863cd"),
+		SectionHead:  common.HexToHash("0x2461cbf15f92264332e09ba8a9d6b9106c12b3cf0e7d7bfff78483c1b271e902"),
+		SectionIndex: 43,
 	}
 
 	// MainnetCheckpointOracle contains a set of configs for the main network oracle.

@@ -113,7 +113,7 @@ const (
 	ExtcodeCopyBaseEIP150   uint64 = 700
 
 	// CreateBySelfdestructGas is used when the refunded account is one that does
-	// not exist. This logic is similar to call.
+	// not exist. This logic is similar to .call
 	// Introduced in Tangerine Whistle (Eip 150)
 	CreateBySelfdestructGas uint64 = 25000
 
