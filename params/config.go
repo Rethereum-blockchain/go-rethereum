@@ -37,7 +37,7 @@ var (
 // the chain it belongs to.
 var TrustedCheckpoints = map[common.Hash]*TrustedCheckpoint{
 	MainnetGenesisHash: MainnetTrustedCheckpoint,
-	KrontosGenesisHash: KrontosTrustedCheckpoint,
+	//KrontosGenesisHash: KrontosTrustedCheckpoint,
 	RinkebyGenesisHash: RinkebyTrustedCheckpoint,
 	GoerliGenesisHash:  GoerliTrustedCheckpoint,
 }
@@ -74,7 +74,7 @@ var (
 		GrayGlacierBlock:    big.NewInt(40_725_107), // Roughly 3 years after Arrow Glacier
 		RethereumForks: &RethereumForks{
 			Veldin: big.NewInt(500_009),
-			Gaspar: big.NewInt(1_354_811),
+			Gaspar: big.NewInt(10_000_000),
 		},
 		TerminalTotalDifficulty:       nil,   // nil disables the terminal total difficulty check
 		TerminalTotalDifficultyPassed: false, // false disables the consensus check for terminal total difficulty
@@ -113,9 +113,9 @@ var (
 		IstanbulBlock:       big.NewInt(0),
 		MuirGlacierBlock:    big.NewInt(0),
 		BerlinBlock:         big.NewInt(0),
-		LondonBlock:         big.NewInt(0),
-		ArrowGlacierBlock:   big.NewInt(0),
-		GrayGlacierBlock:    big.NewInt(0),
+		LondonBlock:         big.NewInt(1000),
+		ArrowGlacierBlock:   big.NewInt(1000),
+		GrayGlacierBlock:    big.NewInt(1000),
 		RethereumForks: &RethereumForks{
 			Veldin: big.NewInt(0),
 			Gaspar: big.NewInt(0),
@@ -127,9 +127,9 @@ var (
 
 	// KrontosTrustedCheckpoint contains the light client trusted checkpoint for the Krontos test network.
 	KrontosTrustedCheckpoint = &TrustedCheckpoint{
-		BloomRoot:    common.HexToHash("0x4cf8717d2c94f2432221d99d90832f11504302d9d9c1a5ddab99ef135a47f1f5"),
-		CHTRoot:      common.HexToHash("0x51e4bf79ed798298ff607ab11f46f3caf51494cbb8da63df2346d85ddb346392"),
-		SectionHead:  common.HexToHash("0x4cf8717d2c94f2432221d99d90832f11504302d9d9c1a5ddab99ef135a47f1f5"),
+		BloomRoot:    common.Hash{},
+		CHTRoot:      common.Hash{},
+		SectionHead:  common.Hash{},
 		SectionIndex: 0,
 	}
 
