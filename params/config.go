@@ -118,7 +118,7 @@ var (
 		GrayGlacierBlock:    big.NewInt(1000),
 		RethereumForks: &RethereumForks{
 			Veldin: big.NewInt(0),
-			Gaspar: big.NewInt(0),
+			Gaspar: big.NewInt(255),
 		},
 		TerminalTotalDifficulty:       nil,
 		TerminalTotalDifficultyPassed: false,
@@ -351,7 +351,7 @@ var (
 
 // NetworkNames are user friendly names to use in the chain spec banner.
 var NetworkNames = map[string]string{
-	MainnetChainConfig.ChainID.String(): "Rethereum Mainnet",
+	MainnetChainConfig.ChainID.String(): "Hypra Mainnet",
 	RinkebyChainConfig.ChainID.String(): "rinkeby",
 	GoerliChainConfig.ChainID.String():  "goerli",
 	KrontosChainConfig.ChainID.String(): "krontos",
@@ -539,7 +539,7 @@ func (c *ChainConfig) Description() string {
 		banner += fmt.Sprintf(" - Gray Glacier:                #%-8v (https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/gray-glacier.md)\n", c.GrayGlacierBlock)
 	}
 	banner += "\n"
-	banner += "Rethereum Forks (block based):\n"
+	banner += "Hypra Forks (block based):\n"
 	if c.RethereumForks.Veldin != nil {
 		banner += fmt.Sprintf(" - Veldin:                #%-8v \n", c.RethereumForks.Veldin)
 	}
@@ -550,7 +550,7 @@ func (c *ChainConfig) Description() string {
 
 	// Add a special section for the merge as it's non-obvious
 	if c.TerminalTotalDifficulty == nil {
-		banner += "The Merge is not available on rethereum!\n"
+		banner += "The Merge is not available on Hypra!\n"
 	} else {
 		banner += "Merge configured:\n"
 		banner += " - Hard-fork specification:    https://github.com/ethereum/execution-specs/blob/master/network-upgrades/mainnet-upgrades/paris.md\n"
